@@ -25,3 +25,7 @@ To run, download the repository and open the `strainhub/app.R` file and run the 
 library(shiny)
 runApp()
 ```
+
+## References
+
+Adriano de Bernardi Schneider, Arboviruses: The Hidden Path of an Imminent Threat, University of North Carolina at Charlotte, 2018, ProQuest (10979260). ISBN: 9780438668379 (https://pqdtopen.proquest.com/pubnum/10979260.html)
