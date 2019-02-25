@@ -1,4 +1,18 @@
-StrainHub
+# StrainHub
+<details>
+<summary><strong><em>Table of Contents</em></strong></summary>
+
+* [About StrainHub](#about-strainhub)
+* [Getting Started](#getting-started)
+  - [Example Files](#example-files)
+* [Network Quality](#network-quality)
+* [Citation](#citation)
+* [References](#references)
+* [Contact](#contact)
+
+</details>
+
+About StrainHub
 -----------------
 
 Strainhub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and a metadata associated file. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. 
@@ -16,7 +30,7 @@ _Taxa ID with missing data should be excluded prior to the analysis. Order does 
 
 A template for building the metadata file can be downloaded [here](https://github.com/supramap/transmission_graphs/raw/master/data/template.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
 
-__Example files:__
+### Example files:
 - [Phylogenetic Tree](https://github.com/supramap/transmission_graphs/raw/master/data/chikv_westernafrica.phy)
 - [Metadata File](https://github.com/supramap/transmission_graphs/raw/master/data/chikv_westernafrica_metadata.csv) 
 
@@ -60,12 +74,20 @@ The nodes within the network are scaled based on the user selected metric. The c
 
 _Although only one metric can be selected for scaling the nodes within the network, all the metrics are calculated and can be visualized as well as downloaded on the tab "Metrics"._
 
-Quality of the Network
+Network Quality
 ------------------------
 
 The overall quality of the transmission network generated on StrainHub rests on the quality of the user input data.
+
+Citation
+------------------------
+_Citation Coming Soon..._
 
 References
 ------------------------
 
 [Adriano de Bernardi Schneider, _Arboviruses: The Hidden Path of an Imminent Threat_, University of North Carolina at Charlotte, 2018, ProQuest (10979260). ISBN: 9780438668379](https://pqdtopen.proquest.com/pubnum/10979260.html)
+
+Contact
+------------------------
+Questions? Comments? Contact us [here](mailto:adebernardischneider@ucsd.edu).
