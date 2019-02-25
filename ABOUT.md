@@ -6,7 +6,7 @@
 * [Getting Started](#getting-started)
   - [Example Files](#example-files)
 * [Network Quality](#network-quality)
-* [Citation](#citation)
+* [How To Cite](#how-to-cite)
 * [References](#references)
 * [Contact](#contact)
 
@@ -79,7 +79,7 @@ Network Quality
 
 The overall quality of the transmission network generated on StrainHub rests on the quality of the user input data.
 
-Citation
+How To Cite
 ------------------------
 _Citation Coming Soon..._
 
