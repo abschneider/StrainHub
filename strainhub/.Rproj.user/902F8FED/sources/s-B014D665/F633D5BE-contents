@@ -1,24 +1,3 @@
-## Baysian Example
-graph <- makeTransNet(treeFileName = "../data/batRABV.mcc.tree",
-                      columnSelection = "state",
-                      centralityMetric = 6,
-                      threshold = 0.9,
-                      treeType = "bayesian")
-print(graph)
-
-## Parsimonsious Example
-graph <- makeTransNet(treeFileName = "../data/chikv_westernafrica.phy",
-                      csvFileName = "../data/chikv_westernafrica_metadata.csv",
-                      columnSelection = "Host",
-                      centralityMetric = 6,
-                      treeType = "parsimonious")
-print(graph)
-
-
-
-########################
-
-
 treepreview <- ape::read.tree("../data/chikv_westernafrica.phy")
 md <- read_csv("../data/chikv_westernafrica_metadata.csv")
 #input$columnselection_row_last_clicked

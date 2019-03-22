@@ -6,6 +6,14 @@
 ## Shiny Web Application for Transmission Graphs - StrainHub
 library(shiny)
 
+## Load libraries for BEAST Parser
+library(OutbreakTools)
+library(ggplot2)
+library(adegenet)
+library(ade4)
+library(knitr)
+library(dplyr)
+
 ## Load other libraries
 library(shinythemes)
 library(readr)
