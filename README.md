@@ -4,7 +4,7 @@
 # StrainHub
 Strainhub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and a metadata associated file. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network.
 
-![StrainHub CHIKV Network](https://github.com/supramap/transmission_graphs/raw/master/chikv_StrainHub_network.png "Sample Chikungunya Virus Network")
+![StrainHub Network](https://github.com/abschneider/StrainHub/blob/master/host_network_example.png "Sample Host Transmission Network")
 
 
 ## Use StrainHub Online
@@ -23,7 +23,7 @@ You'll run phylogeography using BEAST and for that you will only need 1 file to 
 
 For more information, click [here](ABOUT.md).
 
-[Try Out StrainHub Online](https://colbyford.shinyapps.io/strainhub/)
+[Try Out StrainHub Online](https://strainhub.io)
 
 ## Run StrainHub Locally
 To run, download the repository and open the `strainhub/app.R` file and run the following script.
