@@ -45,13 +45,17 @@ ui <- tagList(
     tabPanel("Network Visualizer",
              sidebarPanel(
                width = 3,
+               selectInput("tree_input_type",
+                           label = "1. Pick your Tree Type",
+                           choices = c("Parsimonious", "Bayesian")),
                fileInput('treefile',
-                         label = '1. Choose your Tree File',
+                         label = '2. Choose your Tree File',
                          accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
-               fileInput('csvfile',
-                         label = '2. Choose your Metadata File',
-                         accept = c('text/csv', 'text/plain', '.csv', '.txt')),
-               actionButton("getlistbutton", label = "3. List States", class = "btn-primary"),
+               uiOutput("treeuiparams"),
+               # fileInput('csvfile',
+               #           label = '2. Choose your Metadata File',
+               #           accept = c('text/csv', 'text/plain', '.csv', '.txt')),
+               actionButton("getlistbutton", label = "4. List States", class = "btn-primary"),
                br(),
                # selectInput("columnselection", "Column Selection:", 
                #             choices=c("NA")),
@@ -59,7 +63,7 @@ ui <- tagList(
                dataTableOutput("columnselection"),
                br(),
                radioButtons("metricradio",
-                            label ="4. Pick Centrality Metric",
+                            label ="5. Pick Centrality Metric",
                             choices = list("Indegree" = 1,
                                            "Outdegree" = 2,
                                            "Betweenness" = 3,
@@ -68,7 +72,7 @@ ui <- tagList(
                                            "Source Hub Ratio" = 6),
                             selected = 1),
                br(),
-               actionButton("plotbutton", label = "5. Generate Network", class = "btn-primary"),
+               actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
                br(),
                includeHTML("footer.html")
              ),
@@ -109,6 +113,21 @@ ui <- tagList(
 
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
+  
+  output$treeuiparams <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+
+    switch(input$tree_input_type,
+           "Parsimonious" = fileInput('csvfile',
+                                     label = '3. Choose your Metadata File',
+                                     accept = c('text/csv', 'text/plain', '.csv', '.txt')),
+           "Bayesian" = sliderInput("threshold",
+                                    label = "3. Choose your Probability Threshold",
+                                    min = 0, max = 1, value = 0.9)
+           )
+  })
+  
   #options(shiny.usecairo = TRUE)
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
