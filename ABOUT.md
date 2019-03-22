@@ -15,12 +15,14 @@
 About StrainHub
 -----------------
 
-Strainhub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and a metadata associated file. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. 
+StrainHub is designed as a web-based software to generate pathogen transmission networks and associated metrics from a combination of a phylogenetic tree and a metadata associated. The software enables the construction of the network by either  mapping the metadata onto the tree and performing a parsimony ancestry reconstruction step to create links between the associated metadata or parsing a BEAST phylogeography maximum clade credibility tree.
 
 Getting Started
 -----------------
 
-In order to construct the disease transmission network two files will need to be generated.
+In order to construct the disease transmission network the user is presented with two options, run the entire pipeline or skip straight to the visualization part. 
+
+To run the entire pipeline, two files will need to be generated.
 
 1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g. BEAST, TNT, RAxML, IQTree).
 
@@ -31,8 +33,20 @@ _Taxa ID with missing data should be excluded prior to the analysis. Order does 
 A template for building the metadata file can be downloaded [here](https://github.com/supramap/transmission_graphs/raw/master/data/template.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
 
 ### Example files:
-- [Phylogenetic Tree](https://github.com/supramap/transmission_graphs/raw/master/data/chikv_westernafrica.phy)
-- [Metadata File](https://github.com/supramap/transmission_graphs/raw/master/data/chikv_westernafrica_metadata.csv) 
+- [Phylogenetic Tree](https://github.com/abschneider/StrainHub/blob/master/data/example_tree.phy)
+- [Metadata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv) 
+
+To skip the ancestry reconstruction step, the user will have to run BEAST phylogeography, and then one file will need to be generated.
+
+1) A maximum clade credibility tree (MCC) generated through Phylogeographic Diffusion in [Discrete](http://beast.community/workshop_discrete_diffusion) or [Continuous](http://beast.community/workshop_continuous_diffusion) Space in BEAST in NEXUS format.
+
+Our app will parse the MCC tree and prompt the user to select which trait he wants to evaluate. Once the user has selected the trait, the user will have to select the trait probability threshold he wants to use to consider the relationship between two nodes valid (we like 0.9 as a threshold, but this will depend on the user and his knowledge about his dataset).
+
+_The threshold set by the user is utilized to filter out any pair of nodes within the phylogenetic tree that may have lower probability, thus being ignored within the transmission network step._ 
+
+### Example file:
+- [MCC Tree](https://github.com/abschneider/StrainHub/blob/master/data/batRABV.mcc.tree)
+
 
 Metrics
 -----------------
