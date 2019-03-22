@@ -6,6 +6,8 @@ Strainhub is designed as a web-based software to generate disease transmission n
 
 ![StrainHub Network](https://github.com/abschneider/StrainHub/blob/master/host_network_example.png =200x)("Sample Host Transmission Network")
 
+<img src="https://github.com/abschneider/StrainHub/blob/master/host_network_example.png" alt="Sample Host Transmission Network" width="200"/>
+
 
 ## Use StrainHub Online
 
