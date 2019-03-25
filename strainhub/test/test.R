@@ -1,4 +1,7 @@
 ## Baysian Example
+listStates(treeFileName = "../data/batRABV.mcc.tree",
+           treeType = "bayesian")
+
 graph <- makeTransNet(treeFileName = "../data/batRABV.mcc.tree",
                       columnSelection = "state",
                       centralityMetric = 6,
@@ -7,6 +10,10 @@ graph <- makeTransNet(treeFileName = "../data/batRABV.mcc.tree",
 print(graph)
 
 ## Parsimonsious Example
+listStates(treeFileName = "../data/chikv_westernafrica.phy",
+           csvFileName = "../data/chikv_westernafrica_metadata.csv",
+           treeType = "parsimonious")
+
 graph <- makeTransNet(treeFileName = "../data/chikv_westernafrica.phy",
                       csvFileName = "../data/chikv_westernafrica_metadata.csv",
                       columnSelection = "Host",
@@ -18,6 +25,21 @@ print(graph)
 
 ########################
 
+treepreview <- OutbreakTools::read.annotated.nexus("../data/batRABV.mcc.tree")
+
+#colorby <- treepreview$root.annotation[["state"]]
+
+t1 <- ggtree(treepreview, ladderize = F) +
+  geom_point(aes_string(size = 3)) +
+  geom_text(aes(label = label),
+            hjust = 0,
+            position = position_nudge(x = 0.2)) +
+  scale_fill_brewer(palette="Spectral") +
+  scale_x_continuous(expand = c(.1, .1))
+
+plotly::ggplotly(t1)
+
+########################
 
 treepreview <- ape::read.tree("../data/chikv_westernafrica.phy")
 md <- read_csv("../data/chikv_westernafrica_metadata.csv")

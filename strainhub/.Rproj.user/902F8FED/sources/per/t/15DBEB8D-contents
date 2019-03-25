@@ -60,7 +60,8 @@ ui <- tagList(
                # selectInput("columnselection", "Column Selection:", 
                #             choices=c("NA")),
                br(),
-               dataTableOutput("columnselection"),
+               #dataTableOutput("columnselection"),
+               uiOutput("columnselection"),
                br(),
                radioButtons("metricradio",
                             label ="5. Pick Centrality Metric",
@@ -73,6 +74,7 @@ ui <- tagList(
                             selected = 1),
                br(),
                actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
+               # div(uiOutput("settings"), style="float:right"),
                br(),
                includeHTML("footer.html")
              ),
@@ -80,17 +82,17 @@ ui <- tagList(
                width = 9,
                tabsetPanel(
                  tabPanel("Network Plot",
-                          div(downloadButton("exportplot", "Export Plot"), style="float:right"),
-                          # visNetworkOutput("graphplot")
+                          div(downloadButton("exportplot", "Export Plot", class = "btn-outline-primary"), style="float:right"),
+                          # visNetworkOutput("graphplot", height = "auto")
                           visNetworkOutput("graphplot", height = "750px")
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
-                          plotlyOutput("treepreview", height = "750px")
+                          plotlyOutput("treepreview")
                           #plotOutput("treepreview", height = "600px")
                  ),
                  tabPanel("Metrics",
-                          div(downloadButton("downloadmetrics", "Download Output Metrics"), style="float:right"),
+                          div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
                           br(),
                           DT::dataTableOutput("metricstable")
                  )
@@ -131,20 +133,34 @@ server <- function(input, output, session) {
   #options(shiny.usecairo = TRUE)
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
-    availablecolumns <- listStates(csvFileName = input$csvfile$datapath)
+    if(input$tree_input_type == "Parsimonious"){
+      availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "parsimonious")
+    } else if(input$tree_input_type == "Bayesian"){
+      availablecolumns <- listStates(treeFileName = input$treefile$datapath, treeType = "bayesian")
+    }
+    
   })
   
-  output$columnselection <- DT::renderDataTable({DT::datatable(availablecolumns(),
-                                                               rownames = FALSE,
-                                                               colnames = c("Index",
-                                                                            "State"),
-                                                               options = list(dom = 't',
-                                                                              autoWidth = TRUE,
-                                                                              initComplete = JS(
-                                                                                "function(settings, json) {",
-                                                                                "$(this.api().table().header()).css({'background-color': '#2d3e4f', 'color': '#fff'});",
-                                                                                "}")),
-                                                               selection = 'single')})
+  output$columnselection <- renderUI({
+    selectInput("columnselection", "Choose your State", choices = availablecolumns()$`Column`)
+  })
+  
+  # observe({
+  #   updateSelectInput("columnselection", choices = availablecolumns())
+  # })
+  
+  # output$columnselection <- DT::renderDataTable({DT::datatable(availablecolumns(),
+  #                                                              rownames = FALSE,
+  #                                                              colnames = c("Index",
+  #                                                                           "State"),
+  #                                                              options = list(dom = 't',
+  #                                                                             autoWidth = TRUE,
+  #                                                                             initComplete = JS(
+  #                                                                               "function(settings, json) {",
+  #                                                                               "$(this.api().table().header()).css({'background-color': '#2d3e4f', 'color': '#fff'});",
+  #                                                                               "}")),
+  #                                                              selection = 'single')})
+  
   
   # observeEvent(availablecolumns(), {
   #   updateSelectInput(session = session,
@@ -152,25 +168,62 @@ server <- function(input, output, session) {
   #                     choices = availablecolumns()$Column)
   # })
   
+  # output$settings <- renderUI({
+  #   actionButton("settings", label = "", icon = icon("cog", lib = "font-awesome"), class = "btn-warning")
+  # })
+  # 
+  # observeEvent(input$settings, {
+  #   showModal(modalDialog(
+  #     title = "Settings",
+  #     size = "s",
+  #     easyClose = TRUE,
+  #     numericInput("plotheight", label = "Plot Height", value = 750, min = 500, max = 2000, step = 1)
+  #   ))
+  # })
+  
   ## Network Viz
   graph <- eventReactive(input$plotbutton, {
-    validate(
-      need(input$treefile != "", "\n1. Please upload a tree file."),
-      need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
-      # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
-      if (exists("input$treefile") & exists("input$csvfile")){
-        need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath,
-                                                                                 csvFileName = input$csvfile$datapath),
-             "\n3. Please select a different column. This column has all identical values.")
-      }
+    if(input$tree_input_type == "Parsimonious"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
+        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
+        if (exists("input$treefile") & exists("input$csvfile")){
+          need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
+                                                                                   csvFileName = input$csvfile$datapath),
+               "\n3. Please select a different column. This column has all identical values.")
+        }
+      )
       
-    )
-    graph <-  makeTransNet(treeFileName = input$treefile$datapath,
-                           csvFileName = input$csvfile$datapath,
-                           # columnSelection = input$columnselection,
-                           columnSelection = input$columnselection_row_last_clicked,
-                           centralityMetric = input$metricradio)
-    # height = paste0(0.75*session$clientData$output_graph_width,"px")
+      graph <-  makeTransNet(treeFileName = input$treefile$datapath,
+                             csvFileName = input$csvfile$datapath,
+                             columnSelection = input$columnselection,
+                             # columnSelection = input$columnselection_row_last_clicked,
+                             centralityMetric = input$metricradio,
+                             treeType = "parsimonious")
+      # height = paste0(0.75*session$clientData$output_graph_width,"px")
+      
+    } else if(input$tree_input_type == "Bayesian"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
+        if (exists("input$treefile") & exists("input$csvfile")){
+          #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
+          #     "\n3. Please select a different column. This column has all identical values.")
+        }
+      )
+      
+      graph <-  makeTransNet(treeFileName = input$treefile$datapath,
+                             columnSelection = input$columnselection,
+                             # columnSelection = input$columnselection_row_last_clicked,
+                             centralityMetric = input$metricradio,
+                             threshold = input$threshold,
+                             treeType = "bayesian")
+      # height = paste0(0.75*session$clientData$output_graph_width,"px")
+      
+    }
+    
+    
     
   })
   
@@ -216,32 +269,60 @@ server <- function(input, output, session) {
   
   ## Tree File Preview
   
+  
   output$treepreview <- eventReactive(input$plotbutton, {
     output$treepreview <- renderPlotly({
       # df <- read.csv(input$treefile$datapath)
-      treepreview <- ape::read.tree(input$treefile$datapath)
-      #return(treepreview)
-      #plot(treepreview)
-      #ggtree(treepreview) + geom_tiplab()
-      
-      md <- read_csv(input$csvfile$datapath)
-      #input$columnselection_row_last_clicked
-      #colorby <- availablecolumns %>%
-      colorby <- colnames(md)[input$columnselection_row_last_clicked] %>% 
-        as.character()
-      
-      t1 <- ggtree(treepreview, ladderize = F) %<+% md +
-        geom_point(aes_string(color = colorby, size = 3)) +
-        geom_text(aes(label = label),
-                  hjust = 0,
-                  position = position_nudge(x = 0.5)) +
-        ggtitle(paste0("Phylogeny of `", input$treefile$name, "`"),
-                subtitle = "Generated by StrainHub") +
-        scale_fill_brewer(palette="Spectral") +
-        scale_x_continuous(expand = c(.1, .1))
-      
-      plotly::ggplotly(t1, tooltip = c("label", "colour"))
-      
+      if (input$tree_input_type == "Parsimonious"){
+        treepreview <- ape::read.tree(input$treefile$datapath)
+        #return(treepreview)
+        #plot(treepreview)
+        #ggtree(treepreview) + geom_tiplab()
+        
+        md <- read_csv(input$csvfile$datapath)
+        #input$columnselection_row_last_clicked
+        #colorby <- availablecolumns %>%
+        colorby <- colnames(md)[input$columnselection] %>% 
+          as.character()
+        
+        t1 <- ggtree(treepreview, ladderize = F) %<+% md +
+          geom_point(aes_string(color = colorby, size = 3)) +
+          geom_text(aes(label = label),
+                    hjust = 0,
+                    position = position_nudge(x = 0.5)) +
+          ggtitle(paste0("Phylogeny of `", input$treefile$name, "`"),
+                  subtitle = "Generated by StrainHub") +
+          scale_fill_brewer(palette="Spectral") +
+          scale_x_continuous(expand = c(.1, .1))
+        
+        plotly::ggplotly(t1, tooltip = c("label", "colour"))
+        
+      } else if(input$tree_input_type == "Bayesian"){
+        
+        treepreview <- OutbreakTools::read.annotated.nexus(input$treefile$datapath)
+        #return(treepreview)
+        #plot(treepreview)
+        #ggtree(treepreview) + geom_tiplab()
+        
+        # md <- read_csv(input$csvfile$datapath)
+        # #input$columnselection_row_last_clicked
+        # #colorby <- availablecolumns %>%
+        # colorby <- colnames(md)[input$columnselection] %>% 
+        #   as.character()
+        
+        t1 <- ggtree(treepreview, ladderize = T) +
+          geom_point(aes_string(size = 3)) +
+          geom_text(aes(label = label),
+                    hjust = 0,
+                    position = position_nudge(x = 0.5)) +
+          ggtitle(paste0("Phylogeny of `", input$treefile$name, "`"),
+                  subtitle = "Generated by StrainHub") +
+          scale_fill_brewer(palette="Spectral") +
+          scale_x_continuous(expand = c(.1, .1))
+        
+        plotly::ggplotly(t1, tooltip = c("label", "colour"))
+        
+      }
     })
   })
   
@@ -253,7 +334,7 @@ server <- function(input, output, session) {
       need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
       # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
       if (exists("input$treefile") & exists("input$csvfile")){
-        need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath,
+        need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
                                                                                  csvFileName = input$csvfile$datapath),
              "\n3. Please select a different column. This column has all identical values.")
       }
