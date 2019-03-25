@@ -46,8 +46,8 @@ ui <- tagList(
              sidebarPanel(
                width = 3,
                selectInput("tree_input_type",
-                           label = "1. Pick your Tree Type",
-                           choices = c("Parsimonious", "Bayesian")),
+                           label = "1. Transmission Network Method",
+                           choices = c("Parsimonious", "BEAST Phygeography")),
                fileInput('treefile',
                          label = '2. Choose your Tree File',
                          accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
@@ -124,8 +124,8 @@ server <- function(input, output, session) {
            "Parsimonious" = fileInput('csvfile',
                                      label = '3. Choose your Metadata File',
                                      accept = c('text/csv', 'text/plain', '.csv', '.txt')),
-           "Bayesian" = sliderInput("threshold",
-                                    label = "3. Choose your Probability Threshold",
+           "BEAST Phygeography" = sliderInput("threshold",
+                                    label = "3. Probability Threshold",
                                     min = 0, max = 1, value = 0.9)
            )
   })
@@ -135,7 +135,7 @@ server <- function(input, output, session) {
   availablecolumns <- eventReactive(input$getlistbutton, {
     if(input$tree_input_type == "Parsimonious"){
       availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "parsimonious")
-    } else if(input$tree_input_type == "Bayesian"){
+    } else if(input$tree_input_type == "BEAST Phygeography"){
       availablecolumns <- listStates(treeFileName = input$treefile$datapath, treeType = "bayesian")
     }
     
@@ -203,7 +203,7 @@ server <- function(input, output, session) {
                              treeType = "parsimonious")
       # height = paste0(0.75*session$clientData$output_graph_width,"px")
       
-    } else if(input$tree_input_type == "Bayesian"){
+    } else if(input$tree_input_type == "BEAST Phygeography"){
       validate(
         need(input$treefile != "", "\n1. Please upload a tree file."),
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
@@ -297,7 +297,7 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(t1, tooltip = c("label", "colour"))
         
-      } else if(input$tree_input_type == "Bayesian"){
+      } else if(input$tree_input_type == "BEAST Phygeography"){
         
         treepreview <- OutbreakTools::read.annotated.nexus(input$treefile$datapath)
         #return(treepreview)
