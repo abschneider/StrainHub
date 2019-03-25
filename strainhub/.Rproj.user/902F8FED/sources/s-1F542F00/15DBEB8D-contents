@@ -47,7 +47,7 @@ ui <- tagList(
                width = 3,
                selectInput("tree_input_type",
                            label = "1. Transmission Network Method",
-                           choices = c("Parsimonious", "BEAST Phygeography")),
+                           choices = c("Parsimony", "BEAST Phygeography")),
                fileInput('treefile',
                          label = '2. Choose your Tree File',
                          accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
@@ -121,7 +121,7 @@ server <- function(input, output, session) {
       return()
 
     switch(input$tree_input_type,
-           "Parsimonious" = fileInput('csvfile',
+           "Parsimony" = fileInput('csvfile',
                                      label = '3. Choose your Metadata File',
                                      accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            "BEAST Phygeography" = sliderInput("threshold",
@@ -133,7 +133,7 @@ server <- function(input, output, session) {
   #options(shiny.usecairo = TRUE)
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
-    if(input$tree_input_type == "Parsimonious"){
+    if(input$tree_input_type == "Parsimony"){
       availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "parsimonious")
     } else if(input$tree_input_type == "BEAST Phygeography"){
       availablecolumns <- listStates(treeFileName = input$treefile$datapath, treeType = "bayesian")
@@ -183,7 +183,7 @@ server <- function(input, output, session) {
   
   ## Network Viz
   graph <- eventReactive(input$plotbutton, {
-    if(input$tree_input_type == "Parsimonious"){
+    if(input$tree_input_type == "Parsimony"){
       validate(
         need(input$treefile != "", "\n1. Please upload a tree file."),
         need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
@@ -273,7 +273,7 @@ server <- function(input, output, session) {
   output$treepreview <- eventReactive(input$plotbutton, {
     output$treepreview <- renderPlotly({
       # df <- read.csv(input$treefile$datapath)
-      if (input$tree_input_type == "Parsimonious"){
+      if (input$tree_input_type == "Parsimony"){
         treepreview <- ape::read.tree(input$treefile$datapath)
         #return(treepreview)
         #plot(treepreview)
