@@ -1,3 +1,6 @@
+
+<h4 align = "right">Adriano de Bernardi Schneider, Ph.D.<br> Colby T. Ford, Ph.D.<br>John Williams<br> Michael Cioce<br> Ümit V. Çatalyürek, Ph.D.<br>Joel Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
+
 # StrainHub
 <details>
 <summary><strong><em>Table of Contents</em></strong></summary>
@@ -40,7 +43,7 @@ To skip the ancestry reconstruction step, the user will have to run BEAST phylog
 
 1) A maximum clade credibility tree (MCC) generated through Phylogeographic Diffusion in [Discrete](http://beast.community/workshop_discrete_diffusion) or [Continuous](http://beast.community/workshop_continuous_diffusion) Space in BEAST in NEXUS format.
 
-Our app will parse the MCC tree and prompt the user to select which trait he wants to evaluate. Once the user has selected the trait, the user will have to select the trait probability threshold he wants to use to consider the relationship between two nodes valid (we like 0.9 as a threshold, but this will depend on the user and his knowledge about his dataset).
+Our app will parse the MCC tree and prompt the user to select which trait he wants to evaluate. Once the user has selected the trait, the user will have to select the trait probability threshold the user wants to use to consider the relationship between two nodes valid (we like 0.9 as a threshold, but this will depend on the user and his knowledge about his dataset).
 
 _The threshold set by the user is utilized to filter out any pair of nodes within the phylogenetic tree that may have lower probability, thus being ignored within the transmission network step._ 
 
