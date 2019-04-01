@@ -1,5 +1,5 @@
 
-<h4 align = "right">Adriano de Bernardi Schneider, Ph.D.<br> Colby T. Ford, Ph.D.<br>John Williams<br> Michael Cioce<br> Ümit V. Çatalyürek, Ph.D.<br>Joel Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
+<h4 align = "right">Adriano de Bernardi Schneider, Ph.D.<br> Colby T. Ford, Ph.D.<br>John Williams<br> Michael Cioce<br> Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
 
 # StrainHub
 <details>
