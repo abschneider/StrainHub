@@ -88,8 +88,8 @@ ui <- tagList(
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
-                          plotlyOutput("treepreview")
-                          #plotOutput("treepreview", height = "600px")
+                          #plotlyOutput("treepreview")
+                          plotlyOutput("treepreview", height = "750px")
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
@@ -190,7 +190,7 @@ server <- function(input, output, session) {
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
           need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
-                                                                                   csvFileName = input$csvfile$datapath),
+                                                                  csvFileName = input$csvfile$datapath),
                "\n3. Please select a different column. This column has all identical values.")
         }
       )
@@ -282,8 +282,7 @@ server <- function(input, output, session) {
         md <- read_csv(input$csvfile$datapath)
         #input$columnselection_row_last_clicked
         #colorby <- availablecolumns %>%
-        colorby <- colnames(md)[input$columnselection] %>% 
-          as.character()
+        colorby <- input$columnselection
         
         t1 <- ggtree(treepreview, ladderize = F) %<+% md +
           geom_point(aes_string(color = colorby, size = 3)) +
@@ -300,18 +299,19 @@ server <- function(input, output, session) {
       } else if(input$tree_input_type == "BEAST Phylogeography"){
         
         treepreview <- OutbreakTools::read.annotated.nexus(input$treefile$datapath)
-        #return(treepreview)
-        #plot(treepreview)
-        #ggtree(treepreview) + geom_tiplab()
         
-        # md <- read_csv(input$csvfile$datapath)
-        # #input$columnselection_row_last_clicked
-        # #colorby <- availablecolumns %>%
-        # colorby <- colnames(md)[input$columnselection] %>% 
-        #   as.character()
+        colorby <- input$columnselection
         
-        t1 <- ggtree(treepreview, ladderize = T) +
-          geom_point(aes_string(size = 3)) +
+        annotationdf <- lapply(treepreview$annotations, data.frame, stringsAsFactors = FALSE) %>% 
+          dplyr::bind_rows() %>% 
+          dplyr::select_(colorby) %>% 
+          slice(1:length(treepreview$tip.label)) %>% 
+          as_tibble()
+        
+        annotationdf <- cbind(taxa = treepreview$tip.label, annotationdf)
+        
+        t1 <- ggtree(treepreview, ladderize = T) %<+% annotationdf +
+          geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
                     hjust = 0,
                     position = position_nudge(x = 0.5)) +
