@@ -27,9 +27,9 @@ In order to construct the disease transmission network the user is presented wit
 
 To run the entire pipeline, two files will need to be generated.
 
-1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g. BEAST, TNT, RAxML, IQTree).
+1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g., BEAST, TNT, RAxML, IQTree).
 
-2) A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g. host, country, risk group) 
+2) A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g., host, country, risk group) 
  
 _Taxa ID with missing data should be excluded prior to the analysis. Order does not matter on both files, the metadata is sorted automatically before mapped into the tree based on the header of the first column of the CSV file (Accession)._
 
