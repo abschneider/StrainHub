@@ -1,6 +1,3 @@
-
-<h4 align = "right">Adriano de Bernardi Schneider, Ph.D.<br> Colby T. Ford, Ph.D.<br>John Williams<br> Michael Cioce<br> Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
-
 # StrainHub
 <details>
 <summary><strong><em>Table of Contents</em></strong></summary>
@@ -99,6 +96,12 @@ The overall quality of the transmission network generated on StrainHub rests on 
 How To Cite
 ------------------------
 _Citation Coming Soon..._
+
+
+Authors
+------------------------
+
+<h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br> Colby T. Ford, Ph.D.<br>John Williams<br> Michael Cioce<br> Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
 
 References
 ------------------------
