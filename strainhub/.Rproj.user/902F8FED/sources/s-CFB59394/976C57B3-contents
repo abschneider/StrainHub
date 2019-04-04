@@ -1,0 +1,24 @@
+## read annotated tree from Nexus file
+tree <- read.beast('../data/batRABV.mcc.tree')
+columnSelection <- "host"
+## extract metadata from annotations 
+
+state <- tree@data[[columnSelection]]
+stateprob <- tree@data[[paste0(columnSelection,".prob")]]
+index <- as.numeric(tree@data$node)
+
+## Tree edges - relationship between nodes
+tree.edges = tree@phylo$edge
+
+## Rename edges with state (https://csgillespie.github.io/efficientR/dplyr.html / https://r4ds.had.co.nz/ )
+
+tree.edges2 = as_tibble(tree.edges)
+state_tib = tibble(
+  State = state
+) %>% 
+  mutate(ind = index)
+
+stateprob_tib = tibble(
+  Stateprob = stateprob
+) %>% 
+  mutate(ind = index)

@@ -1,0 +1,23 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1554408058025.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2281527163",
+    "id" : "70D9E81D",
+    "lastKnownWriteTime" : 1554408696,
+    "last_content_update" : 1554408696626,
+    "path" : "C:/Users/Colby Ford/Desktop/StrainHub/strainhub/strainhub_functions.R",
+    "project_path" : "strainhub_functions.R",
+    "properties" : {
+        "cursorPosition" : "32,16",
+        "scrollLine" : "44",
+        "source_window_id" : ""
+    },
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
