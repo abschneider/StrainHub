@@ -724,7 +724,8 @@ makeTransNet <- function(treeFileName, csvFileName = NULL, columnSelection, cent
     
     edges <- plyr::count(dat)
     names(edges)[names(edges) == "freq"] <- "value"
-    metastates <- characterlabels
+    # metastates <- characterlabels
+    metastates <- unique(combine(as.character(edges$to),as.character(edges$from)))
     
     nodes <- data.frame(id = 1:length(metastates), label = metastates) ##, fixed = list(x = T, y = T))
     
@@ -893,7 +894,7 @@ makeTransNet <- function(treeFileName, csvFileName = NULL, columnSelection, cent
                           group = sourcehubratio)
       graph <- visNetwork(nodes = nodes,
                           edges = edges,
-                          main = "Source Hub Ratio: Dead-end ~0 / Hub = .5 / Source = ~1") %>%
+                          main = "Source Hub Ratio: Sink ~0 / Hub = .5 / Source = ~1") %>%
         visPhysics(solver = "repulsion")%>%
         visInteraction(navigationButtons = TRUE) %>%
         visOptions(selectedBy = "value",

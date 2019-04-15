@@ -33,6 +33,7 @@ library(markdown)
 library(rmarkdown)
 library(ggtree)
 library(plotly)
+library(shinyjqui)
 source("strainhub_functions.R")
 
 # Define UI for application
@@ -85,12 +86,12 @@ ui <- tagList(
                  tabPanel("Network Plot",
                           # div(downloadButton("exportplot", "Export Plot", class = "btn-outline-primary"), style="float:right"),
                           # visNetworkOutput("graphplot", height = "auto")
-                          visNetworkOutput("graphplot", height = "750px")
+                          jqui_resizable(visNetworkOutput("graphplot", height = "750px"))
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
                           #plotlyOutput("treepreview")
-                          plotlyOutput("treepreview", height = "750px")
+                          jqui_resizable(plotlyOutput("treepreview", height = "750px"))
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
