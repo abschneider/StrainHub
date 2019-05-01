@@ -32,7 +32,7 @@ runApp()
 ```
 ## Authors
 
-<h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br> Colby T. Ford, Ph.D.<br>John Williams<br> Michael Cioce<br> Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
+<h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br>Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
 
 ## References
 
