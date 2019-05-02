@@ -2,18 +2,18 @@
     "collab_server" : "",
     "contents" : "",
     "created" : 1553878276537.000,
-    "dirty" : true,
+    "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "4085422225",
+    "hash" : "1233239529",
     "id" : "6541E57D",
-    "lastKnownWriteTime" : 1553878307,
-    "last_content_update" : 1553878372079,
+    "lastKnownWriteTime" : 1556804621,
+    "last_content_update" : 1556804621172,
     "path" : "~/Documents/StrainHub/strainhub/app.R",
     "project_path" : "app.R",
     "properties" : {
-        "cursorPosition" : "137,57",
-        "scrollLine" : "125"
+        "cursorPosition" : "11,16",
+        "scrollLine" : "1"
     },
     "read_only" : false,
     "read_only_alternatives" : [
