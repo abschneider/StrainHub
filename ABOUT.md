@@ -30,11 +30,11 @@ To run the entire pipeline, two files will need to be generated.
  
 _Taxa ID with missing data should be excluded prior to the analysis. Order does not matter on both files, the metadata is sorted automatically before mapped into the tree based on the header of the first column of the CSV file (Accession)._
 
-A template for building the metadata file can be downloaded [here](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
+A template for building the metadata file can be downloaded [here](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/example_metadata.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
 
 ### Example files:
-- [Phylogenetic Tree](https://github.com/abschneider/StrainHub/blob/master/data/example_tree.phy)
-- [Metadata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv) 
+- [Phylogenetic Tree](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/example_tree.phy)
+- [Metadata File](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/example_metadata.csv) 
 
 To skip the ancestry reconstruction step, the user will have to run BEAST phylogeography, and then one file will need to be generated.
 
@@ -45,7 +45,7 @@ Our app will parse the MCC tree and prompt the user to select which trait he wan
 _The threshold set by the user is utilized to filter out any pair of nodes within the phylogenetic tree that may have lower probability, thus being ignored within the transmission network step._ 
 
 ### Example file:
-- [MCC Tree](https://github.com/abschneider/StrainHub/blob/master/data/batRABV.mcc.tree)
+- [MCC Tree](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/batRABV.mcc.tree)
 
 
 Metrics
