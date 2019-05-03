@@ -15,6 +15,14 @@ library(ade4)
 library(knitr)
 library(dplyr)
 
+## Load in libraries for NJ tree builder
+library(phangorn)
+library(seqinr)
+
+## Load in libraries for map generation
+library(leaflet)
+library(geosphere)
+
 ## Load other libraries
 library(shinythemes)
 library(readr)
@@ -34,6 +42,7 @@ library(rmarkdown)
 library(ggtree)
 library(plotly)
 library(shinyjqui)
+library(shinycssloaders)
 source("strainhub_functions.R")
 
 # Define UI for application
@@ -49,11 +58,10 @@ ui <- tagList(
                width = 3,
                selectInput("tree_input_type",
                            label = "1. Transmission Network Method",
-                           choices = c("Parsimony", "BEAST Phylogeography")),
-               fileInput('treefile',
-                         label = '2. Choose your Tree File',
-                         accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
+                           choices = c("Parsimony", "BEAST Phylogeography", "Create Neighbor-Joining Tree")),
+               uiOutput("inputtree"),
                uiOutput("treeuiparams"),
+               uiOutput("treerootswitch"),
                # fileInput('csvfile',
                #           label = '2. Choose your Metadata File',
                #           accept = c('text/csv', 'text/plain', '.csv', '.txt')),
@@ -79,7 +87,7 @@ ui <- tagList(
                # div(uiOutput("settings"), style="float:right"),
                br(),
                includeHTML("footer.html"),
-               p("v1.0.0", align = "right") ## Version
+               p("v1.0.1", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -87,12 +95,17 @@ ui <- tagList(
                  tabPanel("Network Plot",
                           # div(downloadButton("exportplot", "Export Plot", class = "btn-outline-primary"), style="float:right"),
                           # visNetworkOutput("graphplot", height = "auto")
-                          jqui_resizable(visNetworkOutput("graphplot", height = "750px"))
+                          jqui_resizable(visNetworkOutput("graphplot", height = "750px")) %>% withSpinner()
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
                           #plotlyOutput("treepreview")
-                          jqui_resizable(plotlyOutput("treepreview", height = "750px"))
+                          jqui_resizable(plotlyOutput("treepreview", height = "750px")) %>% withSpinner()
+                 ),
+                 tabPanel("Map",
+                          div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
+                          br(),
+                          jqui_resizable(leafletOutput("mapoutput", height = "750px")) %>% withSpinner()
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
@@ -118,18 +131,50 @@ ui <- tagList(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
+  output$inputtree <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Parsimony" = fileInput('treefile',
+                                   label = '2. Choose your Tree File',
+                                   accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
+           "BEAST Phylogeography" = fileInput('treefile',
+                                              label = '2. Choose your Tree File',
+                                              accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
+           "Create Neighbor-Joining Tree" = fileInput('treefile',
+                          label = '2. Choose your Sequence File',
+                          accept = c('text/fasta', 'text/plain', '.fasta', '.afa', '.fna', '.ffn'))
+    )
+  })
+  
+  
   output$treeuiparams <- renderUI({
     if (is.null(input$tree_input_type))
       return()
 
     switch(input$tree_input_type,
            "Parsimony" = fileInput('csvfile',
-                                     label = '3. Choose your Metadata File',
-                                     accept = c('text/csv', 'text/plain', '.csv', '.txt')),
+                                   label = '3. Choose your Metadata File',
+                                   accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            "BEAST Phylogeography" = sliderInput("threshold",
-                                    label = "3. Probability Threshold",
-                                    min = 0, max = 1, value = 0.9)
+                                                label = "3. Probability Threshold",
+                                                min = 0, max = 1, value = 0.9),
+           "Create Neighbor-Joining Tree" = fileInput('csvfile',
+                                                      label = '3a. Choose your Metadata File',
+                                                      accept = c('text/csv', 'text/plain', '.csv', '.txt'))
            )
+  })
+  
+  output$treerootswitch <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Create Neighbor-Joining Tree" = textInput("rootselect",
+                                                      label = "3b. Accession Number of the Tree Root",
+                                                      value = "e.g. HM045815.1")
+    )
   })
   
   #options(shiny.usecairo = TRUE)
@@ -139,8 +184,9 @@ server <- function(input, output, session) {
       availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "parsimonious")
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       availablecolumns <- listStates(treeFileName = input$treefile$datapath, treeType = "bayesian")
+    } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
+      availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "nj")
     }
-    
   })
   
   output$columnselection <- renderUI({
@@ -223,6 +269,25 @@ server <- function(input, output, session) {
                              treeType = "bayesian")
       # height = paste0(0.75*session$clientData$output_graph_width,"px")
       
+    } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a fasta file."),
+        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
+        if (exists("input$treefile") & exists("input$csvfile")){
+          #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
+          #     "\n3. Please select a different column. This column has all identical values.")
+        }
+      )
+      
+      graph <-  makeTransNet(treeFileName = input$treefile$datapath,
+                             columnSelection = input$columnselection,
+                             # columnSelection = input$columnselection_row_last_clicked,
+                             centralityMetric = input$metricradio,
+                             threshold = input$threshold,
+                             rootSelection = input$rootselect,
+                             treeType = "nj")
+      # height = paste0(0.75*session$clientData$output_graph_width,"px")
+      
     }
     
     
@@ -270,7 +335,6 @@ server <- function(input, output, session) {
   
   
   ## Tree File Preview
-  
   
   output$treepreview <- eventReactive(input$plotbutton, {
     output$treepreview <- renderPlotly({
@@ -325,7 +389,39 @@ server <- function(input, output, session) {
         
         plotly::ggplotly(t1, tooltip = c("label", "colour"))
         
+      } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
+        
+        treepreview <- make_nj_tree(filePath = input$treefile$datapath, accession = input$rootselect)
+        
+        md <- read_csv(input$csvfile$datapath)
+
+        colorby <- input$columnselection
+        
+        t1 <- ggtree(treepreview, ladderize = F) %<+% md +
+          geom_point(aes_string(color = colorby, size = 3)) +
+          geom_text(aes(label = label),
+                    hjust = 0,
+                    position = position_nudge(x = 0.5)) +
+          ggtitle(paste0("Phylogeny of `", input$treefile$name, "`"),
+                  subtitle = "Generated by StrainHub") +
+          scale_fill_brewer(palette="Spectral") +
+          scale_x_continuous(expand = c(.1, .1))
+        
+        plotly::ggplotly(t1, tooltip = c("label", "colour"))
+        
       }
+    })
+  })
+  
+  ## Map Output
+  output$mapoutput <- eventReactive(input$plotbutton, {
+    # validate(
+    #   need(input$treefile != "", "\n1. Please upload a tree file."),
+    #   need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
+    # ),
+    output$mapoutput <- renderLeaflet({
+      make_map(treeFileName = input$treefile$datapath,
+               csvFileName = input$csvfile$datapath)
     })
   })
   
