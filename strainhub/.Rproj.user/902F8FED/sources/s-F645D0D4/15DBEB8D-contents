@@ -103,8 +103,7 @@ ui <- tagList(
              icon = icon("chevron-right", lib = "glyphicon")
              ),
     tabPanel("About",
-             #includeMarkdown("https://github.com/abschneider/transmission_graphs/raw/master/ABOUT.md"),
-             includeMarkdown("https://github.com/supramap/transmission_graphs/raw/master/ABOUT.md"),
+             includeMarkdown("https://github.com/abschneider/StrainHub/raw/master/ABOUT.md"),
              icon = icon("question"))#,
     # tabPanel(title="Standalone",
     #          icon = icon("github"))
