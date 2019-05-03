@@ -78,7 +78,8 @@ ui <- tagList(
                actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
                # div(uiOutput("settings"), style="float:right"),
                br(),
-               includeHTML("footer.html")
+               includeHTML("footer.html"),
+               p("v1.0.0", align = "right") ## Version
              ),
              mainPanel(
                width = 9,

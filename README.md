@@ -1,4 +1,8 @@
 # StrainHub
+[![Version: 1.0.0](https://img.shields.io/badge/version-1.0.0-green.svg)](UPDATES.md)
+[![Version: 1.0.0](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
 Strainhub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. Users also have the option to skip the StrainHub ancestry reconstruction step by generating a maximum clade credibility tree (MCC) through BEAST phylogeography.
 
 <p align="center">
@@ -22,7 +26,7 @@ You'll run phylogeography using BEAST and for that you will only need 1 file to 
 
 For more information, click [here](ABOUT.md).
 
-[Try Out StrainHub Online](https://strainhub.io)
+[Try Out StrainHub Online](http://strainhub.io)
 
 ## Run StrainHub Locally
 To run, download the repository and open the `strainhub/app.R` file and run the following script.
@@ -32,7 +36,7 @@ runApp()
 ```
 ## Authors
 
-<h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br>Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h3>
+<h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br>Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h4>
 
 ## References
 
