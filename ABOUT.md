@@ -30,7 +30,7 @@ To run the entire pipeline, two files will need to be generated.
  
 _Taxa ID with missing data should be excluded prior to the analysis. Order does not matter on both files, the metadata is sorted automatically before mapped into the tree based on the header of the first column of the CSV file (Accession)._
 
-A template for building the metadata file can be downloaded [here](https://github.com/supramap/transmission_graphs/raw/master/data/template.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
+A template for building the metadata file can be downloaded [here](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
 
 ### Example files:
 - [Phylogenetic Tree](https://github.com/abschneider/StrainHub/blob/master/data/example_tree.phy)
