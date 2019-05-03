@@ -1193,7 +1193,7 @@ make_map <- function(treeFileName, csvFileName){
   
   org_dst <- Edge_filtered # Edge_filtered = probability user filtered table 
   
-  latlong <- read.csv('../data/chikv_geo.csv') #User have to input csv table with "Location","Latitude","Longitude" headers.
+  latlong <- read.csv(csvFileName) #User have to input csv table with "Location","Latitude","Longitude" headers.
   
   lat_long = as_tibble(latlong)
   

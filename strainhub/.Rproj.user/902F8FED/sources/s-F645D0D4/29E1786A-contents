@@ -1,0 +1,18 @@
+filePath <- "../data/chikv_westernafrica.aln.fasta"
+accession <- "HM045815.1"
+
+
+values <- read.dna(filePath, format="fasta")
+values_phyDat <- phyDat(values, type="DNA", levels = NULL)
+mt <- modelTest(values_phyDat)
+reducedmt <- mt[c(1,5),c(1,3)] #extracts rows 1 and 5 from modeltest, columns 1 and 3
+maxmt <- reducedmt[which.max(reducedmt$logLik),]
+dna_dist <- dist.ml(values_phyDat, model=maxmt$Model) 
+values_NJ <- bionj(dna_dist)
+plot(values_NJ, main="Neighbor Joining", cex=.6)
+names(values_phyDat) #ID names for outgroup user selection down here:
+tree <- ape::root(values_NJ, out = accession, resolve.root = TRUE)
+rootedTree <- ladderize(tree)
+plot(rootedTree, main="Neighbor Joining ladderized and rooted", cex=.6)
+rootedTree <<- tree
+return(rootedTree)

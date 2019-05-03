@@ -73,7 +73,6 @@ rmarkdown::pandoc_convert("grfile.html", to = "pdf")
 ############################
 ## NJ Tests
 
-
 make_nj_tree(filePath = "../data/chikv_westernafrica.aln.fasta", accession = "HM045815.1")
 
 makeTransNet(treeFileName = "../data/chikv_westernafrica.aln.fasta",
@@ -88,4 +87,4 @@ makeTransNet(treeFileName = "../data/chikv_westernafrica.aln.fasta",
 ## Map Tests
 
 make_map(treeFileName = "../data/chikv_westernafrica.nwk.phy",
-         csvFileName = "../data/chikv_westernafrica_metadata.csv")
+         csvFileName = "../data/chikv_geo.csv")
