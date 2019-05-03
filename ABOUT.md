@@ -47,6 +47,7 @@ _The threshold set by the user is utilized to filter out any pair of nodes withi
 ### Example file:
 - [MCC Tree](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/batRABV.mcc.tree)
 
+Note: To download example files, right click on the link and save file.
 
 Metrics
 -----------------
