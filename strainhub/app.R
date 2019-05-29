@@ -1,6 +1,6 @@
 ## StrainHub
-# This is a Shiny web application. You can run the application by clicking
-# the 'Run App' button above.
+# This is a Shiny web application.
+# You can run the application by clicking the 'Run App' button above.
 ##
 
 ## Shiny Web Application for Transmission Graphs - StrainHub
@@ -8,42 +8,56 @@ library(shiny)
 
 ## Load libraries for BEAST Parser
 # library(OutbreakTools)
-library(treeio)
-library(ggplot2)
 library(adegenet)
 library(ade4)
 library(knitr)
-library(dplyr)
+#library(dplyr)
 
 ## Load in libraries for NJ tree builder
-library(phangorn)
-library(seqinr)
+#library(phangorn)
+#library(seqinr)
 
 ## Load in libraries for map generation
-library(leaflet)
-library(geosphere)
+#library(leaflet)
+#library(geosphere)
 
 ## Load other libraries
 library(shinythemes)
 library(readr)
-library(ape)
-library(castor)
-library(visNetwork)
-library(hashmap)
-library(plyr)
+#library(ape)
+#library(castor)
+#library(hashmap)
+#library(plyr)
 library(network)
+library(visNetwork)
 library(igraph)
-library(data.table)
+#library(data.table)
 library(DT)
-library(magrittr)
+#library(magrittr)
 library(htmlwidgets)
 library(markdown)
 library(rmarkdown)
-library(ggtree)
+#library(phytools)###
+#library(ggtree)###
+#library(treeio)###
+library(ggplot2)
 library(plotly)
 library(shinyjqui)
 library(shinycssloaders)
 source("strainhub_functions.R")
+
+## Load in last
+library(castor)
+library(hashmap)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(magrittr)
+library(leaflet)
+library(geosphere)
+library(seqinr)
+library(phangorn)
+library(ape)
 
 # Define UI for application
 ui <- tagList(
@@ -62,6 +76,7 @@ ui <- tagList(
                uiOutput("inputtree"),
                uiOutput("treeuiparams"),
                uiOutput("treerootswitch"),
+               uiOutput("geodataswitch"),
                # fileInput('csvfile',
                #           label = '2. Choose your Metadata File',
                #           accept = c('text/csv', 'text/plain', '.csv', '.txt')),
@@ -177,6 +192,17 @@ server <- function(input, output, session) {
     )
   })
   
+  output$geodataswitch <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Create Neighbor-Joining Tree" = fileInput('geodatafile',
+                                                      label = '3c. Choose your Geodata File',
+                                                      accept = c('text/csv', 'text/plain', '.csv', '.txt'))
+    )
+  })
+  
   #options(shiny.usecairo = TRUE)
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
@@ -280,6 +306,7 @@ server <- function(input, output, session) {
       )
       
       graph <-  makeTransNet(treeFileName = input$treefile$datapath,
+                             csvFileName = input$csvfile$datapath,
                              columnSelection = input$columnselection,
                              # columnSelection = input$columnselection_row_last_clicked,
                              centralityMetric = input$metricradio,
@@ -391,7 +418,10 @@ server <- function(input, output, session) {
         
       } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
         
-        treepreview <- make_nj_tree(filePath = input$treefile$datapath, accession = input$rootselect)
+        # treepreview <- make_nj_tree(filePath = input$treefile$datapath, accession = input$rootselect)
+        treepreview <- NJ_build_collapse(filePath = input$treefile$datapath,
+                                         accession = input$rootselect,
+                                         bootstrapValue = 80)
         
         md <- read_csv(input$csvfile$datapath)
 
@@ -415,14 +445,36 @@ server <- function(input, output, session) {
   
   ## Map Output
   output$mapoutput <- eventReactive(input$plotbutton, {
-    # validate(
-    #   need(input$treefile != "", "\n1. Please upload a tree file."),
-    #   need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
-    # ),
-    output$mapoutput <- renderLeaflet({
-      make_map(treeFileName = input$treefile$datapath,
-               csvFileName = input$csvfile$datapath)
-    })
+    if (input$tree_input_type == "Create Neighbor-Joining Tree"){
+      rootedTree <- NJ_build_collapse(filePath = input$csvfile$datapath,
+                                      accession = input$rootselect,
+                                      bootstrapValue = 80)
+      
+      parse_metaandtree(treePath = rootedTree,
+                        metadataPath = input$csvfile$datapath)
+      
+      parsimony_ancestral_reconstruction(accessioncharacter = accessioncharacter,
+                                         country = country,
+                                         characterlabels = characterlabels,
+                                         rootedTree = rootedTree)
+      
+      output$mapoutput <- renderLeaflet({
+        make_nj_map(filePath = input$geodata$datapath,
+                    transmissionpath = Edge_list,
+                    linecolor = "red",
+                    circlecolor = "grey")
+      })
+    } else {
+      # validate(
+      #   need(input$treefile != "", "\n1. Please upload a tree file."),
+      #   need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
+      # ),
+      output$mapoutput <- renderLeaflet({
+        make_map(treeFileName = input$treefile$datapath,
+                 csvFileName = input$csvfile$datapath)
+      })
+    }
+    
   })
   
   
