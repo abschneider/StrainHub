@@ -5,6 +5,6 @@ account: colbyford
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 907882
-bundleId: 2058706
+bundleId: 2121078
 url: https://colbyford.shinyapps.io/StrainHub-Beta/
-when: 1556919559.11113
+when: 1559310408.7251
