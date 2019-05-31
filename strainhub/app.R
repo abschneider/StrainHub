@@ -187,7 +187,7 @@ server <- function(input, output, session) {
     
     switch(input$tree_input_type,
            "Create Neighbor-Joining Tree" = textInput("rootselect",
-                                                      label = "3b. Accession Number of the Tree Root",
+                                                      label = "3b. Taxa ID for Rooting Tree",
                                                       value = "e.g. HM045815.1")
     )
   })
@@ -377,6 +377,8 @@ server <- function(input, output, session) {
         #colorby <- availablecolumns %>%
         colorby <- input$columnselection
         
+        import::from(ggtree, `%<+%`, ggtree)
+        
         t1 <- ggtree(treepreview, ladderize = F) %<+% md +
           geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
@@ -404,6 +406,8 @@ server <- function(input, output, session) {
         
         # annotationdf <- cbind(taxa = treepreview$tip.label, annotationdf)
         
+        import::from(ggtree, `%<+%`, ggtree)
+        
         t1 <- ggtree(treepreview, ladderize = T) %<+% treepreview@data +
           geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
@@ -426,6 +430,8 @@ server <- function(input, output, session) {
         md <- read_csv(input$csvfile$datapath)
 
         colorby <- input$columnselection
+        
+        import::from(ggtree, `%<+%`, ggtree)
         
         t1 <- ggtree(treepreview, ladderize = F) %<+% md +
           geom_point(aes_string(color = colorby, size = 3)) +
