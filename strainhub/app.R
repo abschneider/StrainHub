@@ -452,20 +452,21 @@ server <- function(input, output, session) {
   ## Map Output
   output$mapoutput <- eventReactive(input$plotbutton, {
     if (input$tree_input_type == "Create Neighbor-Joining Tree"){
-      rootedTree <- NJ_build_collapse(filePath = input$csvfile$datapath,
+      rootedTree <- NJ_build_collapse(filePath = input$treefile$datapath,
                                       accession = input$rootselect,
                                       bootstrapValue = 80)
       
-      parse_metaandtree(treePath = rootedTree,
-                        metadataPath = input$csvfile$datapath)
+      parsedInfo <- parse_metaandtree(treePath = rootedTree,
+                                      metadataPath = input$csvfile$datapath)
+                        
       
-      parsimony_ancestral_reconstruction(accessioncharacter = accessioncharacter,
-                                         country = country,
-                                         characterlabels = characterlabels,
-                                         rootedTree = rootedTree)
+      Edge_list <- parsimony_ancestral_reconstruction(accessioncharacter = parsedInfo$accessioncharacter,
+                                                      country = parsedInfo$country,
+                                                      characterlabels = parsedInfo$characterlabels,
+                                                      rootedTree = rootedTree)
       
       output$mapoutput <- renderLeaflet({
-        make_nj_map(filePath = input$geodata$datapath,
+        make_nj_map(filePath = input$geodatafile$datapath,
                     transmissionpath = Edge_list,
                     linecolor = "red",
                     circlecolor = "grey")

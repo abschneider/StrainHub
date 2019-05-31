@@ -1102,12 +1102,18 @@ parse_metaandtree <- function(treePath, metadataPath){
   sortingdata <- merge(dataoriginal, sortingtable, by = "Accession")
   data <- sortingdata[order(sortingdata$ID),]
   listofcolumns <- as.list(data)
-  accessioncharacter <<- as.character(listofcolumns$Accession) # Transforms accession from Factor into character
-  country <<- as.numeric(listofcolumns$Country) # Transforms metadata state country from Factor into numeric
+  accessioncharacter <- as.character(listofcolumns$Accession) # Transforms accession from Factor into character
+  country <- as.numeric(listofcolumns$Country) # Transforms metadata state country from Factor into numeric
   names(country) <- accessioncharacter # Assign accession ID reference to the variable country
   characterlabels1 <- unique(listofcolumns$Country) #extract unique labels from Country column
-  characterlabels <<- sort(as.character(characterlabels1)) #sort and create list of characters from previous vector - has to sort to match the order from the $country as when it becomes numeric is transformed to numbers in alphabetical order.
-}
+  characterlabels <- sort(as.character(characterlabels1)) #sort and create list of characters from previous vector - has to sort to match the order from the $country as when it becomes numeric is transformed to numbers in alphabetical order.
+
+  parsedInfo <- list(accessioncharacter = accessioncharacter,
+                     country = country,
+                     characterlabels = characterlabels)
+  return(parsedInfo)
+  
+  }
 
 parsimony_ancestral_reconstruction <- function(accessioncharacter, country, characterlabels, rootedTree) {
   
@@ -1191,10 +1197,12 @@ parsimony_ancestral_reconstruction <- function(accessioncharacter, country, char
   #in the phylogenetic tree;
   dat <- data.frame(from = sourceList, to = targetList)
   #counts the frequency of a specific state change occurring
-  edges_file <<- plyr::count(dat)
+  #edges_file <<- plyr::count(dat)
+  edges_file <- plyr::count(dat)
   names(edges_file)[names(edges_file) == "freq"] <- "value"
   
   # Extract the selected metadata state label from the data
+  #metastates <<- characterlabels
   metastates <<- characterlabels
   
   # Create table for map from edge list 
