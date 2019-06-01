@@ -38,6 +38,8 @@ runApp()
 
 <h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br>Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h4>
 
+[How To Cite](ABOUT.md#how-to-cite)
+
 ## References
 
 Adriano de Bernardi Schneider, Arboviruses: The Hidden Path of an Imminent Threat, University of North Carolina at Charlotte, 2018, ProQuest (10979260). ISBN: 9780438668379 (https://pqdtopen.proquest.com/pubnum/10979260.html)
