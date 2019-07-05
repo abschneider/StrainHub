@@ -39,6 +39,13 @@ source("strainhub_functions.R")
 # Define UI for application
 ui <- tagList(
   # tags$head(tags$style(type="text/css", "html, body {width: 100%; height: 100%; overflow: hidden}")),
+  tags$head(
+    tags$style(HTML("
+      .shiny-output-error-validation {
+        color: #E74C3C;
+      }
+    "))
+  ),
   navbarPage(
     theme = shinytheme("flatly"),
     # theme = "uncc.css",
@@ -79,7 +86,7 @@ ui <- tagList(
                # div(uiOutput("settings"), style="float:right"),
                br(),
                includeHTML("footer.html"),
-               p("v1.0.0", align = "right") ## Version
+               p("v1.0.1", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -136,8 +143,15 @@ server <- function(input, output, session) {
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
     if(input$tree_input_type == "Parsimony"){
+      validate(
+        need(input$treefile != "", "\n2. Please upload a tree file."),
+        need(input$csvfile != "",  "\n3. Please upload the accompanying metadata file.")
+      )
       availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "parsimonious")
     } else if(input$tree_input_type == "BEAST Phylogeography"){
+      validate(
+        need(input$treefile != "", "\n2. Please upload a tree file.")
+      )
       availablecolumns <- listStates(treeFileName = input$treefile$datapath, treeType = "bayesian")
     }
     
@@ -187,13 +201,13 @@ server <- function(input, output, session) {
   graph <- eventReactive(input$plotbutton, {
     if(input$tree_input_type == "Parsimony"){
       validate(
-        need(input$treefile != "", "\n1. Please upload a tree file."),
-        need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
-        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
+        need(input$treefile != "", "\n2. Please upload a tree file."),
+        need(input$csvfile != "",  "\n3. Please upload the accompanying metadata file."),
+        need(input$columnSelection != "",  "\n4. List the states and pick one to use."),
         if (exists("input$treefile") & exists("input$csvfile")){
           need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
                                                                   csvFileName = input$csvfile$datapath),
-               "\n3. Please select a different column. This column has all identical values.")
+               "\n4. Please select a different state. This column has all identical values.")
         }
       )
       
@@ -207,8 +221,8 @@ server <- function(input, output, session) {
       
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
-        need(input$treefile != "", "\n1. Please upload a tree file."),
-        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
+        need(input$treefile != "", "\n2. Please upload a tree file."),
+        need(input$columnSelection != "",  "\n4. List the states and pick one to use."),
         if (exists("input$treefile") & exists("input$csvfile")){
           #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
           #     "\n3. Please select a different column. This column has all identical values.")
