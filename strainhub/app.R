@@ -7,7 +7,6 @@
 library(shiny)
 
 ## Load libraries for BEAST Parser
-# library(OutbreakTools)
 library(treeio)
 library(ggplot2)
 library(adegenet)
@@ -158,7 +157,9 @@ server <- function(input, output, session) {
   })
   
   output$columnselection <- renderUI({
-    selectInput("columnselection", "Choose your State", choices = availablecolumns()$`Column`)
+    selectInput("columnselection",
+                "Choose your State",
+                choices = availablecolumns()$`Column`)
   })
   
   # observe({
@@ -203,7 +204,7 @@ server <- function(input, output, session) {
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
         need(input$csvfile != "",  "\n3. Please upload the accompanying metadata file."),
-        need(input$columnSelection != "",  "\n4. List the states and pick one to use."),
+        # need(is.na(input$columnSelection),  "\n4. List the states and pick one to use."),
         if (exists("input$treefile") & exists("input$csvfile")){
           need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
                                                                   csvFileName = input$csvfile$datapath),
@@ -222,7 +223,7 @@ server <- function(input, output, session) {
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(input$columnSelection != "",  "\n4. List the states and pick one to use."),
+        # need(input$columnSelection,  "\n4. List the states and pick one to use."),
         if (exists("input$treefile") & exists("input$csvfile")){
           #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
           #     "\n3. Please select a different column. This column has all identical values.")
@@ -314,7 +315,6 @@ server <- function(input, output, session) {
         
       } else if(input$tree_input_type == "BEAST Phylogeography"){
         
-        # treepreview <- OutbreakTools::read.annotated.nexus(input$treefile$datapath)
         treepreview <- treeio::read.beast(input$treefile$datapath)
         
         colorby <- input$columnselection
