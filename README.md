@@ -26,7 +26,6 @@ You'll run phylogeography using BEAST and for that you will only need 1 file to 
 
 For more information, click [here](ABOUT.md).
 
-[Try Out StrainHub Online](http://strainhub.io)
 [![StrainHub.io](https://img.shields.io/badge/Try%20Out%20StrainHub%20Online-StrainHub.io-blue.svg?logo=r&style=for-the-badge&labelColor=2C3E50&color=3498DB)](https://strainhub.io)
 
 ## Run StrainHub Locally
