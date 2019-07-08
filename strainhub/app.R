@@ -157,9 +157,9 @@ server <- function(input, output, session) {
   })
   
   output$columnselection <- renderUI({
-    selectInput("columnselection",
-                "Choose your State",
-                choices = availablecolumns()$`Column`)
+    selectizeInput("columnselection",
+                   "Choose your State",
+                   choices = availablecolumns()$`Column`)
   })
   
   # observe({
@@ -204,7 +204,8 @@ server <- function(input, output, session) {
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
         need(input$csvfile != "",  "\n3. Please upload the accompanying metadata file."),
-        # need(is.na(input$columnSelection),  "\n4. List the states and pick one to use."),
+        #browser(),
+        need(!is.null(input$columnselection),  "\n4. Click `List States` and select the one to use."),
         if (exists("input$treefile") & exists("input$csvfile")){
           need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
                                                                   csvFileName = input$csvfile$datapath),
@@ -212,6 +213,8 @@ server <- function(input, output, session) {
         }
       )
       
+      #req(input$columnSelection)
+      #browser()
       graph <-  makeTransNet(treeFileName = input$treefile$datapath,
                              csvFileName = input$csvfile$datapath,
                              columnSelection = input$columnselection,
@@ -223,7 +226,7 @@ server <- function(input, output, session) {
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
-        # need(input$columnSelection,  "\n4. List the states and pick one to use."),
+        need(!is.null(input$columnselection),  "\n4. Click `List States` and select the one to use."),
         if (exists("input$treefile") & exists("input$csvfile")){
           #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
           #     "\n3. Please select a different column. This column has all identical values.")
