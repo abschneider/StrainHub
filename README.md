@@ -1,6 +1,6 @@
-# StrainHub
+<h1 style="text-align: center;"><span style="background-color: #2c3e50; color: #ffffff; font-family: 'Lato', sans-serif;"> StrainHub </span></h1>
 
-[![Version: 1.0.1](https://img.shields.io/badge/version-1.0.0-green.)](UPDATES.md)
+[![Version: 1.0.1](https://img.shields.io/badge/version-1.0.0-green.svg)](UPDATES.md)
 [![Version: 1.0.0](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -27,6 +27,7 @@ You'll run phylogeography using BEAST and for that you will only need 1 file to 
 For more information, click [here](ABOUT.md).
 
 [Try Out StrainHub Online](http://strainhub.io)
+[![StrainHub.io](https://img.shields.io/badge/Try%20Out%20StrainHub%20Online-StrainHub.io-blue.svg?logo=r&style=for-the-badge&labelColor=2C3E50&color=3498DB)](https://strainhub.io)
 
 ## Run StrainHub Locally
 
@@ -36,6 +37,9 @@ To run, download the repository and open the `strainhub/app.R` file and run the 
 library(shiny)
 runApp()
 ```
+
+If you need to install all the required packages to run StrainHub, you can do so by running the `strainhub/install_packages.R` script.
+
 
 ## Authors
 
