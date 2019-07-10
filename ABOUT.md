@@ -19,7 +19,7 @@ About StrainHub
 StrainHub is designed as a web-based software to generate pathogen transmission networks and associated metrics from a combination of a phylogenetic tree and a metadata associated. The software enables the construction of the network by either  mapping the metadata onto the tree and performing a parsimony ancestry reconstruction step to create links between the associated metadata or parsing a BEAST phylogeography maximum clade credibility tree.
 
 <p align="center">
-  <img src="https://github.com/abschneider/StrainHub/blob/master/host_network_example.png" alt="Sample Host Transmission Network" width="350"/>
+  <img src="host_network_example.png" alt="Sample Host Transmission Network" width="350"/>
 </p>
 
 Getting Started
