@@ -49,23 +49,22 @@ If you need to install all the required packages to run StrainHub, you can do so
 Text Citation:
 
 ```
-Adriano de Bernardi Schneider, Colby T Ford, Reilly Hostager, John Williams, Michael Cioce, Ümit V. Çatalyürek, Joel O Wertheim, Daniel Janies
-bioRxiv 650283; doi: https://doi.org/10.1101/650283
+Adriano de Bernardi Schneider, Colby T Ford, Reilly Hostager, John Williams, Michael Cioce, Ümit V Çatalyürek, Joel O Wertheim, Daniel Janies, StrainHub: A phylogenetic tool to construct pathogen transmission networks, Bioinformatics, , btz646, https://doi.org/10.1093/bioinformatics/btz646
 ```
 
 BibTex Citation:
 
 ```
-@article {de Bernardi Schneider650283,
-    author = {de Bernardi Schneider, Adriano and Ford, Colby T and Hostager, Reilly and Williams, John and Cioce, Michael and {\c C}ataly{\"u}rek, {\"U}mit V. and Wertheim, Joel O and Janies, Daniel},
-    title = {StrainHub: A phylogenetic tool to construct pathogen transmission networks},
-    elocation-id = {650283},
+@article{10.1093/bioinformatics/btz646,
+    author = {de Bernardi Schneider, Adriano and Ford, Colby T and Hostager, Reilly and Williams, John and Cioce, Michael and Çatalyürek, Ümit V and Wertheim, Joel O and Janies, Daniel},
+    title = "{StrainHub: A phylogenetic tool to construct pathogen transmission networks}",
+    journal = {Bioinformatics},
     year = {2019},
-    doi = {10.1101/650283},
-    publisher = {Cold Spring Harbor Laboratory},
-    abstract = {In epidemiology of infectious diseases, networks have been used to reconstruct contacts among patients. Summarizing networks using pathogen metadata (e.g., host species and place of isolation) and a phylogenetic tree is a nascent approach. In this paper, we introduce a tool for reconstructing transmission networks in arbitrary space from phylogenetic information and metadata. Our goals are to provide a means of deriving new insights and infection control strategies based on the dynamics of the pathogen derived from networks and metrics. We created a web-based application, called StrainHub, in which a user can input a phylogenetic tree along with characters derived from metadata using their preferred tree search method. StrainHub generates a transmission network for the user metadata based on character state changes mapped on the phylogenetic tree. The user has the option to calculate centrality metrics on the nodes including betweenness, closeness, degree, and a new metric, source/hub ratio. The outputs include the network with values for metrics on its nodes and the tree with characters reconstructed. All of these results can be exported for further analysis.},
-    URL = {https://www.biorxiv.org/content/early/2019/05/31/650283},
-    eprint = {https://www.biorxiv.org/content/early/2019/05/31/650283.full.pdf},
-    journal = {bioRxiv}
+    month = {08},
+    abstract = "{In exploring the epidemiology of infectious diseases, networks have been used to reconstruct contacts among individuals and/or populations. Summarizing networks using pathogen metadata (e.g., host species and place of isolation) and a phylogenetic tree is a nascent, alternative approach. In this paper, we introduce a tool for reconstructing transmission networks in arbitrary space from phylogenetic information and metadata. Our goals are to provide a means of deriving new insights and infection control strategies based on the dynamics of the pathogen lineages derived from networks and centrality metrics. We created a web-based application, called StrainHub, in which a user can input a phylogenetic tree based on genetic or other data along with characters derived from metadata using their preferred tree search method. StrainHub generates a transmission network based on character state changes in metadata, such as place or source of isolation, mapped on the phylogenetic tree. The user has the option to calculate centrality metrics on the nodes including betweenness, closeness, degree, and a new metric, the source/hub ratio. The outputs include the network with values for metrics on its nodes and the tree with characters reconstructed. All of these results can be exported for further analysis.strainhub.io and https://github.com/abschneider/StrainHub}",
+    issn = {1367-4803},
+    doi = {10.1093/bioinformatics/btz646},
+    url = {https://doi.org/10.1093/bioinformatics/btz646},
+    eprint = {http://oup.prod.sis.lan/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btz646/29171171/btz646.pdf},
 }
 ```
