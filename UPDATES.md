@@ -1,5 +1,10 @@
 # StrainHub
 ## Release Updates
+
+### v1.0.2
+- Ability to export networks as HTML or PNG
+- Ability to turn off directionality (arrows) on edges
+
 ### v1.0.0
 _First public release!_
 - Tree Files Accepted:

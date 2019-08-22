@@ -21,11 +21,12 @@ graph <- makeTransNet(treeFileName = "../data/chikv_westernafrica.phy",
                       treeType = "parsimonious")
 print(graph)
 
+## Save Graph
 
+library(rbokeh)
+widget2png(graph, "temp.png")
 
 ########################
-
-treepreview <- OutbreakTools::read.annotated.nexus("../data/batRABV.mcc.tree")
 
 #colorby <- treepreview$root.annotation[["state"]]
 
