@@ -7,7 +7,6 @@
 library(shiny)
 
 ## Load libraries for BEAST Parser
-# library(OutbreakTools)
 library(adegenet)
 library(ade4)
 library(knitr)
@@ -35,6 +34,7 @@ library(igraph)
 library(DT)
 #library(magrittr)
 library(htmlwidgets)
+library(webshot)
 library(markdown)
 library(rmarkdown)
 #library(phytools)###
@@ -99,28 +99,36 @@ ui <- tagList(
                             selected = 1),
                br(),
                actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
-               # div(uiOutput("settings"), style="float:right"),
+               div(uiOutput("settings"), style="float:right"),
                br(),
                includeHTML("footer.html"),
                p("v1.0.1", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
-               tabsetPanel(
+               tabsetPanel(id = "toptabs",
                  tabPanel("Network Plot",
-                          # div(downloadButton("exportplot", "Export Plot", class = "btn-outline-primary"), style="float:right"),
+                          div(downloadButton("exportplothtml",
+                                             "Export as HTML",
+                                             class = "btn-outline-primary"),
+                              style="float:right"),
+                          div(downloadButton("exportplotpng",
+                                             "Export as PNG",
+                                             class = "btn-outline-secondary"),
+                              style="float:right"),
+                          br(),
                           # visNetworkOutput("graphplot", height = "auto")
-                          jqui_resizable(visNetworkOutput("graphplot", height = "750px")) %>% withSpinner()
+                          jqui_resizable(visNetworkOutput("graphplot", height = "700px")) %>% withSpinner()
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
                           #plotlyOutput("treepreview")
-                          jqui_resizable(plotlyOutput("treepreview", height = "750px")) %>% withSpinner()
+                          jqui_resizable(plotlyOutput("treepreview", height = "700px")) %>% withSpinner()
                  ),
                  tabPanel("Map",
                           div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
                           br(),
-                          jqui_resizable(leafletOutput("mapoutput", height = "750px")) %>% withSpinner()
+                          jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner()
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
@@ -163,6 +171,14 @@ server <- function(input, output, session) {
     )
   })
   
+  
+  observe({
+    req(input$tree_input_type)
+    if (input$tree_input_type != "BEAST Phylogeography") {
+      hideTab(inputId = "toptabs", target = "Map")
+    }
+    else showTab(inputId = "toptabs", target = "Map")
+  })
   
   output$treeuiparams <- renderUI({
     if (is.null(input$tree_input_type))
@@ -242,18 +258,21 @@ server <- function(input, output, session) {
   #                     choices = availablecolumns()$Column)
   # })
   
-  # output$settings <- renderUI({
-  #   actionButton("settings", label = "", icon = icon("cog", lib = "font-awesome"), class = "btn-warning")
-  # })
-  # 
-  # observeEvent(input$settings, {
-  #   showModal(modalDialog(
-  #     title = "Settings",
-  #     size = "s",
-  #     easyClose = TRUE,
-  #     numericInput("plotheight", label = "Plot Height", value = 750, min = 500, max = 2000, step = 1)
-  #   ))
-  # })
+  output$settings <- renderUI({
+    actionButton("settings", label = "", icon = icon("cog", lib = "font-awesome"), class = "btn-warning")
+  })
+
+  observeEvent(input$settings, {
+    showModal(modalDialog(
+      title = "Settings",
+      size = "s",
+      easyClose = TRUE,
+      radioButtons("arrowedges",
+                   label = "Edge Style", 
+                   choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
+                   selected = "TRUE")
+    ))
+  })
   
   ## Network Viz
   graph <- eventReactive(input$plotbutton, {
@@ -322,42 +341,65 @@ server <- function(input, output, session) {
   })
   
   # output$graphplot <- renderPlot({print(graph())})
-  output$graphplot <- renderVisNetwork({print(graph())})
+  output$graphplot <- renderVisNetwork({print(graph() %>%
+                                                visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+                                                                                 scaleFactor = 0.75))))})
+  # output$graphplot <- renderVisNetwork({print(graph() %>% 
+  #                                               visExport(type = "png",
+  #                                                         background = "#00FFFFFF",
+  #                                                         style = 'class = "btn-outline-primary"'))})
   
   
   ## Export Plot
-  output$exportplot <- downloadHandler(
-    filename =  function() {
-      paste0(input$treefile, "_StrainHub_network.html")
+  
+  output$exportplothtml <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_network.png")
     },
-    # content is a function with argument file. content writes the plot to the device
-    # content = function(file){
-    #   visNetwork::visSave(graph(), file) ## Works
-    #   #visNetwork::visExport(graph(), type = "pdf", name = file)
-    #   # ggsave(file, plot = graph(), device = "pdf")
-    #   # grDevices::pdf(file = file)
-    #   # print(graph())
-    #   # dev.off()
-    # }
-    
-    content = function(file){
-      # cairo_pdf(filename = file,
-      #           width = 18,
-      #           height = 10,
-      #           pointsize = 12,
-      #           family = "sans",
-      #           bg = "transparent",
-      #           antialias = "subpixel",
-      #           fallback_resolution = 600)
-      # 
-      # #visExport(graph(), type = "pdf")
-      # 
+    content = function(file) {
+      htmlwidgets::saveWidget(graph() %>%
+                                visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+                                                                 scaleFactor = 0.75))) %>% 
+                                visInteraction(navigationButtons = FALSE) %>%
+                                visOptions(width = 1920,
+                                           height = 1080,
+                                           autoResize = TRUE),
+                              # title = paste0(input$treefile, "- Network Generated by StrainHub"),
+                              file = file)
+    }
+  )
+  
+  output$exportplotpng <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_network.png")
+    },
+    content = function(file) {
+      #write.csv(read.csv(paste0(input$treefile$datapath,"_StrainHub_metrics.csv")), file, row.names = FALSE)
+      
+      htmlwidgets::saveWidget(graph() %>%
+                                visInteraction(navigationButtons = FALSE) %>%
+                                visOptions(width = 1920,
+                                           height = 1080,
+                                           autoResize = TRUE),
+                              # title = paste0(input$treefile, "- Network Generated by StrainHub"),
+                              file = "temp.html")
+      
+      
+      # visNetwork::visSave(graph(), "temp.html")
+      webshot::webshot("temp.html",
+                       file,
+                       #vwidth = 992,
+                       #vheight = 744,
+                       vwidth = 1920,
+                       vheight = 1080,
+                       zoom = 10,
+                       delay = 0)
+      
+      
+      # png(filename = file)
+      # plot(graph)
       # dev.off()
-      visSave(graph(), file = file, background = "transparent")
-      rmarkdown::pandoc_convert(file, to = "pdf")
-    },
-    contentType = "application/pdf"
-    
+    }
   )
   
   
@@ -393,7 +435,6 @@ server <- function(input, output, session) {
         
       } else if(input$tree_input_type == "BEAST Phylogeography"){
         
-        # treepreview <- OutbreakTools::read.annotated.nexus(input$treefile$datapath)
         treepreview <- treeio::read.beast(input$treefile$datapath)
         
         colorby <- input$columnselection

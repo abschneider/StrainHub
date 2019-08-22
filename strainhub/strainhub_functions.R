@@ -631,49 +631,6 @@ makeTransNet <- function(treeFileName, csvFileName = NULL, columnSelection, cent
                                       vertices = nodes)
   } else if(treeType == "bayesian"){
     ## read annotated tree from Nexus file
-    # tree <- read.annotated.nexus('/Users/schneider/Documents/BEAST_tutorials/Parser/batRABV.mcc.tree')
-    # tree <- OutbreakTools::read.annotated.nexus(treeFileName)
-    # 
-    # ## ladderize the tree
-    # ladderized <- ape::ladderize(tree)
-    # 
-    # ## this tree has annotations##
-    # names(ladderized)
-    # class(ladderized$annotations)
-    # length(ladderized$annotations)
-    # 
-    # ## for each edge (each edge is identified by a terminal node), we have:
-    # ladderized$annotations[[1]]
-    # names(ladderized$annotations[[1]])
-    # 
-    # ## extract rates from annotations
-    # ## state.rates <- unlist(sapply(ladderized$annotations, function(e) e$state.rate_median))
-    # ## host.rates <- unlist(sapply(ladderized$annotations, function(e) e$host.rate_median))
-    # # state <- unlist(sapply(ladderized$annotations, function(e) e$state))
-    # # stateprob <- unlist(sapply(ladderized$annotations, function(e) e$state.prob))
-    # state <- unlist(sapply(ladderized$annotations, function(e) e[[columnSelection]]))
-    # columnSelection.prob <- paste0(columnSelection, ".prob") ## Get probability version of the state
-    # stateprob <- unlist(sapply(ladderized$annotations, function(e) e[[columnSelection.prob]]))
-    # 
-    # ## plot tree, show median rates as colors (https://www.rdocumentation.org/packages/adegenet/versions/2.0.1/topics/Auxiliary%20functions)
-    # ## plot(ladderized, show.tip=FALSE, edge.col=num2col(state.rates, col.pal=funky), main="State rates")
-    # ## plot(ladderized, show.tip=FALSE, edge.col=num2col(host.rates, col.pal=seasun), main="Host rates")
-    # 
-    # ## Tree edges - relationship between nodes
-    # tree.edges = ladderized$edge
-    # 
-    # ## Rename edges with state (https://csgillespie.github.io/efficientR/dplyr.html / https://r4ds.had.co.nz/ )
-    # 
-    # tree.edges2 = as_tibble(tree.edges)
-    # state_tib = tibble(
-    #   State = state
-    # ) %>% 
-    #   mutate(ind = 1:nrow(.))
-    # 
-    # stateprob_tib = tibble(
-    #   Stateprob = stateprob
-    # ) %>% 
-    #   mutate(ind = 1:nrow(.))
     tree <- treeio::read.beast(treeFileName)
     
     state <- tree@data[[columnSelection]]
@@ -1028,6 +985,8 @@ makeTransNet <- function(treeFileName, csvFileName = NULL, columnSelection, cent
   }
   
   return(graph)
+  ## For export functionality, use:   (Bad quality)
+  # return(graph %>% visExport(type = "png", background = "#00FFFFFF", style = 'class = "btn-outline-primary"'))
 }
 
 make_nj_tree <- function(filePath, accession){
