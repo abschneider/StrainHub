@@ -395,10 +395,9 @@ getMetadata <- function(fileName) {
 #   return(chardf)
 # }
 
-listStates <- function(treedata, metadata = NULL, treeType = "parsimonious"){
+listStates <- function(treeFileName = NULL, csvFileName = NULL, treeType = "parsimonious"){
   if(treeType == "parsimonious"){
-    # dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
-    dataoriginal <- metadata
+    dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
     
     listofcolumns <- data.frame(`Index` = 1:length(colnames(dataoriginal)),
                                 `Column` = colnames(dataoriginal))
@@ -409,9 +408,8 @@ listStates <- function(treedata, metadata = NULL, treeType = "parsimonious"){
     #                             `Column` = names(as.list(dataoriginal)))
   } else if(treeType == "bayesian"){
     ## read annotated tree from Nexus file
-    # tree <- read.annotated.nexus(treeFileName) # Don't use
-    # tree <- treeio::read.beast(treeFileName)
-    tree <- treedata
+    # tree <- read.annotated.nexus(treeFileName)
+    tree <- treeio::read.beast(treeFileName)
     
     # ## ladderize the tree
     # ladderized <- ladderize(tree)
@@ -426,8 +424,7 @@ listStates <- function(treedata, metadata = NULL, treeType = "parsimonious"){
     listofcolumns$`Index` <- 1:nrow(listofcolumns)
     listofcolumns <- listofcolumns[c("Index","Column")]
   } else if(treeType == "nj"){
-    # dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
-    dataoriginal <- metadata
+    dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
     
     listofcolumns <- data.frame(`Index` = 1:length(colnames(dataoriginal)),
                                 `Column` = colnames(dataoriginal))
@@ -437,12 +434,10 @@ listStates <- function(treedata, metadata = NULL, treeType = "parsimonious"){
   return(listofcolumns)
 }
 
-getUsableColumns <- function(treedata, metadata){
-  # nexusTree2 <- read.tree(treeFileName) #imports file in newick format instead of nexus.
-  nexusTree2 <- treedata
+getUsableColumns <- function(treeFileName, csvFileName){
+  nexusTree2 <- read.tree(treeFileName) #imports file in newick format instead of nexus.
   
-  # dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
-  dataoriginal <- metadata
+  dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
   
   sortingtable <- as.data.frame(nexusTree2$tip.label) # Takes Tip Label information from Newick tree and transforms into a table, add ID to it and basically reorders the CSV metadata frame to match the Newick file. 
   sortingtable <- tibble::rowid_to_column(sortingtable, "N_ID") ## Was "ID"
@@ -511,7 +506,7 @@ getUsableColumns <- function(treedata, metadata){
 #'   $success - a logical vector of length one that says whether the process was a success or not
 #'############################
 
-makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityMetric, threshold = 0.9, treeType = "parsimonious", rootSelection = NULL){
+makeTransNet <- function(treeFileName, csvFileName = NULL, columnSelection, centralityMetric, threshold = 0.9, treeType = "parsimonious", rootSelection = NULL){
   
   if(treeType == "parsimonious"){
     # fileName <- readline(prompt = "Type in the full path to the nexus file you want to read in: ")
@@ -525,11 +520,9 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     #   characterIndex <- as.numeric(charIndex) # Transforms the input from string to numeric so it can be loaded on metadataRef
     # }
     
-    # nexusTree2 <- read.tree(treeFileName) #imports file in newick format instead of nexus.
-    nexusTree2 <- treedata
+    nexusTree2 <- read.tree(treeFileName) #imports file in newick format instead of nexus.
     
-    # dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
-    dataoriginal <- metadata
+    dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
     
     sortingtable <- as.data.frame(nexusTree2$tip.label) # Takes Tip Label information from Newick tree and transforms into a table, add ID to it and basically reorders the CSV metadata frame to match the Newick file. 
     sortingtable <- tibble::rowid_to_column(sortingtable, "N_ID") ## Was "ID"
@@ -638,8 +631,7 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                                       vertices = nodes)
   } else if(treeType == "bayesian"){
     ## read annotated tree from Nexus file
-    # tree <- treeio::read.beast(treeFileName)
-    tree <- treedata
+    tree <- treeio::read.beast(treeFileName)
     
     state <- tree@data[[columnSelection]]
     stateprob <- tree@data[[paste0(columnSelection,".prob")]]
@@ -683,7 +675,7 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     Edge_filtered = Edge_notdup_threshold %>%
       select(State_org,State_dst)
     
-    ## Creates structure for network
+    ##Creates structure for network
     
     ## This creates a table (in the form of a data frame) of the state changes that occur in the phylogenetic tree;
     
@@ -715,12 +707,10 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                                       vertices = nodes)
   } else if(treeType == "nj"){
 
-    # nexusTree2 <- make_nj_tree(filePath = treeFileName, accession = rootSelection) # Don't Use
-    # nexusTree2 <- NJ_build_collapse(filePath = treeFileName, accession = rootSelection, bootstrapValue = 80)
-    nexusTree2 <- treedata
+    # nexusTree2 <- make_nj_tree(filePath = treeFileName, accession = rootSelection)
+    nexusTree2 <- NJ_build_collapse(filePath = treeFileName, accession = rootSelection, bootstrapValue = 80)
     
-    # dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
-    dataoriginal <- metadata
+    dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
     
     sortingtable <- as.data.frame(nexusTree2$tip.label) # Takes Tip Label information from Newick tree and transforms into a table, add ID to it and basically reorders the CSV metadata frame to match the Newick file. 
     sortingtable <- tibble::rowid_to_column(sortingtable, "N_ID") ## Was "ID"
@@ -872,7 +862,7 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
   
   write.table(metrics,
               append = FALSE,
-              file = "StrainHub_metrics.csv",
+              file = paste0(treeFileName,"_StrainHub_metrics.csv"),
               sep = ",",
               fileEncoding = "UTF-8",
               col.names = TRUE,
@@ -999,28 +989,28 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
   # return(graph %>% visExport(type = "png", background = "#00FFFFFF", style = 'class = "btn-outline-primary"'))
 }
 
-# make_nj_tree <- function(filePath, accession){
-#   values <- read.dna(filePath, format="fasta")
-#   values_phyDat <- phyDat(values, type="DNA", levels = NULL)
-#   mt <- modelTest(values_phyDat)
-#   reducedmt <- mt[c(1,5),c(1,3)] #extracts rows 1 and 5 from modeltest, columns 1 and 3
-#   maxmt <- reducedmt[which.max(reducedmt$logLik),]
-#   dna_dist <- dist.ml(values_phyDat, model=maxmt$Model) 
-#   values_NJ <- bionj(dna_dist)
-#   plot(values_NJ, main="Neighbor Joining", cex=.6)
-#   names(values_phyDat) #ID names for outgroup user selection down here:
-#   tre2 <- root(values_NJ, out = accession, resolve.root = TRUE)
-#   tre2 <- ladderize(tre2)
-#   plot(tre2, main="Neighbor Joining ladderized and rooted", cex=.6)
-#   nexusTree2 <- tre2
-#   
-#   return(nexusTree2)
-# }
+make_nj_tree <- function(filePath, accession){
+  values <- read.dna(filePath, format="fasta")
+  values_phyDat <- phyDat(values, type="DNA", levels = NULL)
+  mt <- modelTest(values_phyDat)
+  reducedmt <- mt[c(1,5),c(1,3)] #extracts rows 1 and 5 from modeltest, columns 1 and 3
+  maxmt <- reducedmt[which.max(reducedmt$logLik),]
+  dna_dist <- dist.ml(values_phyDat, model=maxmt$Model) 
+  values_NJ <- bionj(dna_dist)
+  plot(values_NJ, main="Neighbor Joining", cex=.6)
+  names(values_phyDat) #ID names for outgroup user selection down here:
+  tre2 <- root(values_NJ, out = accession, resolve.root = TRUE)
+  tre2 <- ladderize(tre2)
+  plot(tre2, main="Neighbor Joining ladderized and rooted", cex=.6)
+  nexusTree2 <- tre2
+  
+  return(nexusTree2)
+}
 
 # Neighbor Joining Tree Builder # 
 ## Function which creates distance matrix from alignment, builds NJ tree, performs bootstrap analysis, collapses weakly supported nodes - Requires ape, phangorn, and seqinr libraries ##
-NJ_build_collapse <- function(dna, accession, bootstrapValue) {
-  # dna <- read.dna(filePath, format="fasta")
+NJ_build_collapse <- function(filePath, accession, bootstrapValue) {
+  dna <- read.dna(filePath, format="fasta")
   # Create data frame in phangorn format
   aln_phyDat <- phyDat(dna, type="DNA", levels = NULL)
   
@@ -1051,10 +1041,9 @@ NJ_build_collapse <- function(dna, accession, bootstrapValue) {
 }
 
 # Tree and metadata parser #
-parse_metaandtree <- function(treePath, metadata){
+parse_metaandtree <- function(treePath, metadataPath){
   # rootedTree <<- read.tree(treePath) #imports file in newick format instead of nexus.
   rootedTree <- treePath
-  
   #\
   #  rootedTree structure:
   #    list of 3 components:
@@ -1065,9 +1054,7 @@ parse_metaandtree <- function(treePath, metadata){
   #      $tip.label - a character vector whose elements are the character string that
   #        identifies a leaf node on the phylogenetic tree;
   #/
-  # dataoriginal = read.csv(metadataPath, header = TRUE) # Imports csv metadata file. It has to have header and ID column has to be the first and labeled "accession" in order for script to work.
-  dataoriginal <- metadata
-  
+  dataoriginal = read.csv(metadataPath, header = TRUE) # Imports csv metadata file. It has to have header and ID column has to be the first and labeled "accession" in order for script to work.
   sortingtable <- as.data.frame(rootedTree$tip.label) # Takes Tip Label information from Newick tree and transforms into a table, add ID to it and basically reorders the CSV metadata frame to match the Newick file. 
   sortingtable <- tibble::rowid_to_column(sortingtable, "ID")
   names(sortingtable)[2] <- "Accession"
@@ -1194,10 +1181,9 @@ parsimony_ancestral_reconstruction <- function(accessioncharacter, country, char
 }
 
 ## Plot transmission network in map using Leaflet - requires leaflet and geosphere libraries ##
-make_nj_map <- function(geodata, transmissionpath, linecolor = "red", circlecolor = "grey"){
+make_nj_map <- function(filePath, transmissionpath, linecolor = "red", circlecolor = "grey"){
   org_dst <- transmissionpath # transmissionpath = probability user filtered table for beast output, org dst table for parsimony ancestry reconstruction 
-  # latlong <- read.csv(filePath) #User have to input csv table with "Location","Latitude","Longitude" headers.
-  latlong <- geodata
+  latlong <- read.csv(filePath) #User have to input csv table with "Location","Latitude","Longitude" headers.
   lat_long = as_tibble(latlong)
   map_coord = left_join(org_dst, lat_long, by = c("State_org" = "Location")) %>% #Join lat_long and org_dst tables.
     left_join(lat_long, by = c("State_dst" = "Location"), suffix = c("_org", "_dst"))
@@ -1225,12 +1211,10 @@ make_nj_map <- function(geodata, transmissionpath, linecolor = "red", circlecolo
 }
 
 
-make_map <- function(treedata, metadata){
-  # nexusTree2 <- read.tree(treeFileName) #imports file in newick format instead of nexus.
-  nexusTree2 <- treedata
+make_map <- function(treeFileName, csvFileName){
+  nexusTree2 <- read.tree(treeFileName) #imports file in newick format instead of nexus.
   
-  # dataoriginal <- read.csv(csvFileName, header = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Acession" in order for script to work. 
-  dataoriginal <- metadata
+  dataoriginal <- read.csv(csvFileName, header = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Acession" in order for script to work. 
   
   sortingtable <- as.data.frame(nexusTree2$tip.label) # Takes Tip Label information from Newick tree and transforms into a table, add ID to it and basically reorders the CSV metadata frame to match the Newick file. 
   sortingtable <- tibble::rowid_to_column(sortingtable, "ID")

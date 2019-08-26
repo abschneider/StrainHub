@@ -32,6 +32,7 @@ library(visNetwork)
 library(igraph)
 #library(data.table)
 library(DT)
+library(rhandsontable)
 #library(magrittr)
 library(htmlwidgets)
 library(rbokeh)
@@ -59,6 +60,7 @@ library(seqinr)
 library(phangorn)
 library(ape)
 
+
 # Define UI for application
 ui <- tagList(
   # tags$head(tags$style(type="text/css", "html, body {width: 100%; height: 100%; overflow: hidden}")),
@@ -75,6 +77,10 @@ ui <- tagList(
                            choices = c("Parsimony", "BEAST Phylogeography", "Create Neighbor-Joining Tree")),
                uiOutput("inputtree"),
                uiOutput("treeuiparams"),
+               div(uiOutput("metadatabuilderparams"), style="float:right"),
+               # div(style="display: inline-block",
+               #     uiOutput("treeuiparams"),
+               #     uiOutput("metadatabuilderparams")),
                uiOutput("treerootswitch"),
                uiOutput("geodataswitch"),
                # fileInput('csvfile',
@@ -102,7 +108,7 @@ ui <- tagList(
                div(uiOutput("settings"), style="float:right"),
                br(),
                includeHTML("footer.html"),
-               p("v1.0.2", align = "right") ## Version
+               p("v1.0.3", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -154,6 +160,8 @@ ui <- tagList(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
+  rv <- reactiveValues()
+  
   output$inputtree <- renderUI({
     if (is.null(input$tree_input_type))
       return()
@@ -171,7 +179,7 @@ server <- function(input, output, session) {
     )
   })
   
-  
+  ## Show/Hide Maps based on Tree Type Input
   observe({
     req(input$tree_input_type)
     if (input$tree_input_type != "BEAST Phylogeography") {
@@ -180,6 +188,7 @@ server <- function(input, output, session) {
     else showTab(inputId = "toptabs", target = "Map")
   })
   
+  ## Change UI Requirements based on Tree Type Input
   output$treeuiparams <- renderUI({
     if (is.null(input$tree_input_type))
       return()
@@ -197,6 +206,82 @@ server <- function(input, output, session) {
            )
   })
   
+  
+  ## Metadata Editor
+  output$metadatabuilderparams <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Parsimony" = actionButton("metadatabuilder",
+                                      label = "Edit Metadata",
+                                      icon = icon("wrench", lib = "font-awesome"),
+                                      class = "btn-secondary"),
+           
+           "Create Neighbor-Joining Tree" = actionButton("metadatabuilder",
+                                                         label = "Edit Metadata",
+                                                         icon = icon("wrench", lib = "font-awesome"),
+                                                         class = "btn-secondary")
+    )
+  })
+  
+  output$editmeta <- renderRHandsontable({
+    rhandsontable(metadata(), stretchH = "all") %>% 
+      hot_table(highlightCol = TRUE,
+                highlightRow = TRUE) %>% 
+      hot_context_menu(allowRowEdit = TRUE,
+                       allowColEdit = TRUE,
+                       customOpts = list(
+                         csv = list(name = "Download to CSV",
+                                    ## from: http://jrowen.github.io/rhandsontable/#customizing
+                                    callback = htmlwidgets::JS(
+                                      "function (key, options) {
+                                      var csv = csvString(this, sep=',', dec='.');
+
+                                      var link = document.createElement('a');
+                                      link.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+                                        encodeURIComponent(csv));
+                                      link.setAttribute('download', 'data.csv');
+
+                                      document.body.appendChild(link);
+                                      link.click();
+                                      document.body.removeChild(link);}"))))
+    
+  })
+
+  # output$editmetaDT <- DT::renderDataTable(DT::datatable(metadata(), editable = TRUE))
+  
+  observeEvent(input$metadatabuilder, {
+    showModal(modalDialog(
+      title = "Metadata Builder",
+      size = "l",
+      easyClose = TRUE,
+      footer = tagList(actionButton("metasave",
+                              label = "Save Changes",
+                              icon = icon("save", lib = "font-awesome"),
+                              class = "btn-success"),
+                 modalButton("Close")),
+      rHandsontableOutput("editmeta")#,
+      # dataTableOutput("editmetaDT")
+      
+    ))
+  })
+  
+  ## Save Metadata Changes
+  observeEvent(input$metasave, {
+    metadata <- isolate(as_tibble(hot_to_r(input$editmeta)))
+  })
+  
+  # metadata <- eventReactive(new_metadata, {
+  #   new_metadata
+  # })
+
+  # metadata <- eventReactive(input$metasave, {
+  #   hot_to_df(input$editmeta)
+  # })
+  
+
+  ## Show/Hide Tree Root Selection
   output$treerootswitch <- renderUI({
     if (is.null(input$tree_input_type))
       return()
@@ -208,6 +293,7 @@ server <- function(input, output, session) {
     )
   })
   
+  ## Show/Hide Geodata File Input
   output$geodataswitch <- renderUI({
     if (is.null(input$tree_input_type))
       return()
@@ -219,15 +305,20 @@ server <- function(input, output, session) {
     )
   })
   
-  #options(shiny.usecairo = TRUE)
+  options(shiny.usecairo = TRUE)
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
     if(input$tree_input_type == "Parsimony"){
-      availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "parsimonious")
+      availablecolumns <- listStates(metadata = metadata(),
+                                     treeType = "parsimonious")
+      
     } else if(input$tree_input_type == "BEAST Phylogeography"){
-      availablecolumns <- listStates(treeFileName = input$treefile$datapath, treeType = "bayesian")
+      availablecolumns <- listStates(treedata = treedata(),
+                                     treeType = "bayesian")
+      
     } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
-      availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "nj")
+      availablecolumns <- listStates(metadata = metadata(),
+                                     treeType = "nj")
     }
   })
   
@@ -235,31 +326,13 @@ server <- function(input, output, session) {
     selectInput("columnselection", "Choose your State", choices = availablecolumns()$`Column`)
   })
   
-  # observe({
-  #   updateSelectInput("columnselection", choices = availablecolumns())
-  # })
-  
-  # output$columnselection <- DT::renderDataTable({DT::datatable(availablecolumns(),
-  #                                                              rownames = FALSE,
-  #                                                              colnames = c("Index",
-  #                                                                           "State"),
-  #                                                              options = list(dom = 't',
-  #                                                                             autoWidth = TRUE,
-  #                                                                             initComplete = JS(
-  #                                                                               "function(settings, json) {",
-  #                                                                               "$(this.api().table().header()).css({'background-color': '#2d3e4f', 'color': '#fff'});",
-  #                                                                               "}")),
-  #                                                              selection = 'single')})
-  
-  
-  # observeEvent(availablecolumns(), {
-  #   updateSelectInput(session = session,
-  #                     inputId = "columnselection",
-  #                     choices = availablecolumns()$Column)
-  # })
-  
+
+  ## Viz Settings
   output$settings <- renderUI({
-    actionButton("settings", label = "", icon = icon("cog", lib = "font-awesome"), class = "btn-warning")
+    actionButton("settings",
+                 label = "",
+                 icon = icon("cog", lib = "font-awesome"),
+                 class = "btn-secondary")
   })
 
   observeEvent(input$settings, {
@@ -273,6 +346,30 @@ server <- function(input, output, session) {
                    selected = "TRUE")
     ))
   })
+  
+  ## Load in tree data
+  treedata <- eventReactive(input$treefile, {
+    if(input$tree_input_type == "Parsimony"){
+      ape::read.tree(input$treefile$datapath)
+    }
+    else if(input$tree_input_type == "BEAST Phylogeography"){
+      treeio::read.beast(input$treefile$datapath)
+    }
+    else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
+      read.dna(input$treefile$datapath, format="fasta")
+    }
+  })
+  
+  ## Load in metadata
+  metadata <- eventReactive(input$csvfile, {
+    readr::read_csv(input$csvfile$datapath, col_names = TRUE)
+  })
+  
+  ## Load in geodata
+  geodata <- eventReactive(input$geodatafile, {
+    readr::read_csv(input$geodatafile$datapath, col_names = TRUE)
+  })
+  
   
   ## Network Viz
   graph <- eventReactive(input$plotbutton, {
@@ -288,12 +385,12 @@ server <- function(input, output, session) {
         }
       )
       
-      graph <-  makeTransNet(treeFileName = input$treefile$datapath,
-                             csvFileName = input$csvfile$datapath,
-                             columnSelection = input$columnselection,
-                             # columnSelection = input$columnselection_row_last_clicked,
-                             centralityMetric = input$metricradio,
-                             treeType = "parsimonious")
+      graph <- makeTransNet(treedata = treedata(),
+                            metadata = metadata(),
+                            columnSelection = input$columnselection,
+                            # columnSelection = input$columnselection_row_last_clicked,
+                            centralityMetric = input$metricradio,
+                            treeType = "parsimonious")
       # height = paste0(0.75*session$clientData$output_graph_width,"px")
       
     } else if(input$tree_input_type == "BEAST Phylogeography"){
@@ -306,7 +403,7 @@ server <- function(input, output, session) {
         }
       )
       
-      graph <-  makeTransNet(treeFileName = input$treefile$datapath,
+      graph <-  makeTransNet(treedata = treedata(),
                              columnSelection = input$columnselection,
                              # columnSelection = input$columnselection_row_last_clicked,
                              centralityMetric = input$metricradio,
@@ -324,8 +421,8 @@ server <- function(input, output, session) {
         }
       )
       
-      graph <-  makeTransNet(treeFileName = input$treefile$datapath,
-                             csvFileName = input$csvfile$datapath,
+      graph <-  makeTransNet(treedata = treedata(),
+                             metadata = metadata(),
                              columnSelection = input$columnselection,
                              # columnSelection = input$columnselection_row_last_clicked,
                              centralityMetric = input$metricradio,
@@ -394,19 +491,20 @@ server <- function(input, output, session) {
     output$treepreview <- renderPlotly({
       # df <- read.csv(input$treefile$datapath)
       if (input$tree_input_type == "Parsimony"){
-        treepreview <- ape::read.tree(input$treefile$datapath)
+        # treepreview <- ape::read.tree(input$treefile$datapath)
+        treepreview <- treedata()
         #return(treepreview)
         #plot(treepreview)
         #ggtree(treepreview) + geom_tiplab()
         
-        md <- read_csv(input$csvfile$datapath)
+        # md <- read_csv(input$csvfile$datapath)
         #input$columnselection_row_last_clicked
         #colorby <- availablecolumns %>%
         colorby <- input$columnselection
         
         import::from(ggtree, `%<+%`, ggtree)
         
-        t1 <- ggtree(treepreview, ladderize = F) %<+% md +
+        t1 <- ggtree(treepreview, ladderize = F) %<+% metadata() +
           geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
                     hjust = 0,
@@ -420,7 +518,8 @@ server <- function(input, output, session) {
         
       } else if(input$tree_input_type == "BEAST Phylogeography"){
         
-        treepreview <- treeio::read.beast(input$treefile$datapath)
+        # treepreview <- treeio::read.beast(input$treefile$datapath)
+        treepreview <- treedata()
         
         colorby <- input$columnselection
         
@@ -449,17 +548,17 @@ server <- function(input, output, session) {
       } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
         
         # treepreview <- make_nj_tree(filePath = input$treefile$datapath, accession = input$rootselect)
-        treepreview <- NJ_build_collapse(filePath = input$treefile$datapath,
+        treepreview <- NJ_build_collapse(dna = treedata(),
                                          accession = input$rootselect,
                                          bootstrapValue = 80)
         
-        md <- read_csv(input$csvfile$datapath)
+        # md <- read_csv(input$csvfile$datapath)
 
         colorby <- input$columnselection
         
         import::from(ggtree, `%<+%`, ggtree)
         
-        t1 <- ggtree(treepreview, ladderize = F) %<+% md +
+        t1 <- ggtree(treepreview, ladderize = F) %<+% metadata() +
           geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
                     hjust = 0,
@@ -478,12 +577,12 @@ server <- function(input, output, session) {
   ## Map Output
   output$mapoutput <- eventReactive(input$plotbutton, {
     if (input$tree_input_type == "Create Neighbor-Joining Tree"){
-      rootedTree <- NJ_build_collapse(filePath = input$treefile$datapath,
+      rootedTree <- NJ_build_collapse(dna = treedata(),
                                       accession = input$rootselect,
                                       bootstrapValue = 80)
       
       parsedInfo <- parse_metaandtree(treePath = rootedTree,
-                                      metadataPath = input$csvfile$datapath)
+                                      metadata = metadata())
                         
       
       Edge_list <- parsimony_ancestral_reconstruction(accessioncharacter = parsedInfo$accessioncharacter,
@@ -492,7 +591,7 @@ server <- function(input, output, session) {
                                                       rootedTree = rootedTree)
       
       output$mapoutput <- renderLeaflet({
-        make_nj_map(filePath = input$geodatafile$datapath,
+        make_nj_map(geodata = geodata(),
                     transmissionpath = Edge_list,
                     linecolor = "red",
                     circlecolor = "grey")
@@ -503,8 +602,8 @@ server <- function(input, output, session) {
       #   need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
       # ),
       output$mapoutput <- renderLeaflet({
-        make_map(treeFileName = input$treefile$datapath,
-                 csvFileName = input$csvfile$datapath)
+        make_map(treefile = treedata(),
+                 metadata = metadata())
       })
     }
     
@@ -519,9 +618,9 @@ server <- function(input, output, session) {
         need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
-          need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
-                                                                  csvFileName = input$csvfile$datapath),
-               "\n3. Please select a different column. This column has all identical values.")
+          # need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
+          #                                                         csvFileName = input$csvfile$datapath),
+          #      "\n3. Please select a different column. This column has all identical values.")
         }
       )
     } else if(input$tree_input_type == "BEAST Phylogeography"){
@@ -530,7 +629,7 @@ server <- function(input, output, session) {
       )
     }
     
-    metrics <- DT::datatable(read.csv(paste0(input$treefile$datapath,"_StrainHub_metrics.csv")),
+    metrics <- DT::datatable(read.csv("StrainHub_metrics.csv"),
                              colnames = c("Metastates",
                                           "Degree",
                                           "Indegree",
