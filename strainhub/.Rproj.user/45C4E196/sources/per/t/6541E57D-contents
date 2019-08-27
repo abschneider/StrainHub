@@ -22,6 +22,7 @@ library(knitr)
 
 ## Load other libraries
 library(shinythemes)
+library(shinyWidgets)
 library(readr)
 #library(ape)
 #library(castor)
@@ -105,7 +106,7 @@ ui <- tagList(
                             selected = 1),
                br(),
                actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
-               div(uiOutput("settings"), style="float:right"),
+               # div(uiOutput("settings"), style="float:right"),
                br(),
                includeHTML("footer.html"),
                p("v1.0.3", align = "right") ## Version
@@ -114,14 +115,31 @@ ui <- tagList(
                width = 9,
                tabsetPanel(id = "toptabs",
                  tabPanel("Network Plot",
-                          div(downloadButton("exportplothtml",
-                                             "Export as HTML",
-                                             class = "btn-outline-primary"),
-                              style="float:right"),
-                          div(downloadButton("exportplotpng",
-                                             "Export as PNG",
-                                             class = "btn-outline-secondary"),
-                              style="float:right"),
+                          dropdownButton(
+                            tags$h3("Network Settings"),
+                            radioButtons("arrowedges",
+                                         label = "Edge Style", 
+                                         choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
+                                         selected = "TRUE"),
+                            circle = FALSE,
+                            status = "success",
+                            icon = icon("gear"),
+                            width = "300px",
+                            tooltip = tooltipOptions(title = "Network Settings")
+                          ) %>% div(style="float:left"),
+                          p(" "),
+                          dropdownButton(
+                            tags$h3("Download Network"),
+                            downloadButton("exportplothtml",
+                                           "Export as HTML"),
+                            downloadButton("exportplotpng",
+                                           "Export as PNG"),
+                            circle = FALSE,
+                            status = "primary",
+                            icon = icon("download"),
+                            width = "300px",
+                            tooltip = tooltipOptions(title = "Download Network As...")
+                          ) %>% div(style="float:left"),
                           br(),
                           # visNetworkOutput("graphplot", height = "auto")
                           jqui_resizable(visNetworkOutput("graphplot", height = "700px")) %>% withSpinner()
@@ -160,7 +178,8 @@ ui <- tagList(
 # Define server logic required to draw a histogram
 server <- function(input, output, session) {
   
-  rv <- reactiveValues()
+  ## Initialize metadata reactive object
+  rv <- reactiveValues(metadata = data.frame(NULL))
   
   output$inputtree <- renderUI({
     if (is.null(input$tree_input_type))
@@ -226,7 +245,7 @@ server <- function(input, output, session) {
   })
   
   output$editmeta <- renderRHandsontable({
-    rhandsontable(metadata(), stretchH = "all") %>% 
+    rhandsontable(rv$metadata, stretchH = "all") %>% 
       hot_table(highlightCol = TRUE,
                 highlightRow = TRUE) %>% 
       hot_context_menu(allowRowEdit = TRUE,
@@ -269,16 +288,8 @@ server <- function(input, output, session) {
   
   ## Save Metadata Changes
   observeEvent(input$metasave, {
-    metadata <- isolate(as_tibble(hot_to_r(input$editmeta)))
+    rv$metadata <- isolate(as_tibble(hot_to_r(input$editmeta)))
   })
-  
-  # metadata <- eventReactive(new_metadata, {
-  #   new_metadata
-  # })
-
-  # metadata <- eventReactive(input$metasave, {
-  #   hot_to_df(input$editmeta)
-  # })
   
 
   ## Show/Hide Tree Root Selection
@@ -309,7 +320,7 @@ server <- function(input, output, session) {
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
     if(input$tree_input_type == "Parsimony"){
-      availablecolumns <- listStates(metadata = metadata(),
+      availablecolumns <- listStates(metadata = rv$metadata,
                                      treeType = "parsimonious")
       
     } else if(input$tree_input_type == "BEAST Phylogeography"){
@@ -317,7 +328,7 @@ server <- function(input, output, session) {
                                      treeType = "bayesian")
       
     } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
-      availablecolumns <- listStates(metadata = metadata(),
+      availablecolumns <- listStates(metadata = rv$metadata,
                                      treeType = "nj")
     }
   })
@@ -335,17 +346,17 @@ server <- function(input, output, session) {
                  class = "btn-secondary")
   })
 
-  observeEvent(input$settings, {
-    showModal(modalDialog(
-      title = "Settings",
-      size = "s",
-      easyClose = TRUE,
-      radioButtons("arrowedges",
-                   label = "Edge Style", 
-                   choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
-                   selected = "TRUE")
-    ))
-  })
+  # observeEvent(input$settings, {
+  #   showModal(modalDialog(
+  #     title = "Settings",
+  #     size = "s",
+  #     easyClose = TRUE,
+  #     radioButtons("arrowedges",
+  #                  label = "Edge Style", 
+  #                  choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
+  #                  selected = "TRUE")
+  #   ))
+  # })
   
   ## Load in tree data
   treedata <- eventReactive(input$treefile, {
@@ -361,9 +372,12 @@ server <- function(input, output, session) {
   })
   
   ## Load in metadata
-  metadata <- eventReactive(input$csvfile, {
-    readr::read_csv(input$csvfile$datapath, col_names = TRUE)
-  })
+  # metadata <- eventReactive(input$csvfile, {
+  #   readr::read_csv(input$csvfile$datapath, col_names = TRUE)
+  # })
+  observeEvent(input$csvfile, {
+    rv$metadata <- readr::read_csv(input$csvfile$datapath, col_names = TRUE)
+    })
   
   ## Load in geodata
   geodata <- eventReactive(input$geodatafile, {
@@ -386,7 +400,7 @@ server <- function(input, output, session) {
       )
       
       graph <- makeTransNet(treedata = treedata(),
-                            metadata = metadata(),
+                            metadata = rv$metadata,
                             columnSelection = input$columnselection,
                             # columnSelection = input$columnselection_row_last_clicked,
                             centralityMetric = input$metricradio,
@@ -422,7 +436,7 @@ server <- function(input, output, session) {
       )
       
       graph <-  makeTransNet(treedata = treedata(),
-                             metadata = metadata(),
+                             metadata = rv$metadata,
                              columnSelection = input$columnselection,
                              # columnSelection = input$columnselection_row_last_clicked,
                              centralityMetric = input$metricradio,
@@ -448,7 +462,6 @@ server <- function(input, output, session) {
   
   
   ## Export Plot
-  
   output$exportplothtml <- downloadHandler(
     filename = function() {
       paste0(input$treefile, "_StrainHub_network.png")
@@ -504,7 +517,7 @@ server <- function(input, output, session) {
         
         import::from(ggtree, `%<+%`, ggtree)
         
-        t1 <- ggtree(treepreview, ladderize = F) %<+% metadata() +
+        t1 <- ggtree(treepreview, ladderize = F) %<+% rv$metadata +
           geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
                     hjust = 0,
@@ -558,7 +571,7 @@ server <- function(input, output, session) {
         
         import::from(ggtree, `%<+%`, ggtree)
         
-        t1 <- ggtree(treepreview, ladderize = F) %<+% metadata() +
+        t1 <- ggtree(treepreview, ladderize = F) %<+% rv$metadata +
           geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
                     hjust = 0,
@@ -582,7 +595,7 @@ server <- function(input, output, session) {
                                       bootstrapValue = 80)
       
       parsedInfo <- parse_metaandtree(treePath = rootedTree,
-                                      metadata = metadata())
+                                      metadata = rv$metadata)
                         
       
       Edge_list <- parsimony_ancestral_reconstruction(accessioncharacter = parsedInfo$accessioncharacter,
@@ -603,7 +616,7 @@ server <- function(input, output, session) {
       # ),
       output$mapoutput <- renderLeaflet({
         make_map(treefile = treedata(),
-                 metadata = metadata())
+                 metadata = rv$metadata)
       })
     }
     
@@ -676,19 +689,5 @@ shinyApp(ui = ui, server = server)
 #install.packages('rsconnect')
 #rsconnect::deployApp()
 ## Install required packages
-# install.packages(c("shiny",
-#                    "shinythemes",
-#                    "ape",
-#                    "castor",
-#                    "visNetwork",
-#                    "hashmap",
-#                    "plyr",
-#                    "network",
-#                    "igraph",
-#                    "data.table",
-#                    "DT",
-#                    "magrittr",
-#                    "htmlwidgets",
-#                    "markdown",
-#                    "treeio"))
+# source("install_packages.R")
 

@@ -1,6 +1,10 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.3
+- Faster performance (as files are only read in once)
+- Metadata Editor
+
 ### v1.0.2
 - Ability to export networks as HTML or PNG
 - Ability to turn off directionality (arrows) on edges
