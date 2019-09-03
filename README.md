@@ -3,7 +3,7 @@
 [![Version: 1.0.2](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Strainhub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. Users also have the option to skip the StrainHub ancestry reconstruction step by generating a maximum clade credibility tree (MCC) through BEAST phylogeography.
+Strainhub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. Users also have the option to skip the StrainHub ancestry reconstruction step by generating a maximum clade credibility tree (MCC) through BEAST phylogeography or input a previously generated list of edges in order to build the transmission network. Additionally, the user can input a file with geographic cooordinates associated with the character of interest and have the network plotted into a map.
 
 <p align="center">
   <img src="https://github.com/abschneider/StrainHub/blob/master/host_network_example.png" alt="Sample Host Transmission Network" width="350"/>
@@ -12,21 +12,46 @@ Strainhub is designed as a web-based software to generate disease transmission n
 
 ## Use StrainHub Online
 
-You'll have the option of either running a parsimony reconstruction on your phylogenetic tree, and for that you will need 2 files to get started:
+StrainHub currently offers four methods to enable the visualization of transmission networks, each with different file format requirements:
+
+**Parsimony**
+
+You'll have the option of running a parsimony reconstruction on your phylogenetic tree, and for that you will need 2 files to get started:
 
 1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g., BEAST, TNT, RAxML, IQTree).
 
 2) A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g., host, country, risk group)
 
-OR
+**BEAST Phylogeography**
 
 You'll run phylogeography using BEAST and for that you will only need 1 file to get started:
 
 1) A maximum clade credibility tree (MCC) generated through Phylogeographic Diffusion in [Discrete](http://beast.community/workshop_discrete_diffusion) or [Continuous](http://beast.community/workshop_continuous_diffusion) Space in BEAST.
 
+**Quick Tree**
+
+You'll create a tree directly from your alignment using a NJ algorithm within StrainHub and run parsimony reconstruction on the given tree. You will need 2 files and to know your outgroup sequence:
+
+1) An alignment file in FASTA format generated through your preferred alignment method (e.g., MAFFT, Geneious, Clustal, MUSCLE).
+
+2)  A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g., host, country, risk group)
+
+**List of Edges**
+
+You'll create a network directly from a list of edges previously generated in another software, you will need only 1 file:
+
+1) List of edges in a CSV formatted file.
+
+**Geographic Coordinates**
+
+Additionally, if you want to plot your transmission network on a map you will need 1 additional file that does not vary between the methods:
+
+1) Geographic coordinates for each character of interest in a CSV formatted file.
+
+
 For more information, click [here](ABOUT.md).
 
-[Try Out StrainHub Online](http://strainhub.io)
+[![StrainHub.io](https://img.shields.io/badge/Try%20Out%20StrainHub%20Online-StrainHub.io-blue.svg?logo=r&style=for-the-badge&labelColor=2C3E50&color=3498DB)](https://strainhub.io)
 
 ## Run StrainHub Locally
 To run, download the repository and open the `strainhub/app.R` file and run the following script.
