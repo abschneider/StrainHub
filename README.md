@@ -59,6 +59,9 @@ To run, download the repository and open the `strainhub/app.R` file and run the 
 library(shiny)
 runApp()
 ```
+
+If you need to install all the required packages to run StrainHub, you can do so by running the `strainhub/install_packages.R` script.
+
 ## Authors
 
 <h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br>Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h4>
