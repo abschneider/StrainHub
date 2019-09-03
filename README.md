@@ -1,4 +1,4 @@
-<h1 style="text-align: center;"><span style="background-color: #2c3e50; color: #ffffff; font-family: 'Lato', sans-serif;"> StrainHub </span></h1>
+<h1 style="text-align: center;"><span style="background-color: #2c3e50; color: #ffffff; font-family: 'Lato', sans-serif;"> StrainHub </span></h1>
 
 [![Version: 1.0.1](https://img.shields.io/badge/version-1.0.0-green.svg)](UPDATES.md)
 [![Version: 1.0.0](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
@@ -22,7 +22,7 @@ OR
 
 You'll run phylogeography using BEAST and for that you will only need 1 file to get started:
 
-1) A maximum clade credibility tree (MCC) generated through Phylogeographic Diffusion in [Discrete](http://beast.community/workshop_discrete_diffusion) or [Continuous](http://beast.community/workshop_continuous_diffusion) Space in BEAST.
+1) A maximum clade credibility tree (MCC) generated through Phylogeographic Diffusion in [Discrete](http://beast.community/workshop_discrete_diffusion) or [Continuous](http://beast.community/workshop_continuous_diffusion) Space in BEAST or Phylogeography in BEAST2 using [Mascot](https://taming-the-beast.org/tutorials/Mascot-Tutorial/).
 
 For more information, click [here](ABOUT.md).
 
