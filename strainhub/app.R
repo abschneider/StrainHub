@@ -464,7 +464,7 @@ server <- function(input, output, session) {
   ## Export Plot
   output$exportplothtml <- downloadHandler(
     filename = function() {
-      paste0(input$treefile, "_StrainHub_network.png")
+      paste0(input$treefile, "_StrainHub_network.html")
     },
     content = function(file) {
       htmlwidgets::saveWidget(graph() %>%
