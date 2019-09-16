@@ -74,6 +74,18 @@ rmarkdown::pandoc_convert("grfile.html", to = "pdf")
 ############################
 ## NJ Tests
 
+
+treedata <- read.dna("../data/neighbor_joining/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
+dna <- read.dna("../data/neighbor_joining/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
+accession <- "EF027139.1_India"
+bootstrapValue <- 0.75
+
+metadata <- readr::read_csv("../data/neighbor_joining/ECSA_MASA_metadata.csv", col_names = TRUE)
+geodata <- readr::read_csv("../data/neighbor_joining/ECSA_MASA_geodata.csv", col_names = TRUE)
+
+
+dna <- data("woodmouse")
+
 make_nj_tree(filePath = "../data/chikv_westernafrica.aln.fasta", accession = "HM045815.1")
 
 makeTransNet(treeFileName = "../data/chikv_westernafrica.aln.fasta",

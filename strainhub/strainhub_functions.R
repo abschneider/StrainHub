@@ -999,21 +999,22 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
   # return(graph %>% visExport(type = "png", background = "#00FFFFFF", style = 'class = "btn-outline-primary"'))
 }
 
-# make_nj_tree <- function(filePath, accession){
-#   values <- read.dna(filePath, format="fasta")
-#   values_phyDat <- phyDat(values, type="DNA", levels = NULL)
+# make_nj_tree <- function(dna, accession){
+#   #values <- read.dna(filePath, format="fasta")
+#   
+#   values_phyDat <- phyDat(dna, type="DNA", levels = NULL)
 #   mt <- modelTest(values_phyDat)
 #   reducedmt <- mt[c(1,5),c(1,3)] #extracts rows 1 and 5 from modeltest, columns 1 and 3
 #   maxmt <- reducedmt[which.max(reducedmt$logLik),]
-#   dna_dist <- dist.ml(values_phyDat, model=maxmt$Model) 
+#   dna_dist <- dist.ml(values_phyDat, model=maxmt$Model)
 #   values_NJ <- bionj(dna_dist)
 #   plot(values_NJ, main="Neighbor Joining", cex=.6)
 #   names(values_phyDat) #ID names for outgroup user selection down here:
-#   tre2 <- root(values_NJ, out = accession, resolve.root = TRUE)
+#   tre2 <- root(values_NJ, outgroup = accession, resolve.root = TRUE)
 #   tre2 <- ladderize(tre2)
 #   plot(tre2, main="Neighbor Joining ladderized and rooted", cex=.6)
 #   nexusTree2 <- tre2
-#   
+# 
 #   return(nexusTree2)
 # }
 
@@ -1030,21 +1031,29 @@ NJ_build_collapse <- function(dna, accession, bootstrapValue) {
   dna_dist <- dist.ml(aln_phyDat, model=maxmt$Model)  # builds distance matrix
   
   # Build NJ tree from distance matrix
-  aln_NJ <- bionj(dna_dist)
+  aln_NJ <- bionj(dna_dist) %>% makeNodeLabel(method = "number")
+  # aln_NJ <- NJ(dna_dist)
   
   myBoots <- boot.phylo(aln_NJ, dna, function(e) # Run bootstrap
-    root(nj(dist.dna(e, model=maxmt$Model)),accession)) 
-  myBoots
+    # root(nj(dist.dna(e, model=maxmt$Model)), accession))
+    dist.dna(e, model = maxmt$Model) %>%
+      nj() %>%
+      root(accession,
+           resolve.root = TRUE)
+  )
+  #myBoots
+  
   
   # Collapse branches of poorly supported nodes into multifurcations with bootstrap values less than X%
-  temp <- aln_NJ # Dont want to change chikv_NJ file itself, assign to new variable for safekeeping
+  temp <- aln_NJ # Dont want to change aln_NJ file itself, assign to new variable for safekeeping
   N <- length(aln_NJ$tip.label) # Get total number of taxa from tree
   toCollapse <- match(which(myBoots<bootstrapValue)+N, temp$edge[,2]) # Match bootstrap value at node to 'destination' edge in second column, returns node number with bs <x%, to be collapsed
   temp$edge.length[toCollapse] <- 0 # Assigns 0 to edge lengths of nodes with bs <x%, collapses
   # di2multi collapse or resolve multichotomies in phylogenetic trees
-  collapsedTree <- di2multi(temp, tol=.00001) # For branch to be considered separate, must be at least this length
+  collapsedTree <- di2multi(temp, tol=.00001)# %>% makeNodeLabel(method = "number") # For branch to be considered separate, must be at least this length
+  collapsedTree <- di2multi(bs, tol=.00001)
   
-  finaltree <- root(collapsedTree, out = accession, resolve.root = TRUE) 
+  finaltree <- root(collapsedTree, outgroup = accession, resolve.root = TRUE) 
   # rootedTree <<- ladderize(finaltree)
   rootedTree <- ladderize(finaltree)
   return(rootedTree)
