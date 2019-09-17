@@ -5,15 +5,15 @@
     "dirty" : false,
     "encoding" : "UTF-8",
     "folds" : "",
-    "hash" : "3517639790",
+    "hash" : "1668703720",
     "id" : "6541E57D",
-    "lastKnownWriteTime" : 1566868458,
-    "last_content_update" : 1566868458152,
+    "lastKnownWriteTime" : 1568682893,
+    "last_content_update" : 1568682893823,
     "path" : "~/Documents/StrainHub/strainhub/app.R",
     "project_path" : "app.R",
     "properties" : {
-        "cursorPosition" : "131,20",
-        "scrollLine" : "124"
+        "cursorPosition" : "144,105",
+        "scrollLine" : "136"
     },
     "read_only" : false,
     "read_only_alternatives" : [

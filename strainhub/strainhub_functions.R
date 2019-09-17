@@ -715,9 +715,9 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                                       vertices = nodes)
   } else if(treeType == "nj"){
 
-    # nexusTree2 <- make_nj_tree(filePath = treeFileName, accession = rootSelection) # Don't Use
-    # nexusTree2 <- NJ_build_collapse(filePath = treeFileName, accession = rootSelection, bootstrapValue = 80)
-    nexusTree2 <- treedata
+    # nexusTree2 <- make_nj_tree(dna = treedata, accession = rootSelection) # Don't Use
+    nexusTree2 <- NJ_build_collapse(dna = treedata, accession = rootSelection, bootstrapValue = 80)
+    # nexusTree2 <- treedata
     
     # dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
     dataoriginal <- metadata
@@ -1001,7 +1001,7 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
 
 # make_nj_tree <- function(dna, accession){
 #   #values <- read.dna(filePath, format="fasta")
-#   
+# 
 #   values_phyDat <- phyDat(dna, type="DNA", levels = NULL)
 #   mt <- modelTest(values_phyDat)
 #   reducedmt <- mt[c(1,5),c(1,3)] #extracts rows 1 and 5 from modeltest, columns 1 and 3
@@ -1021,38 +1021,40 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
 # Neighbor Joining Tree Builder # 
 ## Function which creates distance matrix from alignment, builds NJ tree, performs bootstrap analysis, collapses weakly supported nodes - Requires ape, phangorn, and seqinr libraries ##
 NJ_build_collapse <- function(dna, accession, bootstrapValue) {
-  # dna <- read.dna(filePath, format="fasta")
-  # Create data frame in phangorn format
+  # dna <- read.dna(dna, format="fasta")
+  ## Create data frame in phangorn format
   aln_phyDat <- phyDat(dna, type="DNA", levels = NULL)
   
-  mt <- modelTest(aln_phyDat) # perform model test to build distance matrix
-  reducedmt <- mt[c(1,5),c(1,3)] # extracts rows 1 and 5 from modeltest, columns 1 and 3 (models accepted to build distance matrix)
-  maxmt <- reducedmt[which.max(reducedmt$logLik),] # selects model with highest likelihood
-  dna_dist <- dist.ml(aln_phyDat, model=maxmt$Model)  # builds distance matrix
+  mt <- modelTest(aln_phyDat)
+  reducedmt <- mt[c(1,5),c(1,3)] #extracts rows 1 and 5 from modeltest, columns 1 and 3
+  maxmt <- reducedmt[which.max(reducedmt$logLik),]
+  dna_dist <- dist.ml(aln_phyDat, model=maxmt$Model)
   
-  # Build NJ tree from distance matrix
-  aln_NJ <- bionj(dna_dist) %>% makeNodeLabel(method = "number")
-  # aln_NJ <- NJ(dna_dist)
+  #Building NJ tree from distance matrix
+  aln_NJ <- bionj(dna_dist)
+  
+  # myBoots <- boot.phylo(aln_NJ, dna, function(e)
+  #   root(nj(dist.dna(e, model=maxmt$Model)),accession)) #This roots on first sequence in alignment, can substitute with accession number
+  # myBoots
   
   myBoots <- boot.phylo(aln_NJ, dna, function(e) # Run bootstrap
     # root(nj(dist.dna(e, model=maxmt$Model)), accession))
     dist.dna(e, model = maxmt$Model) %>%
       nj() %>%
-      root(accession,
-           resolve.root = TRUE)
+      root(accession),
+    B = 10
   )
   #myBoots
   
-  
-  # Collapse branches of poorly supported nodes into multifurcations with bootstrap values less than X%
-  temp <- aln_NJ # Dont want to change aln_NJ file itself, assign to new variable for safekeeping
+  ## Collapse branches of poorly supported nodes into multifurcations with bootstrap values less than X%
+  temp <- aln_NJ # Dont want to change chikv_NJ file itself, assign to new variable for safekeeping
   N <- length(aln_NJ$tip.label) # Get total number of taxa from tree
   toCollapse <- match(which(myBoots<bootstrapValue)+N, temp$edge[,2]) # Match bootstrap value at node to 'destination' edge in second column, returns node number with bs <x%, to be collapsed
-  temp$edge.length[toCollapse] <- 0 # Assigns 0 to edge lengths of nodes with bs <x%, collapses
-  # di2multi collapse or resolve multichotomies in phylogenetic trees
-  collapsedTree <- di2multi(temp, tol=.00001)# %>% makeNodeLabel(method = "number") # For branch to be considered separate, must be at least this length
-  collapsedTree <- di2multi(bs, tol=.00001)
+  temp$edge.length [toCollapse] <- 0 # Assigns 0 to edge lengths of nodes with bs <x%, collapses
+  ## di2multi collapse or resolve multichotomies in phylogenetic trees
+  collapsedTree <- di2multi(temp, tol=.00001) # For branch to be considered separate, must be at least this length
   
+  collapsedTree <- ladderize(collapsedTree)
   finaltree <- root(collapsedTree, outgroup = accession, resolve.root = TRUE) 
   # rootedTree <<- ladderize(finaltree)
   rootedTree <- ladderize(finaltree)

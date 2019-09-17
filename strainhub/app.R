@@ -142,17 +142,17 @@ ui <- tagList(
                           ) %>% div(style="float:left"),
                           br(),
                           # visNetworkOutput("graphplot", height = "auto")
-                          jqui_resizable(visNetworkOutput("graphplot", height = "700px")) %>% withSpinner()
+                          jqui_resizable(visNetworkOutput("graphplot", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
                           #plotlyOutput("treepreview")
-                          jqui_resizable(plotlyOutput("treepreview", height = "700px")) %>% withSpinner()
+                          jqui_resizable(plotlyOutput("treepreview", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Map",
                           div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
                           br(),
-                          jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner()
+                          jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
