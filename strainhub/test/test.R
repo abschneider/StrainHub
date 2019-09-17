@@ -10,16 +10,117 @@ graph <- makeTransNet(treeFileName = "../data/batRABV.mcc.tree",
 print(graph)
 
 ## Parsimonsious Example
-listStates(treeFileName = "../data/chikv_westernafrica.phy",
-           csvFileName = "../data/chikv_westernafrica_metadata.csv",
+treedata <- ape::read.tree("../data/parsimonious/chikv_westernafrica.phy")
+metadata <- readr::read_csv("../data/parsimonious/chikv_westernafrica_metadata.csv", col_names = TRUE)
+geodata <- readr::read_csv("../data/parsimonious/chikv_geo.csv", col_names = TRUE)
+
+listStates(treedata,
+           metadata,
            treeType = "parsimonious")
 
-graph <- makeTransNet(treeFileName = "../data/chikv_westernafrica.phy",
-                      csvFileName = "../data/chikv_westernafrica_metadata.csv",
-                      columnSelection = "Host",
+graph <- makeTransNet(treedata,
+                      metadata,
+                      columnSelection = "Country",
                       centralityMetric = 6,
                       treeType = "parsimonious")
+
+
+
 print(graph)
+
+## graph to Dataframe
+
+locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = colnames(geodata)[1]))
+
+graph_df <- graph$x$edges %>%
+  select(-value) %>% 
+  dplyr::inner_join(locations, by = c("from" = "id")) %>% 
+  dplyr::inner_join(locations, by = c("to" = "id"), suffix = c(".from", ".to")) %>% 
+  mutate(path = paste0(label.from,"->",label.to),
+         stroke = as.numeric(value.from)/10,
+         color = RColorBrewer::brewer.pal(length(graph$x$edges), "Set1"))
+  
+## make globe using graph data
+library(globe4r)
+
+# create_globe() %>%
+#   globe_arcs(
+#     data = graph_df,
+#     coords(
+#       start_lat = Latitude.from,
+#       start_lon = Longitude.from,
+#       end_lat = Latitude.to,
+#       end_lon = Longitude.to,
+#       label = path,
+#       color = value.from
+#     )
+#   ) %>%
+#   scale_arc_color() %>%
+#   globe_labels(
+#     data = graph_df,
+#     coords(lat = Latitude.from,
+#            long = Longitude.from,
+#            text = path,
+#            size = value.from,
+#            include_dot = TRUE,
+#            dot_radius = value.from)
+#   ) %>% 
+#   scale_labels_size() %>% 
+#   scale_labels_radius() %>% 
+#   globe_background("#fff") %>% 
+#   show_atmosphere(TRUE) %>%
+#   show_graticules(TRUE) %>% 
+#   globe_img_url(url = image_url("blue-marble"))
+
+## Separate globe4r Steps
+
+create_globe() %>% 
+  arcs_data(graph_df) %>% 
+  arcs_start_lat("Latitude.from") %>% 
+  arcs_start_lon("Longitude.from") %>% 
+  arcs_end_lat("Latitude.to") %>% 
+  arcs_end_lon("Longitude.to") %>%
+  arcs_color("color") %>% 
+  arcs_label("path") %>%
+  #arcs_stroke("stroke") %>% 
+  arcs_on_hover(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+  arcs_on_click(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+  labels_data(geodata) %>% 
+  labels_lat("Latitude") %>% 
+  labels_lon("Longitude") %>% 
+  labels_text("Location") %>% 
+  labels_include_dot(include = TRUE) %>% 
+  labels_dot_radius(radius = 0.3) %>% 
+  #scale_labels_size() %>% 
+  #scale_labels_radius() %>% 
+  globe_background("#fff") %>% 
+  show_atmosphere(TRUE) %>%
+  show_graticules(TRUE) %>% 
+  globe_img_url(url = image_url("blue-marble"))
+
+make_globe(graph, geodata)
+
+## ThreeJS Globe
+library(threejs)
+
+arcs <- graph_df %>% 
+  mutate(origin_lat = Latitude.from,
+         origin_long = Longitude.from,
+         dest_lat = Latitude.to,
+         dest_long = Longitude.to) %>% 
+  select(origin_lat, origin_long, dest_lat, dest_long)
+
+globejs(# img=image_url("blue-marble"),
+        img = system.file("images/world.jpg",  package="threejs"),
+        lat=graph_df$Latitude.from,
+        long=graph_df$Longitude.from,
+        arcs=arcs,
+        arcsHeight=0.3,
+        arcsLwd=2,
+        arcsColor="#ffff00",
+        bg = "white",
+        arcsOpacity=0.15,
+        atmosphere=TRUE)
 
 ## Save Graph
 

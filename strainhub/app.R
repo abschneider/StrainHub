@@ -57,6 +57,7 @@ library(data.table)
 library(magrittr)
 library(leaflet)
 library(geosphere)
+library(globe4r)
 library(seqinr)
 library(phangorn)
 library(ape)
@@ -77,8 +78,10 @@ ui <- tagList(
                            label = "1. Transmission Network Method",
                            choices = c("Parsimony", "BEAST Phylogeography", "Create Neighbor-Joining Tree")),
                uiOutput("inputtree"),
-               uiOutput("treeuiparams"),
                div(uiOutput("metadatabuilderparams"), style="float:right"),
+               br(),
+               uiOutput("treeuiparams"),
+               
                # div(style="display: inline-block",
                #     uiOutput("treeuiparams"),
                #     uiOutput("metadatabuilderparams")),
@@ -109,7 +112,7 @@ ui <- tagList(
                # div(uiOutput("settings"), style="float:right"),
                br(),
                includeHTML("footer.html"),
-               p("v1.0.3", align = "right") ## Version
+               p("v1.0.4", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -153,6 +156,9 @@ ui <- tagList(
                           div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
                           br(),
                           jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                 ),
+                 tabPanel("Globe",
+                          jqui_resizable(globe4r::globeOutput("globeoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
@@ -214,13 +220,13 @@ server <- function(input, output, session) {
 
     switch(input$tree_input_type,
            "Parsimony" = fileInput('csvfile',
-                                   label = '3. Choose your Metadata File',
+                                   label = '3a. Choose your Metadata File',
                                    accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            "BEAST Phylogeography" = sliderInput("threshold",
                                                 label = "3. Probability Threshold",
                                                 min = 0, max = 1, value = 0.9),
            "Create Neighbor-Joining Tree" = fileInput('csvfile',
-                                                      label = '3a. Choose your Metadata File',
+                                                      label = '3. Choose your Metadata File',
                                                       accept = c('text/csv', 'text/plain', '.csv', '.txt'))
            )
   })
@@ -314,7 +320,13 @@ server <- function(input, output, session) {
                                                       label = '3c. Choose your Geodata File',
                                                       accept = c('text/csv', 'text/plain', '.csv', '.txt'))
     )
-  })
+    
+    switch(input$tree_input_type,
+           "Parsimony" = fileInput('geodatafile',
+                                   label = '3b. Choose your Geodata File',
+                                   accept = c('text/csv', 'text/plain', '.csv', '.txt'))
+    )
+  }) 
   
   options(shiny.usecairo = TRUE)
   ## List State Column Choices
@@ -589,7 +601,7 @@ server <- function(input, output, session) {
   
   ## Map Output
   output$mapoutput <- eventReactive(input$plotbutton, {
-    if (input$tree_input_type == "Create Neighbor-Joining Tree"){
+   if (input$tree_input_type == "Create Neighbor-Joining Tree"){
       rootedTree <- NJ_build_collapse(dna = treedata(),
                                       accession = input$rootselect,
                                       bootstrapValue = 80)
@@ -622,6 +634,13 @@ server <- function(input, output, session) {
     
   })
   
+  
+  ## Globe Output
+  output$globeoutput <- eventReactive(input$plotbutton, {
+    if (input$tree_input_type == "Parsimony"){
+      output$globeoutput <- render_globe({make_globe(graph(), geodata())})
+      }
+    })
   
   ## Metrics File Output
   metrics <- eventReactive(input$plotbutton, {

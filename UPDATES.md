@@ -1,6 +1,10 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.4
+- Fix NJ Tree Creation
+- Add globe visual for Parsimonious tree input
+
 ### v1.0.3
 - Faster performance (as files are only read in once)
 - Metadata Editor

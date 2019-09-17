@@ -1416,3 +1416,41 @@ make_map <- function(treedata, metadata){
   return(mapplot)
   
 }
+
+make_globe <- function(graph, geodata){
+  locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = colnames(geodata)[1]))
+  
+  graph_df <- graph$x$edges %>%
+    select(-value) %>% 
+    dplyr::inner_join(locations, by = c("from" = "id")) %>% 
+    dplyr::inner_join(locations, by = c("to" = "id"), suffix = c(".from", ".to")) %>% 
+    mutate(path = paste0(label.from,"->",label.to),
+           stroke = as.numeric(value.from)/10,
+           color = RColorBrewer::brewer.pal(length(graph$x$edges), "Set1"))
+  
+  globe <- create_globe() %>% 
+    arcs_data(graph_df) %>% 
+    arcs_start_lat("Latitude.from") %>% 
+    arcs_start_lon("Longitude.from") %>% 
+    arcs_end_lat("Latitude.to") %>% 
+    arcs_end_lon("Longitude.to") %>%
+    arcs_color("color") %>% 
+    arcs_label("path") %>%
+    #arcs_stroke("stroke") %>% 
+    arcs_on_hover(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+    arcs_on_click(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+    labels_data(geodata) %>% 
+    labels_lat("Latitude") %>% 
+    labels_lon("Longitude") %>% 
+    labels_text("Location") %>% 
+    labels_include_dot(include = TRUE) %>% 
+    labels_dot_radius(radius = 0.3) %>% 
+    #scale_labels_size() %>% 
+    #scale_labels_radius() %>% 
+    globe_background("#fff") %>% 
+    show_atmosphere(TRUE) %>%
+    show_graticules(TRUE) %>% 
+    globe_img_url(url = image_url("blue-marble"))
+  
+  return(globe)
+}
