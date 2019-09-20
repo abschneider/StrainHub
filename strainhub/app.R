@@ -403,6 +403,7 @@ server <- function(input, output, session) {
       validate(
         need(input$treefile != "", "\n1. Please upload a tree file."),
         need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file."), 
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
           need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
