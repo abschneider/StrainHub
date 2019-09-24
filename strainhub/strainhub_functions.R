@@ -454,8 +454,8 @@ getUsableColumns <- function(treedata, metadata){
   listofcolumns <- as.list(data)
   columnaccessions <- as.list(data)
   accessioncharacter <- as.character(columnaccessions$Accession) #transforms accession from Factor into character
-  selectedcolumn <- as.numeric(as.factor(listofcolumns[[columnSelection]])) #transforms metadata state column from Factor into numeric
-  names(selectedcolumn) <- accessioncharacter # assign accession ID reference to the variable selected
+  # selectedcolumn <- as.numeric(as.factor(listofcolumns[[columnSelection]])) #transforms metadata state column from Factor into numeric
+  # names(selectedcolumn) <- accessioncharacter # assign accession ID reference to the variable selected
   
   distinctvalsbycolumn <- data.frame(t(apply(data, 2, function(x) length(unique(x))))) # Get number of unique values by column.
   output <- c(names(distinctvalsbycolumn[which(distinctvalsbycolumn>1)])) #Return vector of usable columns

@@ -139,15 +139,18 @@ ui <- tagList(
                           dropdownButton(
                             tags$h3("Download Network"),
                             downloadButton("exportplothtml",
-                                           "Export as HTML"),
+                                           "Export as HTML",
+                                           style="color: white;"),
+                            br(),
                             downloadButton("exportplotpng",
-                                           "Export as PNG"),
+                                           "Export as PNG",
+                                           style="color: white;"),
                             circle = FALSE,
                             status = "primary",
                             icon = icon("download"),
                             width = "300px",
                             tooltip = tooltipOptions(title = "Download Network As...")
-                          ) %>% div(style="float:left"),
+                          ) %>% div(style="float:left; margin-left:5px;"),
                           br(),
 
                           jqui_resizable(visNetworkOutput("graphplot", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
@@ -400,14 +403,17 @@ server <- function(input, output, session) {
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
     if(input$tree_input_type == "Parsimony"){
+      validate(need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."))
       availablecolumns <- listStates(metadata = rv$metadata,
                                      treeType = "parsimonious")
       
     } else if(input$tree_input_type == "BEAST Phylogeography"){
+      validate(need(input$treefile != "", "\n2. Please upload a tree file."))
       availablecolumns <- listStates(treedata = treedata(),
                                      treeType = "bayesian")
       
     } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
+      validate(need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."))
       availablecolumns <- listStates(metadata = rv$metadata,
                                      treeType = "nj")
     }
@@ -475,12 +481,10 @@ server <- function(input, output, session) {
         need(input$treefile != "", "\n2. Please upload a tree file."),
         need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
         need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
-        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
-        if (exists("input$treefile") & exists("input$csvfile")){
-          need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
-                                                                  csvFileName = input$csvfile$datapath),
-               "\n4b. Please select a different column. This column has all identical values.")
-        }
+        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
+        need(input$columnselection %in% getUsableColumns(treedata = treedata(),
+                                                               metadata = rv$metadata),
+             "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       )
       
       graph <- makeTransNet(treedata = treedata(),
@@ -494,11 +498,10 @@ server <- function(input, output, session) {
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
-        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
-        if (exists("input$treefile") & exists("input$csvfile")){
-          #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
-          #     "\n3. Please select a different column. This column has all identical values.")
-        }
+        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
+        need(input$columnselection %in% getUsableColumns(treedata = treedata(),
+                                                         metadata = rv$metadata),
+             "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       )
       
       graph <-  makeTransNet(treedata = treedata(),
@@ -512,11 +515,12 @@ server <- function(input, output, session) {
     } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
       validate(
         need(input$treefile != "", "\n2. Please upload a fasta file."),
-        # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
-        if (exists("input$treefile") & exists("input$csvfile")){
-          #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
-          #     "\n3. Please select a different column. This column has all identical values.")
-        }
+        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
+        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
+        need(input$columnselection %in% getUsableColumns(treedata = treedata(),
+                                                         metadata = rv$metadata),
+             "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       )
       
       graph <-  makeTransNet(treedata = treedata(),
