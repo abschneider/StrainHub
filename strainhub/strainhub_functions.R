@@ -1417,8 +1417,9 @@ make_map <- function(treedata, metadata){
   
 }
 
-make_globe <- function(graph, geodata){
-  locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = colnames(geodata)[1]))
+make_globe <- function(graph, geodata, columnSelection){
+  # locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = colnames(geodata)[1]))
+  locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = columnSelection))
   
   graph_df <- graph$x$edges %>%
     select(-value) %>% 
@@ -1426,9 +1427,11 @@ make_globe <- function(graph, geodata){
     dplyr::inner_join(locations, by = c("to" = "id"), suffix = c(".from", ".to")) %>% 
     mutate(path = paste0(label.from,"->",label.to),
            stroke = as.numeric(value.from)/10,
-           color = RColorBrewer::brewer.pal(length(graph$x$edges), "Set1"))
+           color = randomcoloR::distinctColorPalette(k = nrow(graph$x$edges)))
+           #color = RColorBrewer::brewer.pal(length(graph$x$edges), "Set1"))
   
   globe <- create_globe() %>% 
+    globe_pov(graph_df$Latitude.from[1],graph_df$Longitude.from[1]) %>% 
     arcs_data(graph_df) %>% 
     arcs_start_lat("Latitude.from") %>% 
     arcs_start_lon("Longitude.from") %>% 
@@ -1437,12 +1440,12 @@ make_globe <- function(graph, geodata){
     arcs_color("color") %>% 
     arcs_label("path") %>%
     #arcs_stroke("stroke") %>% 
-    arcs_on_hover(func = "function(data) {var globe = get_globe(data.path);}") %>% 
-    arcs_on_click(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+    #arcs_on_hover(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+    #arcs_on_click(func = "function(data) {var globe = get_globe(data.path);}") %>% 
     labels_data(geodata) %>% 
     labels_lat("Latitude") %>% 
     labels_lon("Longitude") %>% 
-    labels_text("Location") %>% 
+    labels_text(columnSelection) %>% 
     labels_include_dot(include = TRUE) %>% 
     labels_dot_radius(radius = 0.3) %>% 
     #scale_labels_size() %>% 

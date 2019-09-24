@@ -57,6 +57,7 @@ library(data.table)
 library(magrittr)
 library(leaflet)
 library(geosphere)
+library(randomcoloR)
 library(globe4r)
 library(seqinr)
 library(phangorn)
@@ -81,25 +82,20 @@ ui <- tagList(
                div(uiOutput("metadatabuilderparams"), style="float:right"),
                br(),
                uiOutput("treeuiparams"),
-               
-               # div(style="display: inline-block",
-               #     uiOutput("treeuiparams"),
-               #     uiOutput("metadatabuilderparams")),
                uiOutput("treerootswitch"),
+               div(uiOutput("geodatabuilderparams"), style="float:right"),
+               br(),
                uiOutput("geodataswitch"),
-               # fileInput('csvfile',
-               #           label = '2. Choose your Metadata File',
-               #           accept = c('text/csv', 'text/plain', '.csv', '.txt')),
-               actionButton("getlistbutton", label = "4. List States", class = "btn-primary"),
+
+               actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
                br(),
-               # selectInput("columnselection", "Column Selection:", 
-               #             choices=c("NA")),
+
                br(),
-               #dataTableOutput("columnselection"),
+
                uiOutput("columnselection"),
                br(),
-               radioButtons("metricradio",
-                            label ="5. Pick Centrality Metric",
+               selectInput("metricradio",
+                            label ="5. Pick your Centrality Metric",
                             choices = list("Indegree" = 1,
                                            "Outdegree" = 2,
                                            "Betweenness" = 3,
@@ -107,12 +103,21 @@ ui <- tagList(
                                            "Degree" = 5,
                                            "Source Hub Ratio" = 6),
                             selected = 1),
+               # radioButtons("metricradio",
+               #              label ="5. Pick your Centrality Metric",
+               #              choices = list("Indegree" = 1,
+               #                             "Outdegree" = 2,
+               #                             "Betweenness" = 3,
+               #                             "Closeness" = 4,
+               #                             "Degree" = 5,
+               #                             "Source Hub Ratio" = 6),
+               #              selected = 1),
                br(),
                actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
-               # div(uiOutput("settings"), style="float:right"),
+
                br(),
                includeHTML("footer.html"),
-               p("v1.0.4", align = "right") ## Version
+               p("v1.0.5", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -144,7 +149,7 @@ ui <- tagList(
                             tooltip = tooltipOptions(title = "Download Network As...")
                           ) %>% div(style="float:left"),
                           br(),
-                          # visNetworkOutput("graphplot", height = "auto")
+
                           jqui_resizable(visNetworkOutput("graphplot", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Tree Preview",
@@ -226,7 +231,7 @@ server <- function(input, output, session) {
                                                 label = "3. Probability Threshold",
                                                 min = 0, max = 1, value = 0.9),
            "Create Neighbor-Joining Tree" = fileInput('csvfile',
-                                                      label = '3. Choose your Metadata File',
+                                                      label = '3a. Choose your Metadata File',
                                                       accept = c('text/csv', 'text/plain', '.csv', '.txt'))
            )
   })
@@ -241,12 +246,14 @@ server <- function(input, output, session) {
            "Parsimony" = actionButton("metadatabuilder",
                                       label = "Edit Metadata",
                                       icon = icon("wrench", lib = "font-awesome"),
-                                      class = "btn-secondary"),
+                                      class = "btn-secondary",
+                                      style = 'padding-top:1px;padding-bottom:1px;margin-top:20px'),
            
            "Create Neighbor-Joining Tree" = actionButton("metadatabuilder",
                                                          label = "Edit Metadata",
                                                          icon = icon("wrench", lib = "font-awesome"),
-                                                         class = "btn-secondary")
+                                                         class = "btn-secondary",
+                                                         style = 'padding-top:1px;padding-bottom:1px;margin-top:20px')
     )
   })
   
@@ -298,6 +305,69 @@ server <- function(input, output, session) {
   })
   
 
+  ## Geodata Editor
+  output$geodatabuilderparams <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Parsimony" = actionButton("geodatabuilder",
+                                      label = "Edit Geodata",
+                                      icon = icon("wrench", lib = "font-awesome"),
+                                      class = "btn-secondary",
+                                      style = 'padding-top:1px;padding-bottom:1px;margin-top:20px'),
+           
+           "Create Neighbor-Joining Tree" = actionButton("geodatabuilder",
+                                                         label = "Edit Geodata",
+                                                         icon = icon("wrench", lib = "font-awesome"),
+                                                         class = "btn-secondary",
+                                                         style = 'padding-top:1px;padding-bottom:1px;margin-top:20px')
+    )
+  })
+  
+  output$editgeo <- renderRHandsontable({
+    rhandsontable(rv$geodata, stretchH = "all") %>% 
+      hot_table(highlightCol = TRUE,
+                highlightRow = TRUE) %>% 
+      hot_context_menu(allowRowEdit = TRUE,
+                       allowColEdit = TRUE,
+                       customOpts = list(
+                         csv = list(name = "Download to CSV",
+                                    ## from: http://jrowen.github.io/rhandsontable/#customizing
+                                    callback = htmlwidgets::JS(
+                                      "function (key, options) {
+                                      var csv = csvString(this, sep=',', dec='.');
+
+                                      var link = document.createElement('a');
+                                      link.setAttribute('href', 'data:text/plain;charset=utf-8,' +
+                                        encodeURIComponent(csv));
+                                      link.setAttribute('download', 'data.csv');
+
+                                      document.body.appendChild(link);
+                                      link.click();
+                                      document.body.removeChild(link);}"))))
+    
+  })
+  
+  observeEvent(input$geodatabuilder, {
+    showModal(modalDialog(
+      title = "Geodata Builder",
+      size = "l",
+      easyClose = TRUE,
+      footer = tagList(actionButton("geosave",
+                                    label = "Save Changes",
+                                    icon = icon("save", lib = "font-awesome"),
+                                    class = "btn-success"),
+                       modalButton("Close")),
+      rHandsontableOutput("editgeo")
+    ))
+  })
+  
+  ## Save Geodata Changes
+  observeEvent(input$geosave, {
+    rv$geodata <- isolate(as_tibble(hot_to_r(input$editgeo)))
+  })
+  
   ## Show/Hide Tree Root Selection
   output$treerootswitch <- renderUI({
     if (is.null(input$tree_input_type))
@@ -316,15 +386,13 @@ server <- function(input, output, session) {
       return()
     
     switch(input$tree_input_type,
+           "Parsimony" = fileInput('geodatafile',
+                                   label = '3b. Choose your Geodata File',
+                                   accept = c('text/csv', 'text/plain', '.csv', '.txt')),
+           
            "Create Neighbor-Joining Tree" = fileInput('geodatafile',
                                                       label = '3c. Choose your Geodata File',
                                                       accept = c('text/csv', 'text/plain', '.csv', '.txt'))
-    )
-    
-    switch(input$tree_input_type,
-           "Parsimony" = fileInput('geodatafile',
-                                   label = '3b. Choose your Geodata File',
-                                   accept = c('text/csv', 'text/plain', '.csv', '.txt'))
     )
   }) 
   
@@ -346,7 +414,7 @@ server <- function(input, output, session) {
   })
   
   output$columnselection <- renderUI({
-    selectInput("columnselection", "Choose your State", choices = availablecolumns()$`Column`)
+    selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`)
   })
   
 
@@ -392,8 +460,11 @@ server <- function(input, output, session) {
     })
   
   ## Load in geodata
-  geodata <- eventReactive(input$geodatafile, {
-    readr::read_csv(input$geodatafile$datapath, col_names = TRUE)
+  # geodata <- eventReactive(input$geodatafile, {
+  #   readr::read_csv(input$geodatafile$datapath, col_names = TRUE)
+  # })
+  observeEvent(input$geodatafile, {
+    rv$geodata <- readr::read_csv(input$geodatafile$datapath, col_names = TRUE)
   })
   
   
@@ -401,14 +472,14 @@ server <- function(input, output, session) {
   graph <- eventReactive(input$plotbutton, {
     if(input$tree_input_type == "Parsimony"){
       validate(
-        need(input$treefile != "", "\n1. Please upload a tree file."),
-        need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
-        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file."), 
+        need(input$treefile != "", "\n2. Please upload a tree file."),
+        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
           need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
                                                                   csvFileName = input$csvfile$datapath),
-               "\n3. Please select a different column. This column has all identical values.")
+               "\n4b. Please select a different column. This column has all identical values.")
         }
       )
       
@@ -422,7 +493,7 @@ server <- function(input, output, session) {
       
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
-        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$treefile != "", "\n2. Please upload a tree file."),
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
           #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
@@ -440,7 +511,7 @@ server <- function(input, output, session) {
       
     } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
       validate(
-        need(input$treefile != "", "\n1. Please upload a fasta file."),
+        need(input$treefile != "", "\n2. Please upload a fasta file."),
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
           #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
@@ -617,7 +688,8 @@ server <- function(input, output, session) {
                                                       rootedTree = rootedTree)
       
       output$mapoutput <- renderLeaflet({
-        make_nj_map(geodata = geodata(),
+        make_nj_map(#geodata = geodata(),
+                    geodata = rv$geodata,
                     transmissionpath = Edge_list,
                     linecolor = "red",
                     circlecolor = "grey")
@@ -639,7 +711,15 @@ server <- function(input, output, session) {
   ## Globe Output
   output$globeoutput <- eventReactive(input$plotbutton, {
     if (input$tree_input_type == "Parsimony"){
-      output$globeoutput <- render_globe({make_globe(graph(), geodata())})
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
+        need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file."),
+        need(input$columnselection %in% colnames(rv$geodata),
+            "\n4b. The current selected state doesn't match any columns in the geodata file. Please select a different column.")
+      )
+      output$globeoutput <- render_globe({make_globe(graph(), rv$geodata, input$columnselection)})
       }
     })
   
@@ -647,8 +727,8 @@ server <- function(input, output, session) {
   metrics <- eventReactive(input$plotbutton, {
     if (input$tree_input_type == "Parsimony"){
       validate(
-        need(input$treefile != "", "\n1. Please upload a tree file."),
-        need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
+        need(input$treefile != "", "\n2. Please upload a tree file."),
+        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
           # need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
@@ -658,7 +738,7 @@ server <- function(input, output, session) {
       )
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
-        need(input$treefile != "", "\n1. Please upload a tree file.")
+        need(input$treefile != "", "\n2. Please upload a tree file.")
       )
     }
     

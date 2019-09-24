@@ -1,13 +1,19 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.5
+- Add geodata editor
+- Increase flexibility of location column name for geodata
+- Change centrality metric selection to dropdown (from radio buttons)
+- Add better error messaging
+
 ### v1.0.4
 - Fix NJ Tree Creation
 - Add globe visual for Parsimonious tree input
 
 ### v1.0.3
 - Faster performance (as files are only read in once)
-- Metadata Editor
+- Add metadata Editor
 
 ### v1.0.2
 - Ability to export networks as HTML or PNG

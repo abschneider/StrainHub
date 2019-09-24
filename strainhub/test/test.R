@@ -43,38 +43,12 @@ graph_df <- graph$x$edges %>%
 ## make globe using graph data
 library(globe4r)
 
-# create_globe() %>%
-#   globe_arcs(
-#     data = graph_df,
-#     coords(
-#       start_lat = Latitude.from,
-#       start_lon = Longitude.from,
-#       end_lat = Latitude.to,
-#       end_lon = Longitude.to,
-#       label = path,
-#       color = value.from
-#     )
-#   ) %>%
-#   scale_arc_color() %>%
-#   globe_labels(
-#     data = graph_df,
-#     coords(lat = Latitude.from,
-#            long = Longitude.from,
-#            text = path,
-#            size = value.from,
-#            include_dot = TRUE,
-#            dot_radius = value.from)
-#   ) %>% 
-#   scale_labels_size() %>% 
-#   scale_labels_radius() %>% 
-#   globe_background("#fff") %>% 
-#   show_atmosphere(TRUE) %>%
-#   show_graticules(TRUE) %>% 
-#   globe_img_url(url = image_url("blue-marble"))
+columnSelection <- "Site"
 
 ## Separate globe4r Steps
 
 create_globe() %>% 
+  globe_pov(graph_df$Latitude.from[1],graph_df$Longitude.from[1]) %>% 
   arcs_data(graph_df) %>% 
   arcs_start_lat("Latitude.from") %>% 
   arcs_start_lon("Longitude.from") %>% 
@@ -83,12 +57,12 @@ create_globe() %>%
   arcs_color("color") %>% 
   arcs_label("path") %>%
   #arcs_stroke("stroke") %>% 
-  arcs_on_hover(func = "function(data) {var globe = get_globe(data.path);}") %>% 
-  arcs_on_click(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+  #arcs_on_hover(func = "function(data) {var globe = get_globe(data.path);}") %>% 
+  #arcs_on_click(func = "function(data) {var globe = get_globe(data.path);}") %>% 
   labels_data(geodata) %>% 
   labels_lat("Latitude") %>% 
   labels_lon("Longitude") %>% 
-  labels_text("Location") %>% 
+  labels_text(columnSelection) %>% 
   labels_include_dot(include = TRUE) %>% 
   labels_dot_radius(radius = 0.3) %>% 
   #scale_labels_size() %>% 
@@ -98,7 +72,8 @@ create_globe() %>%
   show_graticules(TRUE) %>% 
   globe_img_url(url = image_url("blue-marble"))
 
-make_globe(graph, geodata)
+
+make_globe(graph, geodata, columnSelection)
 
 ## ThreeJS Globe
 library(threejs)
