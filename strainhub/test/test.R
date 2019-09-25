@@ -10,9 +10,9 @@ graph <- makeTransNet(treeFileName = "../data/batRABV.mcc.tree",
 print(graph)
 
 ## Parsimonsious Example
-treedata <- ape::read.tree("../data/parsimonious/chikv_westernafrica.phy")
-metadata <- readr::read_csv("../data/parsimonious/chikv_westernafrica_metadata.csv", col_names = TRUE)
-geodata <- readr::read_csv("../data/parsimonious/chikv_geo.csv", col_names = TRUE)
+treedata <- ape::read.tree("../data/parsimonious/chikv/chikv_westernafrica.phy")
+metadata <- readr::read_csv("../data/parsimonious/chikv/chikv_westernafrica_metadata.csv", col_names = TRUE)
+geodata <- readr::read_csv("../data/parsimonious/chikv/chikv_geo.csv", col_names = TRUE)
 
 listStates(treedata,
            metadata,

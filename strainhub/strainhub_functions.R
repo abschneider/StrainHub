@@ -889,7 +889,8 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                           group = indegree$res)
       graph <- visNetwork(nodes = nodes,
                           edges = edges,
-                          main = "Indegree Centrality") %>%
+                          main = list(text = "Indegree Centrality",
+                                      style = "font-family:Lato, Helvetica Neue, Arial, sans-serif;font-weight:bold;font-size:20px;text-align:center;")) %>%
         visPhysics(solver = "repulsion")%>%
         visInteraction(navigationButtons = TRUE) %>%
         visOptions(selectedBy = "value",
@@ -906,7 +907,8 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                           group = outdegree$res)
       graph <- visNetwork(nodes = nodes,
                           edges = edges,
-                          main = "Outdegree Centrality") %>%
+                          main = list(text = "Outdegree Centrality",
+                                      style = "font-family:Lato, Helvetica Neue, Arial, sans-serif;font-weight:bold;font-size:20px;text-align:center;")) %>%
         visPhysics(solver = "repulsion")%>%
         visInteraction(navigationButtons = TRUE) %>%
         visOptions(selectedBy = "value",
@@ -923,7 +925,8 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                                    group = between.centrality)
       graph <- visNetwork(nodes = nodes,
                           edges = edges,
-                          main = "Betweenness Centrality") %>%
+                          main = list(text = "Betweenness Centrality",
+                                      style = "font-family:Lato, Helvetica Neue, Arial, sans-serif;font-weight:bold;font-size:20px;text-align:center;")) %>%
         visPhysics(solver = "repulsion")%>%
         visInteraction(navigationButtons = TRUE) %>%
         visOptions(selectedBy = "value",
@@ -941,7 +944,8 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                           group = closeness.centrality)
       graph <- visNetwork(nodes = nodes,
                           edges = edges,
-                          main = "Closeness Centrality") %>%
+                          main = list(text = "Closeness Centrality",
+                                      style = "font-family:Lato, Helvetica Neue, Arial, sans-serif;font-weight:bold;font-size:20px;text-align:center;")) %>%
         visPhysics(solver = "repulsion")%>%
         visInteraction(navigationButtons = TRUE) %>%
         visOptions(selectedBy = "value",
@@ -959,7 +963,8 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                           group = all.degree$res)
       graph <- visNetwork(nodes = nodes,
                           edges = edges,
-                          main = "Degree Centrality") %>%
+                          main = list(text = "Degree Centrality",
+                                      style = "font-family:Lato, Helvetica Neue, Arial, sans-serif;font-weight:bold;font-size:20px;text-align:center;")) %>%
         visPhysics(solver = "repulsion")%>%
         visInteraction(navigationButtons = TRUE) %>%
         visOptions(selectedBy = "value",
@@ -980,7 +985,8 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                           group = sourcehubratio)
       graph <- visNetwork(nodes = nodes,
                           edges = edges,
-                          main = "Source Hub Ratio: Sink ~0 / Hub = .5 / Source = ~1") %>%
+                          main = list(text = "Source Hub Ratio: Sink ~0 / Hub = .5 / Source = ~1",
+                                      style = "font-family:Lato, Helvetica Neue, Arial, sans-serif;font-weight:bold;font-size:20px;text-align:center;")) %>%
         visPhysics(solver = "repulsion")%>%
         visInteraction(navigationButtons = TRUE) %>%
         visOptions(selectedBy = "value",

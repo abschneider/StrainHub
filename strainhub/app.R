@@ -90,7 +90,7 @@ ui <- tagList(
                actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
                br(),
 
-               br(),
+               #br(),
 
                uiOutput("columnselection"),
                br(),
@@ -126,7 +126,7 @@ ui <- tagList(
                           dropdownButton(
                             tags$h3("Network Settings"),
                             radioButtons("arrowedges",
-                                         label = "Edge Style", 
+                                         label = "Edge Style",
                                          choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
                                          selected = "TRUE"),
                             circle = FALSE,
@@ -517,10 +517,10 @@ server <- function(input, output, session) {
         need(input$treefile != "", "\n2. Please upload a fasta file."),
         need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
         need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
-        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
-        need(input$columnselection %in% getUsableColumns(treedata = treedata(),
-                                                         metadata = rv$metadata),
-             "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
+        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use.")#,
+        # need(input$columnselection %in% getUsableColumns(treedata = treedata(),
+        #                                                  metadata = rv$metadata),
+        #      "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       )
       
       graph <-  makeTransNet(treedata = treedata(),
@@ -542,7 +542,8 @@ server <- function(input, output, session) {
   # output$graphplot <- renderPlot({print(graph())})
   output$graphplot <- renderVisNetwork({print(graph() %>%
                                                 visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
-                                                                                 scaleFactor = 0.75))))})
+                                                                                 scaleFactor = 0.75)),
+                                                         arrowStrikethrough = FALSE))})
   # output$graphplot <- renderVisNetwork({print(graph() %>% 
   #                                               visExport(type = "png",
   #                                                         background = "#00FFFFFF",

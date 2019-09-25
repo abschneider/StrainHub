@@ -6,6 +6,7 @@
 - Increase flexibility of location column name for geodata
 - Change centrality metric selection to dropdown (from radio buttons)
 - Add better error messaging
+- Change network title font to Lato
 
 ### v1.0.4
 - Fix NJ Tree Creation
