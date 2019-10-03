@@ -1031,7 +1031,9 @@ NJ_build_collapse <- function(dna, accession, bootstrapValue) {
   ## Create data frame in phangorn format
   aln_phyDat <- phyDat(dna, type="DNA", levels = NULL)
   
-  mt <- modelTest(aln_phyDat)
+  isnotwindows <- Sys.info()['sysname'] != "Windows" ## detect OS for use of multicores in model testing
+  
+  mt <- modelTest(aln_phyDat, multicore = isnotwindows, mc.cores = parallel::detectCores()-1)
   reducedmt <- mt[c(1,5),c(1,3)] #extracts rows 1 and 5 from modeltest, columns 1 and 3
   maxmt <- reducedmt[which.max(reducedmt$logLik),]
   dna_dist <- dist.ml(aln_phyDat, model=maxmt$Model)
@@ -1044,29 +1046,29 @@ NJ_build_collapse <- function(dna, accession, bootstrapValue) {
   #   root(nj(dist.dna(e, model=maxmt$Model)),accession)) #This roots on first sequence in alignment, can substitute with accession number
   # myBoots
   
-  # myBoots <- boot.phylo(aln_NJ, dna, function(e) # Run bootstrap
-  #   # root(nj(dist.dna(e, model=maxmt$Model)), accession))
-  #   dist.dna(e, model = maxmt$Model) %>%
-  #     nj() %>%
-  #     root(accession),
-  #   B = 10
-  # )
-  # #myBoots
-  # 
-  # ## Collapse branches of poorly supported nodes into multifurcations with bootstrap values less than X%
-  # temp <- aln_NJ # Dont want to change chikv_NJ file itself, assign to new variable for safekeeping
-  # N <- length(aln_NJ$tip.label) # Get total number of taxa from tree
-  # toCollapse <- match(which(myBoots<bootstrapValue)+N, temp$edge[,2]) # Match bootstrap value at node to 'destination' edge in second column, returns node number with bs <x%, to be collapsed
-  # temp$edge.length [toCollapse] <- 0 # Assigns 0 to edge lengths of nodes with bs <x%, collapses
-  # ## di2multi collapse or resolve multichotomies in phylogenetic trees
-  # collapsedTree <- di2multi(temp, tol=.00001) # For branch to be considered separate, must be at least this length
-  # 
-  # collapsedTree <- ladderize(collapsedTree)
-  # finaltree <- root(collapsedTree, outgroup = accession, resolve.root = TRUE) 
-  # # rootedTree <<- ladderize(finaltree)
-  # rootedTree <- ladderize(finaltree)
-  # return(rootedTree)
-  return(aln_NJ)
+  myBoots <- ape::boot.phylo(aln_NJ, dna, function(e) # Run bootstrap
+    # root(nj(dist.dna(e, model=maxmt$Model)), accession))
+    ape::dist.dna(e, model = maxmt$Model) %>%
+      ape::nj() %>%
+      ape::root(accession),
+    B = 10
+  )
+  #myBoots
+
+  ## Collapse branches of poorly supported nodes into multifurcations with bootstrap values less than X%
+  temp <- aln_NJ # Dont want to change chikv_NJ file itself, assign to new variable for safekeeping
+  N <- length(aln_NJ$tip.label) # Get total number of taxa from tree
+  toCollapse <- match(which(myBoots<bootstrapValue)+N, temp$edge[,2]) # Match bootstrap value at node to 'destination' edge in second column, returns node number with bs <x%, to be collapsed
+  temp$edge.length [toCollapse] <- 0 # Assigns 0 to edge lengths of nodes with bs <x%, collapses
+  ## di2multi collapse or resolve multichotomies in phylogenetic trees
+  collapsedTree <- di2multi(temp, tol=.00001) # For branch to be considered separate, must be at least this length
+
+  collapsedTree <- ladderize(collapsedTree)
+  finaltree <- root(collapsedTree, outgroup = accession, resolve.root = TRUE)
+  # rootedTree <<- ladderize(finaltree)
+  rootedTree <- ladderize(finaltree)
+  return(rootedTree)
+  # return(aln_NJ)
 }
 
 # Tree and metadata parser #

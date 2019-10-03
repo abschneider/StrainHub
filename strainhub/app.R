@@ -10,11 +10,6 @@ library(shiny)
 library(adegenet)
 library(ade4)
 library(knitr)
-#library(dplyr)
-
-## Load in libraries for NJ tree builder
-#library(phangorn)
-#library(seqinr)
 
 ## Load in libraries for map generation
 #library(leaflet)
@@ -39,8 +34,6 @@ library(htmlwidgets)
 library(rbokeh)
 library(markdown)
 library(rmarkdown)
-#library(phytools)###
-#library(ggtree)###
 library(treeio)
 library(ggplot2)
 library(plotly)
@@ -59,7 +52,7 @@ library(leaflet)
 library(geosphere)
 library(randomcoloR)
 library(globe4r)
-library(seqinr)
+#library(seqinr)
 library(phangorn)
 library(ape)
 
@@ -153,12 +146,12 @@ ui <- tagList(
                           ) %>% div(style="float:left; margin-left:5px;"),
                           br(),
 
-                          jqui_resizable(visNetworkOutput("graphplot", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                          jqui_resizable(visNetworkOutput("graphplot", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
                           #plotlyOutput("treepreview")
-                          jqui_resizable(plotlyOutput("treepreview", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                          jqui_resizable(plotlyOutput("treepreview", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  # tabPanel("Map",
                  #          div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
@@ -166,7 +159,7 @@ ui <- tagList(
                  #          jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  # ),
                  tabPanel("Globe",
-                          jqui_resizable(globe4r::globeOutput("globeoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                          jqui_resizable(globe4r::globeOutput("globeoutput", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
