@@ -1,8 +1,35 @@
+## NJ Example
+
+#treedata <- read.dna("../data/neighbor_joining/chikv/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
+dna <- read.dna("../data/neighbor_joining/chikv/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
+accession <- "EF027139.1_India"
+bootstrapValue <- 0.75
+
+metadata <- readr::read_csv("../data/neighbor_joining/chikv/ECSA_MASA_metadata.csv", col_names = TRUE)
+geodata <- readr::read_csv("../data/neighbor_joining/chikv/ECSA_MASA_geodata.csv", col_names = TRUE)
+
+
+dna <- data("woodmouse")
+
+# njtree <- make_nj_tree(filePath = "../data/chikv_westernafrica.aln.fasta", accession = "HM045815.1")
+treedata <- NJ_build_collapse(dna = dna, accession = accession, bootstrapValue = bootstrapValue)
+
+graph <- makeTransNet(treedata = dna,
+                      metadata = metadata,
+                      columnSelection = "Country",
+                      centralityMetric = 1,
+                      treeType = "nj",
+                      rootSelection = accession)
+
+
 ## Baysian Example
-listStates(treeFileName = "../data/batRABV.mcc.tree",
+treedata <- treeio::read.beast("../data/beast_phylogeography/batRABV.mcc.tree")
+geodata <- readr::read_csv("../data/beast_phylogeography/batRABV_geo.csv", col_names = TRUE)
+
+listStates(treedata,
            treeType = "bayesian")
 
-graph <- makeTransNet(treeFileName = "../data/batRABV.mcc.tree",
+graph <- makeTransNet(treedata,
                       columnSelection = "state",
                       centralityMetric = 6,
                       threshold = 0.9,
@@ -147,29 +174,6 @@ visSave(gr, file = "grfile.html", background = "transparent")
 rmarkdown::pandoc_convert("grfile.html", to = "pdf")
 
 
-############################
-## NJ Tests
-
-
-treedata <- read.dna("../data/neighbor_joining/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
-dna <- read.dna("../data/neighbor_joining/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
-accession <- "EF027139.1_India"
-bootstrapValue <- 0.75
-
-metadata <- readr::read_csv("../data/neighbor_joining/ECSA_MASA_metadata.csv", col_names = TRUE)
-geodata <- readr::read_csv("../data/neighbor_joining/ECSA_MASA_geodata.csv", col_names = TRUE)
-
-
-dna <- data("woodmouse")
-
-make_nj_tree(filePath = "../data/chikv_westernafrica.aln.fasta", accession = "HM045815.1")
-
-makeTransNet(treeFileName = "../data/chikv_westernafrica.aln.fasta",
-             csvFileName = "../data/chikv_westernafrica_metadata.csv",
-             columnSelection = "Host",
-             centralityMetric = 1,
-             treeType = "nj",
-             rootSelection = "HM045815.1")
 
 
 ###############################

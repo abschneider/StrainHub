@@ -117,7 +117,7 @@ ui <- tagList(
 
                br(),
                includeHTML("footer.html"),
-               p("v1.0.5", align = "right") ## Version
+               p("v1.0.6", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -160,11 +160,11 @@ ui <- tagList(
                           #plotlyOutput("treepreview")
                           jqui_resizable(plotlyOutput("treepreview", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
-                 tabPanel("Map",
-                          div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
-                          br(),
-                          jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
-                 ),
+                 # tabPanel("Map",
+                 #          div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
+                 #          br(),
+                 #          jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                 # ),
                  tabPanel("Globe",
                           jqui_resizable(globe4r::globeOutput("globeoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
@@ -231,7 +231,7 @@ server <- function(input, output, session) {
                                    label = '3a. Choose your Metadata File',
                                    accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            "BEAST Phylogeography" = sliderInput("threshold",
-                                                label = "3. Probability Threshold",
+                                                label = "3a. Probability Threshold",
                                                 min = 0, max = 1, value = 0.9),
            "Create Neighbor-Joining Tree" = fileInput('csvfile',
                                                       label = '3a. Choose your Metadata File',
@@ -393,6 +393,10 @@ server <- function(input, output, session) {
                                    label = '3b. Choose your Geodata File',
                                    accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            
+           "BEAST Phylogeography" = fileInput('geodatafile',
+                                              label = '3b. Choose your Geodata File',
+                                              accept = c('text/csv', 'text/plain', '.csv', '.txt')),
+           
            "Create Neighbor-Joining Tree" = fileInput('geodatafile',
                                                       label = '3c. Choose your Geodata File',
                                                       accept = c('text/csv', 'text/plain', '.csv', '.txt'))
@@ -498,10 +502,10 @@ server <- function(input, output, session) {
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
-        need(input$columnselection %in% getUsableColumns(treedata = treedata(),
-                                                         metadata = rv$metadata),
-             "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
+        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use.")#,
+        # need(input$columnselection %in% getUsableColumns(treedata = treedata(),
+        #                                                  metadata = rv$metadata),
+        #      "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       )
       
       graph <-  makeTransNet(treedata = treedata(),
@@ -725,15 +729,29 @@ server <- function(input, output, session) {
             "\n4b. The current selected state doesn't match any columns in the geodata file. Please select a different column.")
       )
       output$globeoutput <- render_globe({make_globe(graph(), rv$geodata, input$columnselection)})
-      }
+      
+    } else if(input$tree_input_type == "BEAST Phylogeography"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file.")
+      )
+      output$globeoutput <- render_globe({make_globe(graph(), rv$geodata, input$columnselection)})
+      
+    } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file.")
+      )
+      output$globeoutput <- render_globe({make_globe(graph(), rv$geodata, input$columnselection)})
+    }
     })
   
   ## Metrics File Output
   metrics <- eventReactive(input$plotbutton, {
     if (input$tree_input_type == "Parsimony"){
       validate(
-        need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$csvfile != "",  "\n2a. Please upload the accompanying metadata file."),
         # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
         if (exists("input$treefile") & exists("input$csvfile")){
           # need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,

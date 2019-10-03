@@ -1,6 +1,11 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.6
+- Big fixes
+- Add better error messaging
+- Add globe map for BEAST and NJ inputs.
+
 ### v1.0.5
 - Add geodata editor
 - Increase flexibility of location column name for geodata
