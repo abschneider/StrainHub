@@ -5,6 +5,7 @@
 - Big fixes
 - Add better error messaging
 - Add globe map for BEAST and NJ inputs.
+- Fix NJ tree generation
 
 ### v1.0.5
 - Add geodata editor

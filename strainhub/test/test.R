@@ -1,4 +1,8 @@
+source("strainhub_functions.R")
+library(dplyr)
+
 ## NJ Example
+library(phangorn)
 
 #treedata <- read.dna("../data/neighbor_joining/chikv/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
 dna <- read.dna("../data/neighbor_joining/chikv/ECSA_MASA_CHIKV.aln.fasta", format="fasta")
@@ -9,7 +13,7 @@ metadata <- readr::read_csv("../data/neighbor_joining/chikv/ECSA_MASA_metadata.c
 geodata <- readr::read_csv("../data/neighbor_joining/chikv/ECSA_MASA_geodata.csv", col_names = TRUE)
 
 
-dna <- data("woodmouse")
+#dna <- data("woodmouse")
 
 # njtree <- make_nj_tree(filePath = "../data/chikv_westernafrica.aln.fasta", accession = "HM045815.1")
 treedata <- NJ_build_collapse(dna = dna, accession = accession, bootstrapValue = bootstrapValue)

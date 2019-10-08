@@ -34,7 +34,7 @@ library(htmlwidgets)
 library(rbokeh)
 library(markdown)
 library(rmarkdown)
-library(treeio)
+#library(treeio)
 library(ggplot2)
 library(plotly)
 library(shinyjqui)
@@ -55,7 +55,8 @@ library(globe4r)
 #library(seqinr)
 library(phangorn)
 library(ape)
-
+#library(ggtree) # Test
+library("ggtree", pos = .Machine$integer.max)
 
 # Define UI for application
 ui <- tagList(

@@ -1050,7 +1050,7 @@ NJ_build_collapse <- function(dna, accession, bootstrapValue) {
     # root(nj(dist.dna(e, model=maxmt$Model)), accession))
     ape::dist.dna(e, model = maxmt$Model) %>%
       ape::nj() %>%
-      ape::root(accession),
+      ape::root.phylo(phy = ., outgroup = accession),
     B = 10
   )
   #myBoots
@@ -1064,7 +1064,8 @@ NJ_build_collapse <- function(dna, accession, bootstrapValue) {
   collapsedTree <- di2multi(temp, tol=.00001) # For branch to be considered separate, must be at least this length
 
   collapsedTree <- ladderize(collapsedTree)
-  finaltree <- root(collapsedTree, outgroup = accession, resolve.root = TRUE)
+  finaltree <- ape::root.phylo(collapsedTree, outgroup = accession, resolve.root = TRUE)
+  # finaltree <- ape::root(collapsedTree, outgroup = accession, resolve.root = TRUE)
   # rootedTree <<- ladderize(finaltree)
   rootedTree <- ladderize(finaltree)
   return(rootedTree)
