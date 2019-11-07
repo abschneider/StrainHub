@@ -555,7 +555,7 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     
     # Builds a hashmap using the leaf node strings as keys and the character states as values
     # H <- hashmap(ref2, metadataRef)
-    H <- hashmap(accessioncharacter, selectedcolumn)
+    H <- hashmap::hashmap(accessioncharacter, selectedcolumn)
     
     # numCharStates <- length(nexusData$characterLabels[[characterIndex]]) # Change to the number above
     # ancestralStates = asr_max_parsimony(rootedTree,
@@ -746,7 +746,7 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     
     # Builds a hashmap using the leaf node strings as keys and the character states as values
     # H <- hashmap(ref2, metadataRef)
-    H <- hashmap(accessioncharacter, selectedcolumn)
+    H <- hashmap::hashmap(accessioncharacter, selectedcolumn)
     
     # numCharStates <- length(nexusData$characterLabels[[characterIndex]]) # Change to the number above
     # ancestralStates = asr_max_parsimony(rootedTree,
@@ -1112,7 +1112,7 @@ parse_metaandtree <- function(treePath, metadata){
 parsimony_ancestral_reconstruction <- function(accessioncharacter, country, characterlabels, rootedTree) {
   
   #builds a hashmap using the leaf node strings as keys and the character states as values
-  H <- hashmap(accessioncharacter, country)
+  H <- hashmap::hashmap(accessioncharacter, country)
   
   # The asr_max_parsimony() function requires a numeric vector that lists the character states
   #   of the leaf nodes in sequence as one of its parameter arguments. The following for loop
@@ -1292,7 +1292,7 @@ make_map_OLD <- function(treedata, metadata){
   
   #builds a hashmap using the leaf node strings as keys and the character states as values
   #H <- hashmap(ref2, metadataRef)
-  H <- hashmap(accessioncharacter, country)
+  H <- hashmap::hashmap(accessioncharacter, country)
   
   # The asr_max_parsimony() function requires a numeric vector that lists the character states
   #   of the leaf nodes in sequence as one of its parameter arguments. The following for loop
@@ -1482,17 +1482,32 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
            color = randomcoloR::distinctColorPalette(k = nrow(graph$x$edges)))
   
   ## Setup for Swoopy.js
+  # esriPlugin <- htmlDependency("leaflet.esri", "1.0.3",
+  #                              src = c(href = "https://cdn.jsdelivr.net/leaflet.esri/1.0.3/"),
+  #                              script = "esri-leaflet.js"
+  # )
+  
   esriPlugin <- htmlDependency("leaflet.esri", "1.0.3",
-                               src = c(href = "https://cdn.jsdelivr.net/leaflet.esri/1.0.3/"),
+                               src = normalizePath("www"),
                                script = "esri-leaflet.js"
   )
   
+  # swoopyPlugin <- htmlDependency("leaflet-swoopy", "3.4.1", 
+  #                                src = c(href = "https://unpkg.com/leaflet-swoopy@3.4.1/build/"),
+  #                                script = "Leaflet.SwoopyArrow.js"
+  # )
+  
+  # swoopyPlugin <- htmlDependency("leaflet-swoopy", "3.4.1", 
+  #                                src = c(href = "https://unpkg.com/leaflet-swoopy@3.4.1/build/"),
+  #                                script = "Leaflet.SwoopyArrow.min.js"
+  # )
+  
   swoopyPlugin <- htmlDependency("leaflet-swoopy", "3.4.1", 
-                                 src = c(href = "https://unpkg.com/leaflet-swoopy@3.4.1/build/"),
-                                 script = "Leaflet.SwoopyArrow.js"
+                                 src = normalizePath("www"),
+                                 script = "Leaflet.SwoopyArrow.min.js"
   )
   
-  registerPlugin <- function(map, plugin) {
+  registerleafletPlugin <- function(map, plugin) {
     map$dependencies <- c(map$dependencies, list(plugin))
     map
   }
@@ -1508,7 +1523,7 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
     toLong <- graph_df$Longitude.to[i]
     color <- graph_df$color[i]
     arrow <- if(arrowFilled){"true"}else{"false"}
-    swoopyIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {color: '",color,"', factor: 0.7, weight: 2, arrowFilled: ",arrow,"}).addTo(map);")
+    swoopyIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {color: '",color,"', factor: 0.7, weight: 2, arrowFilled: ",arrow,"}).addTo(this);")
     #print(swoopyIter)
     swoopys <- paste0(swoopys, swoopyIter)
   }
@@ -1526,7 +1541,7 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
     toLat <- allLocs$latitude[i]
     toLong <- allLocs$longitude[i]
     loc <- allLocs$location[i]
-    labelIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {label: '",loc,"', labelColor: '#ffffff', labelFontSize: 12, iconAnchor: [20, 10], iconSize: [20, 16], factor: 0.7, weight: 0}).addTo(map);")
+    labelIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {label: '",loc,"', labelColor: '#ffffff', labelFontSize: 12, iconAnchor: [20, 10], iconSize: [20, 16], factor: 0.7, weight: 0}).addTo(this);")
     #print(labelIter)
     labels <- paste0(labels, labelIter)
   }
@@ -1534,13 +1549,14 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
   footer <- "}"
   
   renderText <- paste0(header, basemap, swoopys, labels, footer)
+  #renderText <- paste0(header, swoopys, labels, footer)
   
   leafletmap <- leaflet() %>%
-    #addProviderTiles(providers$Esri.WorldImagery) %>% 
-    #addScaleBar(position = "bottomleft") %>% 
+    addProviderTiles(providers$Esri.WorldImagery) %>% 
+    addScaleBar(position = "bottomleft") %>% 
     setView(mean(graph_df$Longitude.from), mean(graph_df$Latitude.from), zoom = 5) %>%
-    registerPlugin(esriPlugin) %>%
-    registerPlugin(swoopyPlugin) %>% 
+    registerleafletPlugin(esriPlugin) %>%
+    registerleafletPlugin(swoopyPlugin) %>% 
     onRender(renderText)
   
   return(leafletmap)

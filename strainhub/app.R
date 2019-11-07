@@ -163,7 +163,7 @@ ui <- tagList(
                           #   onStatus = "success",
                           #   offLabel = "Map",
                           #   offStatus = "info"),
-                          div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right;padding-top:1px;padding-bottom:1px;margin-top:20px"),
+                          #div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right;padding-top:1px;padding-bottom:1px;margin-top:20px"),
                           #br(),
                           jqui_resizable(leafletOutput("mapoutput", height = 700)) %>% withSpinner(color = "#2C3E50", type = 4)
                           #uiOutput("mapswitchoutput")
