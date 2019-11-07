@@ -31,6 +31,7 @@ library(DT)
 library(rhandsontable)
 #library(magrittr)
 library(htmlwidgets)
+library(htmltools)
 library(rbokeh)
 library(markdown)
 library(rmarkdown)
@@ -111,7 +112,7 @@ ui <- tagList(
 
                br(),
                includeHTML("footer.html"),
-               p("v1.0.6", align = "right") ## Version
+               p("v1.0.7", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -154,13 +155,19 @@ ui <- tagList(
                           #plotlyOutput("treepreview")
                           jqui_resizable(plotlyOutput("treepreview", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
-                 # tabPanel("Map",
-                 #          div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right"),
-                 #          br(),
-                 #          jqui_resizable(leafletOutput("mapoutput", height = "700px")) %>% withSpinner(color = "#2C3E50", type = 4)
-                 # ),
-                 tabPanel("Globe",
-                          jqui_resizable(globe4r::globeOutput("globeoutput", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                 tabPanel("Map",
+                          # switchInput(
+                          #   inputId = "mapswitch",
+                          #   label = "<i class=\"fa fa-globe-americas\"></i>",
+                          #   onLabel = "Globe",
+                          #   onStatus = "success",
+                          #   offLabel = "Map",
+                          #   offStatus = "info"),
+                          div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right;padding-top:1px;padding-bottom:1px;margin-top:20px"),
+                          #br(),
+                          jqui_resizable(leafletOutput("mapoutput", height = 700)) %>% withSpinner(color = "#2C3E50", type = 4)
+                          #uiOutput("mapswitchoutput")
+                          #jqui_resizable(globe4r::globeOutput("globeoutput", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
@@ -207,13 +214,13 @@ server <- function(input, output, session) {
   })
   
   ## Show/Hide Maps based on Tree Type Input
-  observe({
-    req(input$tree_input_type)
-    if (input$tree_input_type != "BEAST Phylogeography") {
-      hideTab(inputId = "toptabs", target = "Map")
-    }
-    else showTab(inputId = "toptabs", target = "Map")
-  })
+  # observe({
+  #   req(input$tree_input_type)
+  #   if (input$tree_input_type != "BEAST Phylogeography") {
+  #     hideTab(inputId = "toptabs", target = "Map")
+  #   }
+  #   else showTab(inputId = "toptabs", target = "Map")
+  # })
   
   ## Change UI Requirements based on Tree Type Input
   output$treeuiparams <- renderUI({
@@ -440,6 +447,14 @@ server <- function(input, output, session) {
   #                  choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
   #                  selected = "TRUE")
   #   ))
+  # })
+  
+  ## Show Map or Globe
+  # output$mapswitchoutput <- renderUI({
+  #   switch(input$mapswitch,
+  #          "Map" = jqui_resizable(leafletOutput("mapoutput", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4),
+  #          "Globe" = jqui_resizable(globe4r::globeOutput("globeoutput", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
+  #   )
   # })
   
   ## Load in tree data
@@ -676,41 +691,34 @@ server <- function(input, output, session) {
   
   ## Map Output
   output$mapoutput <- eventReactive(input$plotbutton, {
-   if (input$tree_input_type == "Create Neighbor-Joining Tree"){
-      rootedTree <- NJ_build_collapse(dna = treedata(),
-                                      accession = input$rootselect,
-                                      bootstrapValue = 80)
+    if (input$tree_input_type == "Parsimony"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
+        need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file."),
+        need(input$columnselection %in% colnames(rv$geodata),
+             "\n4b. The current selected state doesn't match any columns in the geodata file. Please select a different column.")
+      )
+      output$mapoutput <- leaflet::renderLeaflet({make_map(graph(), rv$geodata, input$columnselection, basemapLayer = "Imagery", arrowFilled = TRUE)})
       
-      parsedInfo <- parse_metaandtree(treePath = rootedTree,
-                                      metadata = rv$metadata)
-                        
+    } else if(input$tree_input_type == "BEAST Phylogeography"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file.")
+      )
+      output$mapoutput <- leaflet::renderLeaflet({make_map(graph(), rv$geodata, input$columnselection, basemapLayer = "Imagery", arrowFilled = TRUE)})
       
-      Edge_list <- parsimony_ancestral_reconstruction(accessioncharacter = parsedInfo$accessioncharacter,
-                                                      country = parsedInfo$country,
-                                                      characterlabels = parsedInfo$characterlabels,
-                                                      rootedTree = rootedTree)
-      
-      output$mapoutput <- renderLeaflet({
-        make_nj_map(#geodata = geodata(),
-                    geodata = rv$geodata,
-                    transmissionpath = Edge_list,
-                    linecolor = "red",
-                    circlecolor = "grey")
-      })
-    } else {
-      # validate(
-      #   need(input$treefile != "", "\n1. Please upload a tree file."),
-      #   need(input$csvfile != "",  "\n2. Please upload the accompanying metadata file."),
-      # ),
-      output$mapoutput <- renderLeaflet({
-        make_map(treefile = treedata(),
-                 metadata = rv$metadata)
-      })
+    } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
+      validate(
+        need(input$treefile != "", "\n1. Please upload a tree file."),
+        need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file.")
+      )
+      output$mapoutput <- leaflet::renderLeaflet({make_map(graph(), rv$geodata, input$columnselection, basemapLayer = "Imagery", arrowFilled = TRUE)})
     }
-    
   })
   
-  
+    
   ## Globe Output
   output$globeoutput <- eventReactive(input$plotbutton, {
     if (input$tree_input_type == "Parsimony"){

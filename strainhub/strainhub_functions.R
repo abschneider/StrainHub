@@ -1247,7 +1247,7 @@ make_nj_map <- function(geodata, transmissionpath, linecolor = "red", circlecolo
 }
 
 
-make_map <- function(treedata, metadata){
+make_map_OLD <- function(treedata, metadata){
   # nexusTree2 <- read.tree(treeFileName) #imports file in newick format instead of nexus.
   nexusTree2 <- treedata
   
@@ -1467,4 +1467,81 @@ make_globe <- function(graph, geodata, columnSelection){
     globe_img_url(url = image_url("blue-marble"))
   
   return(globe)
+}
+
+make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", arrowFilled = TRUE){
+  # locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = colnames(geodata)[1]))
+  locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = columnSelection))
+  
+  graph_df <- graph$x$edges %>%
+    select(-value) %>% 
+    dplyr::inner_join(locations, by = c("from" = "id")) %>% 
+    dplyr::inner_join(locations, by = c("to" = "id"), suffix = c(".from", ".to")) %>% 
+    mutate(path = paste0(label.from,"->",label.to),
+           stroke = as.numeric(value.from)/10,
+           color = randomcoloR::distinctColorPalette(k = nrow(graph$x$edges)))
+  
+  ## Setup for Swoopy.js
+  esriPlugin <- htmlDependency("leaflet.esri", "1.0.3",
+                               src = c(href = "https://cdn.jsdelivr.net/leaflet.esri/1.0.3/"),
+                               script = "esri-leaflet.js"
+  )
+  
+  swoopyPlugin <- htmlDependency("leaflet-swoopy", "3.4.1", 
+                                 src = c(href = "https://unpkg.com/leaflet-swoopy@3.4.1/build/"),
+                                 script = "Leaflet.SwoopyArrow.js"
+  )
+  
+  registerPlugin <- function(map, plugin) {
+    map$dependencies <- c(map$dependencies, list(plugin))
+    map
+  }
+  
+  header <- "function(el, x) {"
+  ## https://esri.github.io/esri-leaflet/api-reference/layers/basemap-layer.html
+  basemap <- paste0("L.esri.basemapLayer('",basemapLayer,"').addTo(this);")
+  swoopys <- ""
+  for (i in 1:nrow(graph_df)){
+    fromLat <- graph_df$Latitude.from[i]
+    fromLong <- graph_df$Longitude.from[i]
+    toLat <- graph_df$Latitude.to[i]
+    toLong <- graph_df$Longitude.to[i]
+    color <- graph_df$color[i]
+    arrow <- if(arrowFilled){"true"}else{"false"}
+    swoopyIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {color: '",color,"', factor: 0.7, weight: 2, arrowFilled: ",arrow,"}).addTo(map);")
+    #print(swoopyIter)
+    swoopys <- paste0(swoopys, swoopyIter)
+  }
+  
+  fromLocs <- graph_df %>% select(label.from, Latitude.from, Longitude.from)
+  colnames(fromLocs) <- c("location", "latitude", "longitude")
+  toLocs <- graph_df %>% select(label.to, Latitude.to, Longitude.to)
+  colnames(toLocs) <- c("location", "latitude", "longitude")
+  allLocs <- fromLocs %>% rbind(toLocs) %>% unique()
+  labels <- ""
+  
+  for (i in 1:nrow(allLocs)){
+    fromLat <- allLocs$latitude[i]
+    fromLong <- allLocs$longitude[i]
+    toLat <- allLocs$latitude[i]
+    toLong <- allLocs$longitude[i]
+    loc <- allLocs$location[i]
+    labelIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {label: '",loc,"', labelColor: '#ffffff', labelFontSize: 12, iconAnchor: [20, 10], iconSize: [20, 16], factor: 0.7, weight: 0}).addTo(map);")
+    #print(labelIter)
+    labels <- paste0(labels, labelIter)
+  }
+  
+  footer <- "}"
+  
+  renderText <- paste0(header, basemap, swoopys, labels, footer)
+  
+  leafletmap <- leaflet() %>%
+    #addProviderTiles(providers$Esri.WorldImagery) %>% 
+    #addScaleBar(position = "bottomleft") %>% 
+    setView(mean(graph_df$Longitude.from), mean(graph_df$Latitude.from), zoom = 5) %>%
+    registerPlugin(esriPlugin) %>%
+    registerPlugin(swoopyPlugin) %>% 
+    onRender(renderText)
+  
+  return(leafletmap)
 }

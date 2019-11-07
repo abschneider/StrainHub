@@ -44,6 +44,7 @@ print(graph)
 treedata <- ape::read.tree("../data/parsimonious/chikv/chikv_westernafrica.phy")
 metadata <- readr::read_csv("../data/parsimonious/chikv/chikv_westernafrica_metadata.csv", col_names = TRUE)
 geodata <- readr::read_csv("../data/parsimonious/chikv/chikv_geo.csv", col_names = TRUE)
+columnSelection <- "Country"
 
 listStates(treedata,
            metadata,
@@ -105,6 +106,8 @@ create_globe() %>%
 
 
 make_globe(graph, geodata, columnSelection)
+
+make_map(graph, geodata, columnSelection)
 
 ## ThreeJS Globe
 library(threejs)

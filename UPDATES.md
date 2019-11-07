@@ -1,8 +1,11 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.7
+- Changed mapping to be Swoopy and Leaflet-based
+
 ### v1.0.6
-- Big fixes
+- Bug fixes
 - Add better error messaging
 - Add globe map for BEAST and NJ inputs.
 - Fix NJ tree generation
