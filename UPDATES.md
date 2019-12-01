@@ -1,6 +1,14 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.8
+- Added geodata editor for BEAST trees
+- Hide metadata editor and geodata editor if files haven't been uploaded
+- Add bootstrap value slider for NJ tree generation
+- Add mapping options (basemap options, arrow styles, etc.)
+- Enhance download capabilities for map, network, and metrics table
+- Add error message is user forgets to specify NJ tree root
+
 ### v1.0.7
 - Changed mapping to be Swoopy and Leaflet-based
 

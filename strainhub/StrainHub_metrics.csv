@@ -1,4 +1,11 @@
 Metastates,Degree Centrality,Indegree Centrality,Outdegree Centrality,Betweenness Centrality,Closeness Centrality,Source Hub Ratio
-Cote_dIvoire,2,1,1,0,0.333333333333333,0.5
-Nigeria,1,1,0,0,0.333333333333333,0
-Senegal,3,1,2,1,0.5,0.666666666666667
+Angola,1,1,0,0,0.0588235294117647,0
+Brazil,9,0,9,0,0.111111111111111,1
+Cameroon,1,1,0,0,0.0588235294117647,0
+Central_African_Republic,1,1,0,0,0.0588235294117647,0
+Gabon,1,1,0,0,0.0588235294117647,0
+Haiti,1,1,0,0,0.0588235294117647,0
+India,1,1,0,0,0.0588235294117647,0
+Republic_of_the_Congo,1,1,0,0,0.0588235294117647,0
+Uganda,1,1,0,0,0.0588235294117647,0
+USA,1,1,0,0,0.0588235294117647,0

@@ -26,11 +26,13 @@ packages <- c("shiny",
               "htmlwidgets",
               "globe4r",
               "randomcoloR",
+              "colourpicker",
               "rbokeh",
               "markdown",
               "rmarkdown",
               "ggtree",
               "plotly",
+              "webshot",
               "shinyjqui")
 
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {

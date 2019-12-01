@@ -40,6 +40,7 @@ library(ggplot2)
 library(plotly)
 library(shinyjqui)
 library(shinycssloaders)
+library(webshot)
 source("strainhub_functions.R")
 
 ## Load in last
@@ -52,6 +53,7 @@ library(magrittr)
 library(leaflet)
 library(geosphere)
 library(randomcoloR)
+library(colourpicker)
 library(globe4r)
 #library(seqinr)
 library(phangorn)
@@ -74,6 +76,7 @@ ui <- tagList(
                            label = "1. Transmission Network Method",
                            choices = c("Parsimony", "BEAST Phylogeography", "Create Neighbor-Joining Tree")),
                uiOutput("inputtree"),
+               uiOutput("bootstrapval"),
                div(uiOutput("metadatabuilderparams"), style="float:right"),
                br(),
                uiOutput("treeuiparams"),
@@ -112,7 +115,7 @@ ui <- tagList(
 
                br(),
                includeHTML("footer.html"),
-               p("v1.0.7", align = "right") ## Version
+               p("v1.0.8", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -156,6 +159,96 @@ ui <- tagList(
                           jqui_resizable(plotlyOutput("treepreview", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Map",
+                          dropdownButton(
+                            tags$h3("Map Settings"),
+                            fluidRow(
+                              # column(6, radioButtons("maparrowedges",
+                              #                        label = "Line End Style",
+                              #                        choices = c("Arrows" = "FALSE", "Lines" = "TRUE"),
+                              #                        selected = "FALSE")),
+                              column(6, switchInput("maparrowedges",
+                                                    label = "Line End",
+                                                    onLabel = "<i class=\"fas fa-minus\"></i>",
+                                                    offLabel = "<i class=\"fas fa-arrows-alt-h\"></i>",
+                                                    onStatus = "secondary", 
+                                                    offStatus = "secondary")),
+                              
+                              # column(6, radioButtons("maparrowfill",
+                              #                       label = "Arrow Style",
+                              #                       choices = c("Filled" = "TRUE", "Unfilled" = "FALSE"),
+                              #                       selected = "TRUE"))),
+                              
+                              column(6, switchInput("maparrowfill",
+                                                    label = "Arrow Style",
+                                                    onLabel = "<i class=\"fas fa-caret-left\"></i>",
+                                                    offLabel = "<i class=\"fas fa-angle-right\"></i>",
+                                                    value = TRUE,
+                                                    onStatus = "secondary", 
+                                                    offStatus = "secondary"))),
+                            
+                            fluidRow(
+                              # column(6, radioButtons("mapshowlabels",
+                              #                        label = "Location Labels",
+                              #                        choices = c("Show" = "TRUE", "Hide" = "FALSE"),
+                              #                        selected = "TRUE")),
+                              column(6, switchInput("mapshowlabels",
+                                                    label = "Location Labels",
+                                                    onLabel = "On",
+                                                    offLabel = "Off",
+                                                    value = TRUE,
+                                                    onStatus = "info", 
+                                                    offStatus = "secondary")),
+                              
+                              # column(6, radioButtons("mapshowpoints",
+                              #                        label = "Location Points",
+                              #                        choices = c("Show" = "TRUE", "Hide" = "FALSE"),
+                              #                        selected = "TRUE"))),
+                              column(6, switchInput("mapshowpoints",
+                                                    label = "Location Points",
+                                                    onLabel = "On",
+                                                    offLabel = "Off",
+                                                    onStatus = "info", 
+                                                    offStatus = "secondary"))),
+
+                            colourInput("pointColorPicker", "Point Color", "#000000"),
+                            sliderInput("pointOpacityPicker",
+                                        label = "Point Opacity",
+                                        min = 0, max = 1, value = 0.5),
+                            colourInput("labelColorPicker", "Label Color", "#000000"),
+                            selectInput("basemapselection",
+                                         label = "Map Style",
+                                         choices = list("Streets" = "Streets",
+                                                        "Topographic" = "Topographic",
+                                                        "NationalGeographic" = "NationalGeographic",
+                                                        "Oceans" = "Oceans",
+                                                        "Gray" = "Gray",
+                                                        "DarkGray" = "DarkGray",
+                                                        "Imagery" = "Imagery",
+                                                        "ShadedRelief" = "ShadedRelief",
+                                                        "Terrain" = "Terrain"),
+                                         selected = "Gray"),
+                            circle = FALSE,
+                            status = "success",
+                            icon = icon("gear"),
+                            width = "300px",
+                            tooltip = tooltipOptions(title = "Map Settings")
+                          ) %>% div(style="float:left"),
+                          p(" "),
+                          dropdownButton(
+                            tags$h3("Download Map"),
+                            downloadButton("exportmaphtml",
+                                           "Export as HTML",
+                                           style="color: white;"),
+                            br(),
+                            downloadButton("exportmappng",
+                                           "Export as PNG",
+                                           style="color: white;"),
+                            circle = FALSE,
+                            status = "primary",
+                            icon = icon("download"),
+                            width = "300px",
+                            tooltip = tooltipOptions(title = "Download Map As...")
+                          ) %>% div(style="float:left; margin-left:5px;"),
                           # switchInput(
                           #   inputId = "mapswitch",
                           #   label = "<i class=\"fa fa-globe-americas\"></i>",
@@ -164,8 +257,8 @@ ui <- tagList(
                           #   offLabel = "Map",
                           #   offStatus = "info"),
                           #div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right;padding-top:1px;padding-bottom:1px;margin-top:20px"),
-                          #br(),
-                          jqui_resizable(leafletOutput("mapoutput", height = 700)) %>% withSpinner(color = "#2C3E50", type = 4)
+                          br(),
+                          jqui_resizable(leafletOutput("mapoutput", height = "750px")) %>% withSpinner(color = "#2C3E50", type = 4)
                           #uiOutput("mapswitchoutput")
                           #jqui_resizable(globe4r::globeOutput("globeoutput", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
@@ -208,10 +301,22 @@ server <- function(input, output, session) {
                                               label = '2. Choose your Tree File',
                                               accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
            "Create Neighbor-Joining Tree" = fileInput('treefile',
-                          label = '2. Choose your Sequence File',
+                          label = '2a. Choose your Sequence File',
                           accept = c('text/fasta', 'text/plain', '.fasta', '.afa', '.fna', '.ffn'))
     )
   })
+  
+  output$bootstrapval <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Create Neighbor-Joining Tree" = sliderInput("bootstrapvalue",
+                                                        label = "2b. Bootstrap Value",
+                                                        min = 1, max = 100, value = 25)
+    )
+  })
+  
   
   ## Show/Hide Maps based on Tree Type Input
   # observe({
@@ -244,6 +349,9 @@ server <- function(input, output, session) {
   ## Metadata Editor
   output$metadatabuilderparams <- renderUI({
     if (is.null(input$tree_input_type))
+      return()
+    
+    if (is.null(input$csvfile$datapath))
       return()
     
     switch(input$tree_input_type,
@@ -314,8 +422,17 @@ server <- function(input, output, session) {
     if (is.null(input$tree_input_type))
       return()
     
+    if (is.null(input$geodatafile$datapath))
+      return()
+    
     switch(input$tree_input_type,
            "Parsimony" = actionButton("geodatabuilder",
+                                      label = "Edit Geodata",
+                                      icon = icon("wrench", lib = "font-awesome"),
+                                      class = "btn-secondary",
+                                      style = 'padding-top:1px;padding-bottom:1px;margin-top:20px'),
+           
+           "BEAST Phylogeography" = actionButton("geodatabuilder",
                                       label = "Edit Geodata",
                                       icon = icon("wrench", lib = "font-awesome"),
                                       class = "btn-secondary",
@@ -530,7 +647,8 @@ server <- function(input, output, session) {
         need(input$treefile != "", "\n2. Please upload a fasta file."),
         need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
         need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
-        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use.")#,
+        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
+        need(input$rootselect != "e.g. HM045815.1", "\n3b. Make sure you enter the Taxa ID of the desired tree root.")
         # need(input$columnselection %in% getUsableColumns(treedata = treedata(),
         #                                                  metadata = rv$metadata),
         #      "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
@@ -543,6 +661,7 @@ server <- function(input, output, session) {
                              centralityMetric = input$metricradio,
                              threshold = input$threshold,
                              rootSelection = input$rootselect,
+                             bootstrapValue = input$bootstrapvalue,
                              treeType = "nj")
       # height = paste0(0.75*session$clientData$output_graph_width,"px")
       
@@ -564,41 +683,160 @@ server <- function(input, output, session) {
   
   
   ## Export Plot
+  # output$exportplothtml <- downloadHandler(
+  #   filename = function() {
+  #     paste0(input$treefile, "_StrainHub_network.html")
+  #   },
+  #   content = function(file) {
+  #     htmlwidgets::saveWidget(graph() %>%
+  #                               visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+  #                                                                scaleFactor = 0.75))) %>% 
+  #                               visInteraction(navigationButtons = FALSE) %>%
+  #                               visOptions(width = 1920,
+  #                                          height = 1080,
+  #                                          autoResize = TRUE),
+  #                             # title = paste0(input$treefile, "- Network Generated by StrainHub"),
+  #                             file = file)
+  #   }
+  # )
   output$exportplothtml <- downloadHandler(
     filename = function() {
       paste0(input$treefile, "_StrainHub_network.html")
     },
     content = function(file) {
-      htmlwidgets::saveWidget(graph() %>%
-                                visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
-                                                                 scaleFactor = 0.75))) %>% 
-                                visInteraction(navigationButtons = FALSE) %>%
-                                visOptions(width = 1920,
-                                           height = 1080,
-                                           autoResize = TRUE),
-                              # title = paste0(input$treefile, "- Network Generated by StrainHub"),
-                              file = file)
+      m <- graph() %>%
+        visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+                                         scaleFactor = 0.75))) %>% 
+        visInteraction(navigationButtons = FALSE) %>%
+        visOptions(width = 1920,
+                   height = 1080,
+                   autoResize = TRUE)
+      
+      htmlwidgets::saveWidget(m, "tempplot.html", selfcontained = TRUE)
+      file.copy("tempplot.html", file)
     }
   )
+  
+  # output$exportplotpng <- downloadHandler(
+  #   filename = function() {
+  #     paste0(input$treefile, "_StrainHub_network.png")
+  #   },
+  #   content = function(file) {
+  #     
+  #     rbokeh::widget2png(graph() %>%
+  #                         visInteraction(navigationButtons = FALSE) %>%
+  #                          visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+  #                                                           scaleFactor = 0.75))) %>% 
+  #                               visOptions(width = 2000,
+  #                                          height = 2000,
+  #                                          autoResize = TRUE),
+  #                             # title = paste0(input$treefile, "- Network Generated by StrainHub"),
+  #                             file = file)
+  #   }
+  # )
   
   output$exportplotpng <- downloadHandler(
     filename = function() {
       paste0(input$treefile, "_StrainHub_network.png")
     },
     content = function(file) {
+      m <- graph() %>%
+        visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+                                         scaleFactor = 0.75))) %>% 
+        visInteraction(navigationButtons = FALSE) %>%
+        visOptions(width = 1920,
+                   height = 1080,
+                   autoResize = TRUE)
       
-      rbokeh::widget2png(graph() %>%
-                          visInteraction(navigationButtons = FALSE) %>%
-                           visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
-                                                            scaleFactor = 0.75))) %>% 
-                                visOptions(width = 2000,
-                                           height = 2000,
-                                           autoResize = TRUE),
-                              # title = paste0(input$treefile, "- Network Generated by StrainHub"),
-                              file = file)
+      htmlwidgets::saveWidget(m, "tempplot.html", selfcontained = TRUE)
+      
+      ## HD: 
+      webshot::webshot("tempplot.html", file = "tempplot.png", vwidth = 1920, vheight = 1080)
+      
+      ## 4K:
+      #webshot::webshot("tempplot.html", file = "tempplot.png", vwidth = 3840, vheight = 2160, zoom = 2)
+      
+      file.copy("tempplot.png", file)
     }
   )
   
+  ## Export Map
+  
+  # output$exportmappng <- downloadHandler(
+  #   filename = function() {
+  #     paste0(input$treefile, "_StrainHub_map.png")
+  #   },
+  #   content = function(file) {
+  #     
+  #     mapview::mapshot(make_map(graph(),
+  #                               rv$geodata,
+  #                               input$columnselection,
+  #                               basemapLayer = input$basemapselection,
+  #                               hideArrowHead = as.logical(input$maparrowedges),
+  #                               arrowFilled = as.logical(input$maparrowfill),
+  #                               showLabels = as.logical(input$mapshowlabels),
+  #                               labelColor = input$labelColorPicker,
+  #                               showPoints = as.logical(input$mapshowpoints),
+  #                               pointColor = input$pointColorPicker,
+  #                               pointOpacity = input$pointOpacityPicker),
+  #                      file = file)
+  #   }
+  # )
+  
+  output$exportmappng <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_map.png")
+    },
+    content = function(file) {
+      
+      #m <- leafletProxy("mapoutput")
+      m <- make_map(graph(),
+                    rv$geodata,
+                    input$columnselection,
+                    basemapLayer = input$basemapselection,
+                    hideArrowHead = as.logical(input$maparrowedges),
+                    arrowFilled = as.logical(input$maparrowfill),
+                    showLabels = as.logical(input$mapshowlabels),
+                    labelColor = input$labelColorPicker,
+                    showPoints = as.logical(input$mapshowpoints),
+                    pointColor = input$pointColorPicker,
+                    pointOpacity = input$pointOpacityPicker)
+      
+      htmlwidgets::saveWidget(m, "tempmap.html", selfcontained = TRUE)
+      ## HD:
+      webshot::webshot("tempmap.html", file = "tempmap.png", vwidth = 1920, vheight = 1080)
+      
+      ## 4K:
+      # webshot::webshot("tempmap.html", file = "tempmap.png", vwidth = 3840, vheight = 2160, zoom = 2)
+
+      file.copy("tempmap.png", file)
+    }
+  )
+  
+  output$exportmaphtml <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_map.html")
+    },
+    content = function(file) {
+      
+      #m <- leafletProxy("mapoutput")
+      m <- make_map(graph(),
+                    rv$geodata,
+                    input$columnselection,
+                    basemapLayer = input$basemapselection,
+                    hideArrowHead = as.logical(input$maparrowedges),
+                    arrowFilled = as.logical(input$maparrowfill),
+                    showLabels = as.logical(input$mapshowlabels),
+                    labelColor = input$labelColorPicker,
+                    showPoints = as.logical(input$mapshowpoints),
+                    pointColor = input$pointColorPicker,
+                    pointOpacity = input$pointOpacityPicker)
+      
+      htmlwidgets::saveWidget(m, "tempmap.html", selfcontained = TRUE)
+      
+      file.copy("tempmap.html", file)
+    }
+  )
   
   ## Tree File Preview
   
@@ -619,15 +857,16 @@ server <- function(input, output, session) {
         
         import::from(ggtree, `%<+%`, ggtree)
         
-        t1 <- ggtree(treepreview, ladderize = F) %<+% rv$metadata +
+        t1 <- ggtree(treepreview, ladderize = T) %<+% rv$metadata +
           geom_point(aes_string(color = colorby, size = 3)) +
           geom_text(aes(label = label),
                     hjust = 0,
+                    #angle = -90,
                     position = position_nudge(x = 0.5)) +
           ggtitle(paste0("Phylogeny of `", input$treefile$name, "`"),
                   subtitle = "Generated by StrainHub") +
           scale_fill_brewer(palette="Spectral") +
-          scale_x_continuous(expand = c(.1, .1))
+          scale_x_continuous(expand = c(.1, .1)) # + scale_x_reverse() + coord_flip()
         
         plotly::ggplotly(t1, tooltip = c("label", "colour"))
         
@@ -665,7 +904,7 @@ server <- function(input, output, session) {
         # treepreview <- make_nj_tree(filePath = input$treefile$datapath, accession = input$rootselect)
         treepreview <- NJ_build_collapse(dna = treedata(),
                                          accession = input$rootselect,
-                                         bootstrapValue = 80)
+                                         bootstrapValue = input$bootstrapvalue)
         
         # md <- read_csv(input$csvfile$datapath)
 
@@ -700,24 +939,67 @@ server <- function(input, output, session) {
         need(input$columnselection %in% colnames(rv$geodata),
              "\n4b. The current selected state doesn't match any columns in the geodata file. Please select a different column.")
       )
-      output$mapoutput <- leaflet::renderLeaflet({make_map(graph(), rv$geodata, input$columnselection, basemapLayer = "Imagery", arrowFilled = TRUE)})
+      output$mapoutput <- leaflet::renderLeaflet({
+        make_map(graph(),
+                 rv$geodata,
+                 input$columnselection,
+                 basemapLayer = input$basemapselection,
+                 hideArrowHead = as.logical(input$maparrowedges),
+                 arrowFilled = as.logical(input$maparrowfill),
+                 showLabels = as.logical(input$mapshowlabels),
+                 labelColor = input$labelColorPicker,
+                 showPoints = as.logical(input$mapshowpoints),
+                 pointColor = input$pointColorPicker,
+                 pointOpacity = input$pointOpacityPicker)
+        })
       
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
         need(input$treefile != "", "\n1. Please upload a tree file."),
         need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file.")
       )
-      output$mapoutput <- leaflet::renderLeaflet({make_map(graph(), rv$geodata, input$columnselection, basemapLayer = "Imagery", arrowFilled = TRUE)})
+      output$mapoutput <- leaflet::renderLeaflet({
+        make_map(graph(),
+                 rv$geodata,
+                 input$columnselection,
+                 basemapLayer = input$basemapselection,
+                 hideArrowHead = as.logical(input$maparrowedges),
+                 arrowFilled = as.logical(input$maparrowfill),
+                 showLabels = as.logical(input$mapshowlabels),
+                 labelColor = input$labelColorPicker,
+                 showPoints = as.logical(input$mapshowpoints),
+                 pointColor = input$pointColorPicker,
+                 pointOpacity = input$pointOpacityPicker)
+        })
       
     } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
       validate(
         need(input$treefile != "", "\n1. Please upload a tree file."),
         need(input$geodatafile != "",  "\n3b. Please upload the accompanying geodata file.")
       )
-      output$mapoutput <- leaflet::renderLeaflet({make_map(graph(), rv$geodata, input$columnselection, basemapLayer = "Imagery", arrowFilled = TRUE)})
+      output$mapoutput <- leaflet::renderLeaflet({
+        make_map(graph(),
+                 rv$geodata,
+                 input$columnselection,
+                 basemapLayer = input$basemapselection,
+                 hideArrowHead = as.logical(input$maparrowedges),
+                 arrowFilled = as.logical(input$maparrowfill),
+                 showLabels = as.logical(input$mapshowlabels),
+                 labelColor = input$labelColorPicker,
+                 showPoints = as.logical(input$mapshowpoints),
+                 pointColor = input$pointColorPicker,
+                 pointOpacity = input$pointOpacityPicker)
+        })
     }
   })
   
+  ## Map Settings
+  # output$mapsettings <- renderUI({
+  #   actionButton("mapsettings",
+  #                label = "",
+  #                icon = icon("cog", lib = "font-awesome"),
+  #                class = "btn-secondary")
+  # })
     
   ## Globe Output
   output$globeoutput <- eventReactive(input$plotbutton, {
@@ -747,6 +1029,8 @@ server <- function(input, output, session) {
       output$globeoutput <- render_globe({make_globe(graph(), rv$geodata, input$columnselection)})
     }
     })
+  
+  
   
   ## Metrics File Output
   metrics <- eventReactive(input$plotbutton, {
@@ -799,7 +1083,7 @@ server <- function(input, output, session) {
       paste0(input$treefile, "_StrainHub_metrics.csv")
     },
     content = function(file) {
-      write.csv(read.csv(paste0(input$treefile$datapath,"_StrainHub_metrics.csv")), file, row.names = FALSE)
+      write.csv(read.csv("StrainHub_metrics.csv"), file, row.names = FALSE)
     }
   )
   

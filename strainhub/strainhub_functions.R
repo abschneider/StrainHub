@@ -511,7 +511,7 @@ getUsableColumns <- function(treedata, metadata){
 #'   $success - a logical vector of length one that says whether the process was a success or not
 #'############################
 
-makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityMetric, threshold = 0.9, treeType = "parsimonious", rootSelection = NULL){
+makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityMetric, threshold = 0.9, bootstrapValue = NULL, treeType = "parsimonious", rootSelection = NULL){
   
   if(treeType == "parsimonious"){
     # fileName <- readline(prompt = "Type in the full path to the nexus file you want to read in: ")
@@ -716,7 +716,7 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
   } else if(treeType == "nj"){
 
     # nexusTree2 <- make_nj_tree(dna = treedata, accession = rootSelection) # Don't Use
-    nexusTree2 <- NJ_build_collapse(dna = treedata, accession = rootSelection, bootstrapValue = 80)
+    nexusTree2 <- NJ_build_collapse(dna = treedata, accession = rootSelection, bootstrapValue = bootstrapValue)
     # nexusTree2 <- treedata
     
     # dataoriginal <- readr::read_csv(csvFileName, col_names = TRUE) #imports csv metadata file. It has to have header and ID column has to be the first and labeled "Accession" in order for script to work. 
@@ -1469,7 +1469,7 @@ make_globe <- function(graph, geodata, columnSelection){
   return(globe)
 }
 
-make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", arrowFilled = TRUE){
+make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", hideArrowHead = FALSE, arrowFilled = TRUE, showLabels = FALSE, labelColor = "#000000", showPoints = FALSE, pointColor = "#000000", pointOpacity = 0.5){
   # locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = colnames(geodata)[1]))
   locations <- graph$x$nodes %>% inner_join(geodata, by = c("label" = columnSelection))
   
@@ -1478,7 +1478,8 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
     dplyr::inner_join(locations, by = c("from" = "id")) %>% 
     dplyr::inner_join(locations, by = c("to" = "id"), suffix = c(".from", ".to")) %>% 
     mutate(path = paste0(label.from,"->",label.to),
-           stroke = as.numeric(value.from)/10,
+           #stroke = as.numeric(value.from)/10,
+           stroke = as.numeric(value.from)/5,
            color = randomcoloR::distinctColorPalette(k = nrow(graph$x$edges)))
   
   ## Setup for Swoopy.js
@@ -1523,7 +1524,8 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
     toLong <- graph_df$Longitude.to[i]
     color <- graph_df$color[i]
     arrow <- if(arrowFilled){"true"}else{"false"}
-    swoopyIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {color: '",color,"', factor: 0.7, weight: 2, arrowFilled: ",arrow,"}).addTo(this);")
+    head <- if(hideArrowHead){"true"}else{"false"}
+    swoopyIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {color: '",color,"', factor: 0.7, weight: 2, hideArrowHead: ",head,", arrowFilled: ",arrow,"}).addTo(this);")
     #print(swoopyIter)
     swoopys <- paste0(swoopys, swoopyIter)
   }
@@ -1533,22 +1535,40 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
   toLocs <- graph_df %>% select(label.to, Latitude.to, Longitude.to)
   colnames(toLocs) <- c("location", "latitude", "longitude")
   allLocs <- fromLocs %>% rbind(toLocs) %>% unique()
-  labels <- ""
   
-  for (i in 1:nrow(allLocs)){
-    fromLat <- allLocs$latitude[i]
-    fromLong <- allLocs$longitude[i]
-    toLat <- allLocs$latitude[i]
-    toLong <- allLocs$longitude[i]
-    loc <- allLocs$location[i]
-    labelIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {label: '",loc,"', labelColor: '#ffffff', labelFontSize: 12, iconAnchor: [20, 10], iconSize: [20, 16], factor: 0.7, weight: 0}).addTo(this);")
-    #print(labelIter)
-    labels <- paste0(labels, labelIter)
+  labels <- ""
+  if (showLabels){
+    
+    for (i in 1:nrow(allLocs)){
+      fromLat <- allLocs$latitude[i]
+      fromLong <- allLocs$longitude[i]
+      toLat <- allLocs$latitude[i]
+      toLong <- allLocs$longitude[i]
+      loc <- allLocs$location[i]
+      labelIter <- paste0("L.swoopyArrow([",fromLat,",",fromLong,"], [",toLat,",",toLong,"], {label: '",loc,"', labelColor: '",labelColor,"', labelFontSize: 14, iconAnchor: [-5, -5], iconSize: [20, 16], factor: 0.7, weight: 0}).addTo(this);")
+      #print(labelIter)
+      labels <- paste0(labels, labelIter)
+    }
   }
+  
+  points <- ""
+  
+  if (showPoints){
+    for (i in 1:nrow(allLocs)){
+      fromLat <- allLocs$latitude[i]
+      fromLong <- allLocs$longitude[i]
+      toLat <- allLocs$latitude[i]
+      toLong <- allLocs$longitude[i]
+      loc <- allLocs$location[i]
+      pointsIter <- paste0("L.circleMarker([",fromLat,",",fromLong,"], {color: '",pointColor,"', fillColor: '",pointColor,"', fillOpacity: ",pointOpacity,", stroke: 0, }).addTo(this);")
+      points <- paste0(points, pointsIter)
+    }
+  }
+  
   
   footer <- "}"
   
-  renderText <- paste0(header, basemap, swoopys, labels, footer)
+  renderText <- paste0(header, basemap, points, swoopys, labels, footer)
   #renderText <- paste0(header, swoopys, labels, footer)
   
   leafletmap <- leaflet() %>%
