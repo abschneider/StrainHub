@@ -87,9 +87,7 @@ ui <- tagList(
 
                actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
                br(),
-
-               #br(),
-
+               br(),
                uiOutput("columnselection"),
                br(),
                selectInput("metricradio",
@@ -287,7 +285,9 @@ ui <- tagList(
 server <- function(input, output, session) {
   
   ## Initialize metadata reactive object
-  rv <- reactiveValues(metadata = data.frame(NULL))
+  rv <- reactiveValues(metadata = data.frame(NULL),
+                       metrics = data.frame(NULL))
+                       #metrics = DT::datatable(NULL))
   
   output$inputtree <- renderUI({
     if (is.null(input$tree_input_type))
@@ -608,12 +608,14 @@ server <- function(input, output, session) {
   graph <- eventReactive(input$plotbutton, {
     if(input$tree_input_type == "Parsimony"){
       validate(
-        need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
-        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
+        need(input$treefile$datapath != "", "\n2. Please upload a tree file."),
+        need(input$csvfile$datapath != "",  "\n3a. Please upload the accompanying metadata file."),
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?")
+      )
+      validate(
         need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
         need(input$columnselection %in% getUsableColumns(treedata = treedata(),
-                                                               metadata = rv$metadata),
+                                                         metadata = rv$metadata),
              "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       )
       
@@ -628,11 +630,13 @@ server <- function(input, output, session) {
     } else if(input$tree_input_type == "BEAST Phylogeography"){
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use.")#,
-        # need(input$columnselection %in% getUsableColumns(treedata = treedata(),
-        #                                                  metadata = rv$metadata),
-        #      "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
+        need(input$columnselection != "",  "\n4a. List the states from your phylogeography metadata and pick one to use.")
       )
+      # validate(
+      #   need(input$columnselection %in% getUsableColumns(treedata = treedata(),
+      #                                                    metadata = rv$metadata),
+      #        "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
+      # )
       
       graph <-  makeTransNet(treedata = treedata(),
                              columnSelection = input$columnselection,
@@ -646,7 +650,9 @@ server <- function(input, output, session) {
       validate(
         need(input$treefile != "", "\n2. Please upload a fasta file."),
         need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
-        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"), 
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?")
+      )
+      validate(
         need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
         need(input$rootselect != "e.g. HM045815.1", "\n3b. Make sure you enter the Taxa ID of the desired tree root.")
         # need(input$columnselection %in% getUsableColumns(treedata = treedata(),
@@ -1033,7 +1039,44 @@ server <- function(input, output, session) {
   
   
   ## Metrics File Output
-  metrics <- eventReactive(input$plotbutton, {
+  # metrics <- eventReactive(input$plotbutton, {
+  #   if (input$tree_input_type == "Parsimony"){
+  #     validate(
+  #       need(input$treefile != "", "\n1. Please upload a tree file."),
+  #       need(input$csvfile != "",  "\n2a. Please upload the accompanying metadata file."),
+  #       # need(input$columnSelection != "",  "\n3. List the columns and pick one to use.")
+  #       if (exists("input$treefile") & exists("input$csvfile")){
+  #         # need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
+  #         #                                                         csvFileName = input$csvfile$datapath),
+  #         #      "\n3. Please select a different column. This column has all identical values.")
+  #       }
+  #     )
+  #   } else if(input$tree_input_type == "BEAST Phylogeography"){
+  #     validate(
+  #       need(input$treefile != "", "\n2. Please upload a tree file.")
+  #     )
+  #   }
+  #   
+  #   metrics <- DT::datatable(read.csv("StrainHub_metrics.csv"),
+  #                            colnames = c("Metastates",
+  #                                         "Degree",
+  #                                         "Indegree",
+  #                                         "Outdegree",
+  #                                         "Betweeness",
+  #                                         "Closeness",
+  #                                         "Source Hub Ratio"),
+  #                            options = list(autoWidth = TRUE,
+  #                                           initComplete = JS(
+  #                                             "function(settings, json) {",
+  #                                             "$(this.api().table().header()).css({'background-color': '#2d3e4f', 'color': '#fff'});",
+  #                                             "}")))
+  # })
+  # output$metricstable <- eventReactive(input$plotbutton, {
+  #   output$metricstable <- DT::renderDataTable(rv$metrics)
+  # })
+  
+  observeEvent(input$plotbutton, {
+  # observe({
     if (input$tree_input_type == "Parsimony"){
       validate(
         need(input$treefile != "", "\n1. Please upload a tree file."),
@@ -1051,26 +1094,50 @@ server <- function(input, output, session) {
       )
     }
     
-    metrics <- DT::datatable(read.csv("StrainHub_metrics.csv"),
-                             colnames = c("Metastates",
-                                          "Degree",
-                                          "Indegree",
-                                          "Outdegree",
-                                          "Betweeness",
-                                          "Closeness",
-                                          "Source Hub Ratio"),
-                             options = list(autoWidth = TRUE,
-                                            initComplete = JS(
-                                              "function(settings, json) {",
-                                              "$(this.api().table().header()).css({'background-color': '#2d3e4f', 'color': '#fff'});",
-                                              "}")))
+    ## Clear out old metrics
+    #rv$metrics <- DT::datatable(NULL)
+    
+    ## Read in new metrics
+    # rv$metrics <- DT::datatable(read.csv("StrainHub_metrics.csv"),
+    #                          colnames = c("Metastates",
+    #                                       "Degree",
+    #                                       "Indegree",
+    #                                       "Outdegree",
+    #                                       "Betweeness",
+    #                                       "Closeness",
+    #                                       "Source Hub Ratio"),
+    #                          options = list(autoWidth = TRUE,
+    #                                         initComplete = JS(
+    #                                           "function(settings, json) {",
+    #                                           "$(this.api().table().header()).css({'background-color': '#2d3e4f', 'color': '#fff'});",
+    #                                           "}")))
+    # 
+    # output$metricstable <- DT::renderDataTable(rv$metrics, options = list(processing = FALSE))
+    
+    rv$metrics <- read.csv("StrainHub_metrics.csv")
+    
+    output$metricstable <- DT::renderDataTable(DT::datatable(rv$metrics),
+                                               options = list(processing = FALSE,
+                                                              autoWidth = TRUE,
+                                                              colnames = c("Metastates",
+                                                                           "Degree",
+                                                                           "Indegree",
+                                                                           "Outdegree",
+                                                                           "Betweeness",
+                                                                           "Closeness",
+                                                                           "Source Hub Ratio"),
+                                                              initComplete = JS(
+                                                                "function(settings, json) {",
+                                                                "$(this.api().table().header()).css({'background-color': '#2d3e4f', 'color': '#fff'});",
+                                                                "}")))
     
   })
   
-  output$metricstable <- eventReactive(input$plotbutton, {
-    output$metricstable <- DT::renderDataTable({metrics()})
+  proxy = dataTableProxy('metricstable')
+  observeEvent(input$plotbutton, {
+    #replaceData(proxy, rv$metrics, rownames = FALSE)
+    reloadData(proxy, rv$metrics)
   })
-  
   
   # output$metricstable <- renderTable({
   #   metrics <- read.csv(paste0(input$treefile$datapath,"_metrics.csv"))
