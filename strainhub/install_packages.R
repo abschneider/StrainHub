@@ -3,6 +3,7 @@
 
 packages <- c("shiny",
               "treeio",
+              "ggtree",
               "ggplot2",
               "adegenet",
               "ade4",
