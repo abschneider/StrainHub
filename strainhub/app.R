@@ -63,6 +63,7 @@ library("ggtree", pos = .Machine$integer.max)
 
 # Define UI for application
 ui <- tagList(
+  #tags$head(includeScript("google-analytics.js")),
   # tags$head(tags$style(type="text/css", "html, body {width: 100%; height: 100%; overflow: hidden}")),
   navbarPage(
     theme = shinytheme("flatly"),
@@ -113,7 +114,7 @@ ui <- tagList(
 
                br(),
                includeHTML("footer.html"),
-               p("v1.0.8", align = "right") ## Version
+               p("v1.0.9", align = "right") ## Version
              ),
              mainPanel(
                width = 9,

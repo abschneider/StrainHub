@@ -1,6 +1,9 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.9
+- Added Google Analytics integration
+
 ### v1.0.8
 - Added geodata editor for BEAST trees
 - Hide metadata editor and geodata editor if files haven't been uploaded
