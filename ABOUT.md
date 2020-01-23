@@ -1,5 +1,7 @@
-# StrainHub
-<details>
+<p align="center">
+  <img src="https://github.com/abschneider/StrainHub/blob/beta/Tree2.png" alt="StrainHub logo" width="350"/>
+</p><details>
+	
 <summary><strong><em>Table of Contents</em></strong></summary>
 
 * [About StrainHub](#about-strainhub)
