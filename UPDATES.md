@@ -1,6 +1,10 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.10
+- Added Homepage
+- Added Posterior Probability Threshold for BEAST
+
 ### v1.0.9
 - Added Google Analytics integration
 

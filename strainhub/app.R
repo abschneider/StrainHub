@@ -66,10 +66,31 @@ ui <- tagList(
   #tags$head(includeScript("google-analytics.js")),
   # tags$head(tags$style(type="text/css", "html, body {width: 100%; height: 100%; overflow: hidden}")),
   navbarPage(
+    windowTitle = "StrainHub",
     theme = shinytheme("flatly"),
     # theme = "uncc.css",
     title = "StrainHub",
     # footer = includeHTML("footer.html"),
+    tabPanel("Home",
+             # setBackgroundColor(
+             #   color = "#2C3E50"
+             # ),
+             h2("Welcome to", align = "center"),
+             h1("StrainHub", align = "center", style="font-size: 550%;"),
+             sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "left"),
+             mainPanel(
+               style = "background-color: #FFFFFF",
+               width = 6,
+               br(),
+               p("StrainHub was initially designed as an open access web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. We are currently integrating Ybyrá, a project of software solutions for data analysis in phylogenetics in the StrainHub framework to transform it into a suite of tools for both phylogenetic and pathogen transmission network analyses.",
+                 align ="center"),
+               p("StrainHub is being developed as a collaborative project between researchers from the University of California San Diego and the University of North Carolina at Charlotte as an effort to create new the tools that will enable an in-depth analysis and data visualization of the spread of pathogens. ",
+                 align ="center"),
+               fluidRow(column(width = 6, img(src="ucsd-sm.jpg", width="200px", align="left")),
+                        column(width = 6, img(src="uncc-cci.png", width="200px", align="right")))
+               ),
+             sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "right"),
+             ),
     tabPanel("Network Visualizer",
              sidebarPanel(
                width = 3,
@@ -114,7 +135,7 @@ ui <- tagList(
 
                br(),
                includeHTML("footer.html"),
-               p("v1.0.9", align = "right") ## Version
+               p("v1.0.10", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -271,7 +292,11 @@ ui <- tagList(
              icon = icon("chevron-right", lib = "glyphicon")
              ),
     tabPanel("About",
-             includeMarkdown("https://github.com/abschneider/StrainHub/raw/master/ABOUT.md"),
+             sidebarPanel(style = "background-color: #FFFFFF", width = 2, position = "left"),
+             mainPanel(width = 8,
+                       includeMarkdown("https://github.com/abschneider/StrainHub/raw/master/ABOUT.md")
+                       ),
+             sidebarPanel(style = "background-color: #FFFFFF", width = 2, position = "right"),
              icon = icon("question"))#,
     # tabPanel(title="Standalone",
     #          icon = icon("github"))
@@ -338,7 +363,7 @@ server <- function(input, output, session) {
                                    label = '3a. Choose your Metadata File',
                                    accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            "BEAST Phylogeography" = sliderInput("threshold",
-                                                label = "3a. Probability Threshold",
+                                                label = "3a. State Probability Threshold",
                                                 min = 0, max = 1, value = 0.9),
            "Create Neighbor-Joining Tree" = fileInput('csvfile',
                                                       label = '3a. Choose your Metadata File',
@@ -490,12 +515,16 @@ server <- function(input, output, session) {
     rv$geodata <- isolate(as_tibble(hot_to_r(input$editgeo)))
   })
   
-  ## Show/Hide Tree Root Selection
+  ## Show/Hide Tree Root Selection or Posterior Probability Threshold
   output$treerootswitch <- renderUI({
     if (is.null(input$tree_input_type))
       return()
     
     switch(input$tree_input_type,
+           "BEAST Phylogeography" = sliderInput("posterior",
+                                                label = "3b. Posterior Probability Threshold",
+                                                min = 0, max = 1, value = 0.9),
+           
            "Create Neighbor-Joining Tree" = textInput("rootselect",
                                                       label = "3b. Taxa ID for Rooting Tree",
                                                       value = "e.g. HM045815.1")
@@ -513,7 +542,7 @@ server <- function(input, output, session) {
                                    accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            
            "BEAST Phylogeography" = fileInput('geodatafile',
-                                              label = '3b. Choose your Geodata File',
+                                              label = '3c. Choose your Geodata File',
                                               accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            
            "Create Neighbor-Joining Tree" = fileInput('geodatafile',
@@ -644,6 +673,7 @@ server <- function(input, output, session) {
                              # columnSelection = input$columnselection_row_last_clicked,
                              centralityMetric = input$metricradio,
                              threshold = input$threshold,
+                             threshold2 = input$posterior,
                              treeType = "bayesian")
       # height = paste0(0.75*session$clientData$output_graph_width,"px")
       

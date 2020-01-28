@@ -511,7 +511,7 @@ getUsableColumns <- function(treedata, metadata){
 #'   $success - a logical vector of length one that says whether the process was a success or not
 #'############################
 
-makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityMetric, threshold = 0.9, bootstrapValue = NULL, treeType = "parsimonious", rootSelection = NULL){
+makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityMetric, threshold = 0.9, threshold2 = 0.9, bootstrapValue = NULL, treeType = "parsimonious", rootSelection = NULL){
   
   if(treeType == "parsimonious"){
     # fileName <- readline(prompt = "Type in the full path to the nexus file you want to read in: ")
@@ -643,6 +643,10 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     
     state <- tree@data[[columnSelection]]
     stateprob <- tree@data[[paste0(columnSelection,".prob")]]
+    nodeprob <- tree@data[['posterior']] ## Extracts posterior
+    nodeprobnoNA <- nodeprob
+    nodeprobnoNA[is.na(nodeprob)] <- 1 ## replaces NA of terminal nodes with probability = 1 to avoid being filtered out.
+    
     index <- as.numeric(tree@data$node)
     
     ## Tree edges - relationship between nodes
@@ -661,6 +665,12 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     ) %>% 
       mutate(ind = index)
     
+    ## Creates tibble of node posterior and on Edge_tib adds Posterior prob to node of origin.
+    nodeprob_tib = tibble( 
+      Posterior = nodeprobnoNA
+    ) %>% 
+      mutate(ind = index)
+    
     #Edge_tib = left_join(tree.edges2, state_tib, by = c("V1" = "ind")) %>% 
     #  left_join(state_tib, by = c("V2" = "ind"), suffix = c("_org", "_dst")) %>% 
     #  select(State_org, State_dst)
@@ -669,16 +679,18 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     
     Edge_tib = left_join(tree.edges2, state_tib, by = c("V1" = "ind")) %>% 
       left_join(state_tib, by = c("V2" = "ind"), suffix = c("_org", "_dst")) %>% 
+      left_join(nodeprob_tib, by =c("V1" = "ind")) %>%
       left_join(stateprob_tib, by =c("V1" = "ind")) %>%
       left_join(stateprob_tib, by =c("V2" = "ind"), suffix = c("_org", "_dst")) %>%
-      select(Stateprob_org, State_org, State_dst, Stateprob_dst)
+      select(Posterior, Stateprob_org, State_org, State_dst, Stateprob_dst)
     
     ## Filter out pairs of changes between same states and also with probabilities below a certain threshold. For Shiny have to make it user input.
     
     Edge_notdup_threshold = Edge_tib %>% 
       filter(State_org != State_dst) %>%
       filter(Stateprob_org >= threshold) %>% #Probability of node of origin being on that state
-      filter(Stateprob_dst >= threshold) #Probability of node of destiny being on that state
+      filter(Stateprob_dst >= threshold) %>%  #Probability of node of destiny being on that state
+      filter(Posterior >= threshold2) #Posterior probability of node
     
     Edge_filtered = Edge_notdup_threshold %>%
       select(State_org,State_dst)
