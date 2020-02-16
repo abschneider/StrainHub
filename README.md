@@ -71,8 +71,6 @@ If you need to install all the required packages to run StrainHub, you can do so
 
 ## How To Cite
 
-Please cite the reference below if you are using StrainHub.
-
 Text Citation:
 
 ```
