@@ -1,5 +1,5 @@
 <p align="left">
-  <img src="https://github.com/abschneider/StrainHub/blob/beta/Tree2.png" alt="StrainHub logo" width="350"/>
+  <img src="https://github.com/abschneider/StrainHub/blob/beta/sidelogo.png" alt="StrainHub logo" width="350"/>
 </p>
 
 [![Version: 1.0.7](https://img.shields.io/badge/version-1.0.7-green.svg)](UPDATES.md)
