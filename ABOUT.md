@@ -41,7 +41,7 @@ A template for building the metadata file can be downloaded [here](https://githu
 ### Example files:
 - [Phylogenetic Tree](https://github.com/abschneider/StrainHub/blob/master/data/example_tree.phy)
 - [Metadata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv) 
-- [Geodata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv)
+- [Geodata File](https://github.com/abschneider/StrainHub/blob/beta/data/neighbor_joining/hepc/2k1b_country_coordinates.txt)
 
 To skip the ancestry reconstruction step, the user will have to run BEAST phylogeography, and then one file will need to be generated.
 
