@@ -26,17 +26,22 @@ In order to construct the disease transmission network the user is presented wit
 
 To run the entire pipeline, two files will need to be generated.
 
-1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g., BEAST, TNT, RAxML, IQTree).
+1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g., BEAST, TNT, RAxML, IQTree). Alternatively, you can use an aligned multiple sequence file in FASTA format.
 
 2) A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g., host, country, risk group) 
+
+If you would like to visualize the distribution of your pathogen in a map, a third optional geodata file need to be generated with all locations and geographic coordinates.
  
 _Taxa ID with missing data should be excluded prior to the analysis. Order does not matter on both files, the metadata is sorted automatically before mapped into the tree based on the header of the first column of the CSV file (Accession)._
+
+_A phylogenetic tree in Newick format is required to perform the Parsimony Ancestral Reconstruction ("Parsimony" method). If you elect to utilize a multiple sequence alignment instead of your tree, you need to run the alignment through the "Create Neighbor-Joining Tree" method to generate a tree which will be fed into the Parsimony Ancestral Reconstruction pipeline._
 
 A template for building the metadata file can be downloaded [here](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
 
 ### Example files:
 - [Phylogenetic Tree](https://github.com/abschneider/StrainHub/blob/master/data/example_tree.phy)
 - [Metadata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv) 
+- [Geodata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv)
 
 To skip the ancestry reconstruction step, the user will have to run BEAST phylogeography, and then one file will need to be generated.
 
