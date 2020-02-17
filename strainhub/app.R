@@ -77,11 +77,12 @@ ui <- tagList(
              # ),
              h2("Welcome to", align = "center"),
              h1("StrainHub", align = "center", style="font-size: 550%;"),
+             fluidRow(width = 6, img(src="mainlogo.png", width="200px", align="center")),
              sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "left"),
              mainPanel(
                style = "background-color: #FFFFFF",
                width = 6,
-               br(),
+               br(),               
                p("StrainHub was initially designed as an open access web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. We are currently integrating Ybyrá, a project of software solutions for data analysis in phylogenetics in the StrainHub framework to transform it into a suite of tools for both phylogenetic and pathogen transmission network analyses.",
                  align ="center"),
                p("StrainHub is being developed as a collaborative project between researchers from the University of California San Diego and the University of North Carolina at Charlotte as an effort to create new the tools that will enable an in-depth analysis and data visualization of the spread of pathogens. ",
