@@ -76,8 +76,8 @@ ui <- tagList(
              #   color = "#2C3E50"
              # ),
              h2("Welcome to", align = "center"),
-             h1("StrainHub", align = "center", style="font-size: 550%;"),
-             fluidRow(width = 6, img(src="mainlogo.png", width="200px", align="center")),
+             h1("StrainHub v1.10", align = "center", style="font-size: 550%;"),
+             #fluidRow(width = 6, img(src="mainlogo.png", width="200px", align="center")),
              sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "left"),
              mainPanel(
                style = "background-color: #FFFFFF",
