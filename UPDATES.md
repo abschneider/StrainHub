@@ -1,6 +1,10 @@
 # StrainHub
 ## Release Updates
 
+### v1.0.11
+- Added Logo to Homepage
+- Added Tip Label to Metadata Validation
+
 ### v1.0.10
 - Added Homepage
 - Added Posterior Probability Threshold for BEAST

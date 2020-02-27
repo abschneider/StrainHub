@@ -464,6 +464,33 @@ getUsableColumns <- function(treedata, metadata){
   
 }
 
+test_treetips_vs_accessions <- function(treedata, metadata, treeType = "parsimonious"){
+  if(treeType == "parsimonious"){
+    treetips <- treedata$tip.label
+    metaaccessions <- metadata$Accession
+    
+    if (setequal(treetips, metaaccessions)){
+      output <- TRUE
+    } else {
+      output <- FALSE
+    }
+  } else if(treeType == "bayesian"){
+    # treetips <- treedata@phylo$tip.label
+    output <- TRUE
+  } else if(treeType == "nj"){
+    treetips <- treedata$tip.label
+    metaaccessions <- metadata$Accession
+    
+    if (setequal(treetips, metaaccessions)){
+      output <- TRUE
+    } else {
+      output <- FALSE
+    }
+  }
+  
+  return(output)
+}
+
 #'############################
 #' @name makeTransNet
 #' @param fileName Path to the nexus file to be read in.

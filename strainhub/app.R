@@ -76,16 +76,19 @@ ui <- tagList(
              #   color = "#2C3E50"
              # ),
              h2("Welcome to", align = "center"),
-             h1("StrainHub", align = "center", style="font-size: 550%;"),
+             # h1("StrainHub", align = "center", style="font-size: 550%;"),
+             h1(img(src="mainlogo.png", width="500px", align="center"), align = "center"),
              sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "left"),
              mainPanel(
                style = "background-color: #FFFFFF",
                width = 6,
                br(),               
                p("StrainHub was initially designed as an open access web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. We are currently integrating Ybyrá, a project of software solutions for data analysis in phylogenetics in the StrainHub framework to transform it into a suite of tools for both phylogenetic and pathogen transmission network analyses.",
-                 align ="center"),
+                 align ="center",
+                 style="font-size: 120%;"),
                p("StrainHub is being developed as a collaborative project between researchers from the University of California San Diego and the University of North Carolina at Charlotte as an effort to create new the tools that will enable an in-depth analysis and data visualization of the spread of pathogens. ",
-                 align ="center"),
+                 align ="center",
+                 style="font-size: 120%;"),
                fluidRow(column(width = 6, img(src="ucsd-sm.jpg", width="200px", align="left")),
                         column(width = 6, img(src="uncc-cci.png", width="200px", align="right")))
                ),
@@ -135,7 +138,7 @@ ui <- tagList(
 
                br(),
                includeHTML("footer.html"),
-               p("v1.0.10", align = "right") ## Version
+               p("v1.0.11", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -640,7 +643,8 @@ server <- function(input, output, session) {
       validate(
         need(input$treefile$datapath != "", "\n2. Please upload a tree file."),
         need(input$csvfile$datapath != "",  "\n3a. Please upload the accompanying metadata file."),
-        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?")
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"),
+        need(test_treetips_vs_accessions(treedata(), rv$metadata), "\nError: Your metadata Accessions do not match the tip labels in your tree.")
       )
       validate(
         need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
@@ -681,7 +685,8 @@ server <- function(input, output, session) {
       validate(
         need(input$treefile != "", "\n2. Please upload a fasta file."),
         need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
-        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?")
+        need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"),
+        need(test_treetips_vs_accessions(treedata(), rv$metadata), "\nError: Your metadata Accessions do not match the tip labels in your tree.")
       )
       validate(
         need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
