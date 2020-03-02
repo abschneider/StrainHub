@@ -1,14 +1,9 @@
-
-
-[![Version: 1.0.11](https://img.shields.io/badge/version-1.0.11-green.svg)](UPDATES.md)
-[![Version: 1.0.11](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
-=======
 <p align="left">
   <img src="https://github.com/abschneider/StrainHub/blob/beta/img/sidelogo.png" alt="StrainHub logo" width="350"/>
 </p>
 
-[![Version: 1.0.7](https://img.shields.io/badge/version-1.0.7-green.svg)](UPDATES.md)
-[![Version: 1.0.7](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
+[![Version: 1.0.11](https://img.shields.io/badge/version-1.0.11-green.svg)](UPDATES.md)
+[![Version: 1.0.11](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 StrainHub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. Users have the option to build a tree utilizing their method of preference outside StrainHub or build a tree utilizing a FASTA file within StrainHub with the Neighbor-Joining algorithm. Alternatively, the user can skip the StrainHub ancestry reconstruction step by generating a maximum clade credibility tree (MCC) through BEAST phylogeography or input a previously generated list of edges in order to build the transmission network. Additionally, the user can input a file with geographic cooordinates associated with the character of interest and have the network plotted into a map.
