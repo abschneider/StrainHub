@@ -7,11 +7,6 @@
 library(shiny)
 
 ## Load libraries for BEAST Parser
-<<<<<<< HEAD
-library(treeio)
-library(ggplot2)
-=======
->>>>>>> beta
 library(adegenet)
 library(ade4)
 library(knitr)
@@ -150,11 +145,7 @@ ui <- tagList(
 
                br(),
                includeHTML("footer.html"),
-<<<<<<< HEAD
-               p("v1.0.1", align = "right") ## Version
-=======
                p("v1.0.11", align = "right") ## Version
->>>>>>> beta
              ),
              mainPanel(
                width = 9,
@@ -574,18 +565,6 @@ server <- function(input, output, session) {
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
     if(input$tree_input_type == "Parsimony"){
-<<<<<<< HEAD
-      validate(
-        need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(input$csvfile != "",  "\n3. Please upload the accompanying metadata file.")
-      )
-      availablecolumns <- listStates(csvFileName = input$csvfile$datapath, treeType = "parsimonious")
-    } else if(input$tree_input_type == "BEAST Phylogeography"){
-      validate(
-        need(input$treefile != "", "\n2. Please upload a tree file.")
-      )
-      availablecolumns <- listStates(treeFileName = input$treefile$datapath, treeType = "bayesian")
-=======
       validate(need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."))
       availablecolumns <- listStates(metadata = rv$metadata,
                                      treeType = "parsimonious")
@@ -599,18 +578,11 @@ server <- function(input, output, session) {
       validate(need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."))
       availablecolumns <- listStates(metadata = rv$metadata,
                                      treeType = "nj")
->>>>>>> beta
     }
   })
   
   output$columnselection <- renderUI({
-<<<<<<< HEAD
-    selectizeInput("columnselection",
-                   "Choose your State",
-                   choices = availablecolumns()$`Column`)
-=======
     selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`)
->>>>>>> beta
   })
   
 
@@ -676,17 +648,6 @@ server <- function(input, output, session) {
   graph <- eventReactive(input$plotbutton, {
     if(input$tree_input_type == "Parsimony"){
       validate(
-<<<<<<< HEAD
-        need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(input$csvfile != "",  "\n3. Please upload the accompanying metadata file."),
-        #browser(),
-        need(!is.null(input$columnselection),  "\n4. Click `List States` and select the one to use."),
-        if (exists("input$treefile") & exists("input$csvfile")){
-          need(!input$input$columnselection %in% getUsableColumns(treeFileName = input$treefile$datapath,
-                                                                  csvFileName = input$csvfile$datapath),
-               "\n4. Please select a different state. This column has all identical values.")
-        }
-=======
         need(input$treefile$datapath != "", "\n2. Please upload a tree file."),
         need(input$csvfile$datapath != "",  "\n3a. Please upload the accompanying metadata file."),
         need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"),
@@ -711,7 +672,6 @@ server <- function(input, output, session) {
       validate(
         need(input$treefile != "", "\n2. Please upload a tree file."),
         need(input$columnselection != "",  "\n4a. List the states from your phylogeography metadata and pick one to use.")
->>>>>>> beta
       )
       # validate(
       #   need(input$columnselection %in% getUsableColumns(treedata = treedata(),
@@ -719,14 +679,8 @@ server <- function(input, output, session) {
       #        "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       # )
       
-<<<<<<< HEAD
-      #req(input$columnSelection)
-      #browser()
-      graph <-  makeTransNet(treeFileName = input$treefile$datapath,
-                             csvFileName = input$csvfile$datapath,
-=======
+
       graph <-  makeTransNet(treedata = treedata(),
->>>>>>> beta
                              columnSelection = input$columnselection,
                              # columnSelection = input$columnselection_row_last_clicked,
                              centralityMetric = input$metricradio,
@@ -737,14 +691,6 @@ server <- function(input, output, session) {
       
     } else if(input$tree_input_type == "Create Neighbor-Joining Tree"){
       validate(
-<<<<<<< HEAD
-        need(input$treefile != "", "\n2. Please upload a tree file."),
-        need(!is.null(input$columnselection),  "\n4. Click `List States` and select the one to use."),
-        if (exists("input$treefile") & exists("input$csvfile")){
-          #need(!input$input$columnselection_row_last_clicked %in% getUsableColumns(treeFileName = input$treefile$datapath),
-          #     "\n3. Please select a different column. This column has all identical values.")
-        }
-=======
         need(input$treefile != "", "\n2. Please upload a fasta file."),
         need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
         need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?"),
@@ -756,7 +702,6 @@ server <- function(input, output, session) {
         # need(input$columnselection %in% getUsableColumns(treedata = treedata(),
         #                                                  metadata = rv$metadata),
         #      "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
->>>>>>> beta
       )
       
       graph <-  makeTransNet(treedata = treedata(),
@@ -977,13 +922,9 @@ server <- function(input, output, session) {
         
       } else if(input$tree_input_type == "BEAST Phylogeography"){
         
-<<<<<<< HEAD
-        treepreview <- treeio::read.beast(input$treefile$datapath)
-=======
+
         # treepreview <- treeio::read.beast(input$treefile$datapath)
         treepreview <- treedata()
->>>>>>> beta
-        
         colorby <- input$columnselection
         
         # annotationdf <- lapply(treepreview$annotations, data.frame, stringsAsFactors = FALSE) %>% 

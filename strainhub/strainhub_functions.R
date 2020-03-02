@@ -665,12 +665,8 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
                                       vertices = nodes)
   } else if(treeType == "bayesian"){
     ## read annotated tree from Nexus file
-<<<<<<< HEAD
-    tree <- treeio::read.beast(treeFileName)
-=======
     # tree <- treeio::read.beast(treeFileName)
     tree <- treedata
->>>>>>> beta
     
     state <- tree@data[[columnSelection]]
     stateprob <- tree@data[[paste0(columnSelection,".prob")]]

@@ -1,26 +1,16 @@
-<<<<<<< HEAD
-=======
 
->>>>>>> beta
 ## StrainHub
 ## Required Package Setup
 
 packages <- c("shiny",
               "treeio",
-<<<<<<< HEAD
-              "ggtree",
-=======
->>>>>>> beta
               "ggplot2",
               "adegenet",
               "ade4",
               "knitr",
               "dplyr",
               "shinythemes",
-<<<<<<< HEAD
-=======
               "shinyWidgets",
->>>>>>> beta
               "readr",
               "ape",
               "castor",
@@ -31,10 +21,6 @@ packages <- c("shiny",
               "igraph",
               "data.table",
               "DT",
-<<<<<<< HEAD
-              "magrittr",
-              "htmlwidgets",
-=======
               "rhandsontable",
               "magrittr",
               "htmlwidgets",
@@ -42,15 +28,11 @@ packages <- c("shiny",
               "randomcoloR",
               "colourpicker",
               "rbokeh",
->>>>>>> beta
               "markdown",
               "rmarkdown",
               "ggtree",
               "plotly",
-<<<<<<< HEAD
-=======
               "webshot",
->>>>>>> beta
               "shinyjqui")
 
 if (length(setdiff(packages, rownames(installed.packages()))) > 0) {
