@@ -1,7 +1,7 @@
-<h1 style="text-align: center;"><span style="background-color: #2c3e50; color: #ffffff; font-family: 'Lato', sans-serif;"> StrainHub </span></h1>
 
-[![Version: 1.0.1](https://img.shields.io/badge/version-1.0.0-green.svg)](UPDATES.md)
-[![Version: 1.0.0](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
+
+[![Version: 1.0.11](https://img.shields.io/badge/version-1.0.11-green.svg)](UPDATES.md)
+[![Version: 1.0.11](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
 =======
 <p align="left">
   <img src="https://github.com/abschneider/StrainHub/blob/beta/img/sidelogo.png" alt="StrainHub logo" width="350"/>
@@ -76,7 +76,6 @@ If you need to install all the required packages to run StrainHub, you can do so
 <h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br>Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h4>
 
 ## How To Cite
-<<<<<<< HEAD
 
 Text Citation:
 
@@ -84,7 +83,6 @@ Text Citation:
 
 Text Citation:
 
->>>>>>> beta
 ```
 Adriano de Bernardi Schneider, Colby T Ford, Reilly Hostager, John Williams, Michael Cioce, Ümit V Çatalyürek, Joel O Wertheim, Daniel Janies, StrainHub: A phylogenetic tool to construct pathogen transmission networks, Bioinformatics, btz646, https://doi.org/10.1093/bioinformatics/btz646
 ```
@@ -105,7 +103,6 @@ BibTex Citation:
     eprint = {http://oup.prod.sis.lan/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btz646/29171171/btz646.pdf},
 }
 ```
-<<<<<<< HEAD
 =======
 
 Additionally, if you use the Map feature of StrainHub please also cite the reference below:
@@ -130,4 +127,3 @@ BibTex Citation:
   publisher={Multidisciplinary Digital Publishing Institute}
 }
 ```
->>>>>>> beta
