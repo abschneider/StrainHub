@@ -1,10 +1,19 @@
+<<<<<<< HEAD
 <h1 style="text-align: center;"><span style="background-color: #2c3e50; color: #ffffff; font-family: 'Lato', sans-serif;"> StrainHub </span></h1>
 
 [![Version: 1.0.1](https://img.shields.io/badge/version-1.0.0-green.svg)](UPDATES.md)
 [![Version: 1.0.0](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
+=======
+<p align="left">
+  <img src="https://github.com/abschneider/StrainHub/blob/beta/img/sidelogo.png" alt="StrainHub logo" width="350"/>
+</p>
+
+[![Version: 1.0.7](https://img.shields.io/badge/version-1.0.7-green.svg)](UPDATES.md)
+[![Version: 1.0.7](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
+>>>>>>> beta
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
-Strainhub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. Users also have the option to skip the StrainHub ancestry reconstruction step by generating a maximum clade credibility tree (MCC) through BEAST phylogeography.
+StrainHub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. Users have the option to build a tree utilizing their method of preference outside StrainHub or build a tree utilizing a FASTA file within StrainHub with the Neighbor-Joining algorithm. Alternatively, the user can skip the StrainHub ancestry reconstruction step by generating a maximum clade credibility tree (MCC) through BEAST phylogeography or input a previously generated list of edges in order to build the transmission network. Additionally, the user can input a file with geographic cooordinates associated with the character of interest and have the network plotted into a map.
 
 <p align="center">
   <img src="https://github.com/abschneider/StrainHub/blob/master/host_network_example.png" alt="Sample Host Transmission Network" width="350"/>
@@ -12,17 +21,42 @@ Strainhub is designed as a web-based software to generate disease transmission n
 
 ## Use StrainHub Online
 
-You'll have the option of either running a parsimony reconstruction on your phylogenetic tree, and for that you will need 2 files to get started:
+StrainHub currently offers four methods to enable the visualization of transmission networks, each with different file format requirements:
+
+**Parsimony**
+
+You'll have the option of running a parsimony reconstruction on your phylogenetic tree, and for that you will need 2 files to get started:
 
 1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g., BEAST, TNT, RAxML, IQTree).
 
 2) A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g., host, country, risk group)
 
-OR
+**BEAST Phylogeography**
 
 You'll run phylogeography using BEAST and for that you will only need 1 file to get started:
 
 1) A maximum clade credibility tree (MCC) generated through Phylogeographic Diffusion in [Discrete](http://beast.community/workshop_discrete_diffusion) or [Continuous](http://beast.community/workshop_continuous_diffusion) Space in BEAST or Phylogeography in BEAST2 using [Mascot](https://taming-the-beast.org/tutorials/Mascot-Tutorial/).
+
+**Quick Tree**
+
+You'll create a tree directly from your alignment using a NJ algorithm within StrainHub and run parsimony reconstruction on the given tree. You will need 2 files and to know your outgroup sequence:
+
+1) An alignment file in FASTA format generated through your preferred alignment method (e.g., MAFFT, Geneious, Clustal, MUSCLE).
+
+2)  A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g., host, country, risk group)
+
+**List of Edges**
+
+You'll create a network directly from a list of edges previously generated in another software, you will need only 1 file:
+
+1) List of edges in a CSV formatted file.
+
+**Geographic Coordinates**
+
+Additionally, if you want to plot your transmission network on a map you will need 1 additional file that does not vary between the methods:
+
+1) Geographic coordinates for each character of interest in a CSV formatted file.
+
 
 For more information, click [here](ABOUT.md).
 
@@ -44,9 +78,15 @@ If you need to install all the required packages to run StrainHub, you can do so
 <h4 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br>Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h4>
 
 ## How To Cite
+<<<<<<< HEAD
 
 Text Citation:
 
+=======
+
+Text Citation:
+
+>>>>>>> beta
 ```
 Adriano de Bernardi Schneider, Colby T Ford, Reilly Hostager, John Williams, Michael Cioce, Ümit V Çatalyürek, Joel O Wertheim, Daniel Janies, StrainHub: A phylogenetic tool to construct pathogen transmission networks, Bioinformatics, btz646, https://doi.org/10.1093/bioinformatics/btz646
 ```
@@ -67,3 +107,29 @@ BibTex Citation:
     eprint = {http://oup.prod.sis.lan/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btz646/29171171/btz646.pdf},
 }
 ```
+<<<<<<< HEAD
+=======
+
+Additionally, if you use the Map feature of StrainHub please also cite the reference below:
+
+Text Citation:
+
+```
+Schneider, A.D.B., Ochsenreiter, R., Hostager, R., Hofacker, I.L., Janies, D. and Wolfinger, M.T., 2019. Updated Phylogeny of Chikungunya Virus Suggests Lineage-Specific RNA Architecture. Viruses, 11(9), p.798.
+```
+
+BibTex Citation:
+
+```
+@article{schneider2019updated,
+  title={Updated Phylogeny of Chikungunya Virus Suggests Lineage-Specific RNA Architecture},
+  author={de Bernardi Schneider, Adriano and Ochsenreiter, Roman and Hostager, Reilly and Hofacker, Ivo L and Janies, Daniel and Wolfinger, Michael T},
+  journal={Viruses},
+  volume={11},
+  number={9},
+  pages={798},
+  year={2019},
+  publisher={Multidisciplinary Digital Publishing Institute}
+}
+```
+>>>>>>> beta

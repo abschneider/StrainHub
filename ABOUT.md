@@ -1,6 +1,13 @@
+<<<<<<< HEAD
 # StrainHub
 
 <details>
+=======
+<p align="center">
+  <img src="https://github.com/abschneider/StrainHub/blob/beta/mainlogo.png" alt="StrainHub logo" width="350"/>
+</p><details>
+	
+>>>>>>> beta
 <summary><strong><em>Table of Contents</em></strong></summary>
 
 * [About StrainHub](#about-strainhub)
@@ -29,10 +36,11 @@ In order to construct the disease transmission network the user is presented wit
 
 To run the entire pipeline, two files will need to be generated.
 
-1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g., BEAST, TNT, RAxML, IQTree).
+1) A phylogenetic tree formatted in Newick tree format generated through your preferred phylogenetic search method (e.g., BEAST, TNT, RAxML, IQTree). Alternatively, you can use an aligned multiple sequence file in FASTA format.
 
 2) A metadata associated file formatted as a comma separated value (CSV) file that includes headers, has the Accession number as the first column and the metadata associated values (e.g., host, country, risk group) 
 
+<<<<<<< HEAD
 _Taxa ID with missing data should be excluded prior to the analysis. Order does not matter on both files, the metadata is sorted automatically before mapped into the tree based on the header of the first column of the CSV file (Accession)._
 
 A template for building the metadata file can be downloaded [here](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/example_metadata.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
@@ -41,6 +49,20 @@ A template for building the metadata file can be downloaded [here](https://raw.g
 
 - [Phylogenetic Tree](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/example_tree.phy)
 - [Metadata File](https://raw.githubusercontent.com/abschneider/StrainHub/master/data/example_metadata.csv) 
+=======
+If you would like to visualize the distribution of your pathogen in a map, a third optional geodata file need to be generated with all locations and geographic coordinates.
+ 
+_Taxa ID with missing data should be excluded prior to the analysis. Order does not matter on both files, the metadata is sorted automatically before mapped into the tree based on the header of the first column of the CSV file (Accession)._
+
+_A phylogenetic tree in Newick format is required to perform the Parsimony Ancestral Reconstruction ("Parsimony" method). If you elect to utilize a multiple sequence alignment instead of your tree, you need to run the alignment through the "Create Neighbor-Joining Tree" method to generate a tree which will be fed into the Parsimony Ancestral Reconstruction pipeline._
+
+A template for building the metadata file can be downloaded [here](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
+
+### Example files:
+- [Phylogenetic Tree](https://github.com/abschneider/StrainHub/blob/master/data/example_tree.phy)
+- [Metadata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv) 
+- [Geodata File](https://github.com/abschneider/StrainHub/blob/beta/data/neighbor_joining/hepc/2k1b_country_coordinates.txt)
+>>>>>>> beta
 
 To skip the ancestry reconstruction step, the user will have to run BEAST phylogeography, and then one file will need to be generated.
 
@@ -103,6 +125,11 @@ The overall quality of the transmission network generated on StrainHub rests on 
 How To Cite
 ------------------------
 
+<<<<<<< HEAD
+=======
+Please cite the reference below if you are using StrainHub.
+
+>>>>>>> beta
 Text Citation:
 
 ```
@@ -125,6 +152,32 @@ BibTex Citation:
     eprint = {http://oup.prod.sis.lan/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btz646/29171171/btz646.pdf},
 }
 ```
+<<<<<<< HEAD
+=======
+
+Additionally, if you use the Map feature of StrainHub please also cite the reference below:
+
+Text Citation:
+
+```
+Schneider, A.D.B., Ochsenreiter, R., Hostager, R., Hofacker, I.L., Janies, D. and Wolfinger, M.T., 2019. Updated Phylogeny of Chikungunya Virus Suggests Lineage-Specific RNA Architecture. Viruses, 11(9), p.798.
+```
+
+BibTex Citation:
+
+```
+@article{schneider2019updated,
+  title={Updated Phylogeny of Chikungunya Virus Suggests Lineage-Specific RNA Architecture},
+  author={de Bernardi Schneider, Adriano and Ochsenreiter, Roman and Hostager, Reilly and Hofacker, Ivo L and Janies, Daniel and Wolfinger, Michael T},
+  journal={Viruses},
+  volume={11},
+  number={9},
+  pages={798},
+  year={2019},
+  publisher={Multidisciplinary Digital Publishing Institute}
+}
+```
+>>>>>>> beta
 
 Authors
 ------------------------

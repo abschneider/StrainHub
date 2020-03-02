@@ -2,4 +2,9 @@
 *.DS_Store
 strainhub/.Rhistory
 strainhub/.Rhistory
+<<<<<<< HEAD
+=======
+.Rproj.user
+strainhub/.Rhistory
+>>>>>>> beta
 strainhub/.Rhistory

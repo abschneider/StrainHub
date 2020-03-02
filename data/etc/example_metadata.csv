@@ -1,0 +1,15 @@
+Accession ,Host,Country ,Geoscheme,Continent
+ID_1,Host_A,Country_A,Geoscheme_A,Continent_A
+ID_2,Host_B,Country_E,Geoscheme_D,Continent_B
+ID_3,Host_C,Country_B,Geoscheme_A,Continent_A
+ID_4,Host_C,Country_A,Geoscheme_A,Continent_A
+ID_5,Host_C,Country_C,Geoscheme_C,Continent_B
+ID_6,Host_D,Country_B,Geoscheme_A,Continent_A
+ID_7,Host_E,Country_A,Geoscheme_A,Continent_A
+ID_8,Host_C,Country_A,Geoscheme_A,Continent_A
+ID_9,Host_C,Country_D,Geoscheme_B,Continent_B
+ID_10,Host_E,Country_C,Geoscheme_A,Continent_A
+ID_11,Host_F,Country_A,Geoscheme_A,Continent_A
+ID_12,Host_G,Country_D,Geoscheme_B,Continent_B
+ID_13,Host_A,Country_A,Geoscheme_A,Continent_A
+ID_14,Host_A,Country_A,Geoscheme_A,Continent_A
