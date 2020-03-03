@@ -2,12 +2,8 @@
 
 ## Release Updates
 
-<<<<<<< HEAD
-### v1.0.1
-
-Added more informative error messages.
-=======
 ### v1.0.11
+_Second public release!_
 - Added Logo to Homepage
 - Added Tip Label to Metadata Validation
 

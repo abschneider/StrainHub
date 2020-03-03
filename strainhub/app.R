@@ -73,6 +73,7 @@ ui <- tagList(
     "))
   ),
   navbarPage(
+    id = "navTabset",
     windowTitle = "StrainHub",
     theme = shinytheme("flatly"),
     # theme = "uncc.css",
@@ -82,22 +83,25 @@ ui <- tagList(
              # setBackgroundColor(
              #   color = "#2C3E50"
              # ),
-             h2("Welcome to", align = "center"),
+             # h2("Welcome to", align = "center"),
              # h1("StrainHub", align = "center", style="font-size: 550%;"),
              h1(img(src="mainlogo.png", width="500px", align="center"), align = "center"),
              sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "left"),
              mainPanel(
                style = "background-color: #FFFFFF",
                width = 6,
-               br(),               
+               br(),
                p("StrainHub was initially designed as an open access web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. We are currently integrating Ybyrá, a project of software solutions for data analysis in phylogenetics in the StrainHub framework to transform it into a suite of tools for both phylogenetic and pathogen transmission network analyses.",
                  align ="center",
                  style="font-size: 120%;"),
-               p("StrainHub is being developed as a collaborative project between researchers from the University of California San Diego and the University of North Carolina at Charlotte as an effort to create new the tools that will enable an in-depth analysis and data visualization of the spread of pathogens. ",
+               p("StrainHub is being developed as a collaborative project between researchers from the University of California San Diego and the University of North Carolina at Charlotte as an effort to create new the tools that will enable an in-depth analysis and data visualization of the spread of pathogens.",
                  align ="center",
                  style="font-size: 120%;"),
-               fluidRow(column(width = 6, img(src="ucsd-sm.jpg", width="200px", align="left")),
-                        column(width = 6, img(src="uncc-cci.png", width="200px", align="right")))
+               fluidRow(column(width = 5, img(src="ucsd-sm.jpg", width="200px", align="left")),
+                        column(width = 2, div(style="display:inline-block",
+                                              actionButton("getstartedbutton", label = "Get Started ►", class = "btn-primary btn-lg"),
+                                              style="float:middle")),
+                        column(width = 5, img(src="uncc-cci.png", width="200px", align="right")))
                ),
              sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "right"),
              ),
@@ -324,6 +328,11 @@ server <- function(input, output, session) {
   rv <- reactiveValues(metadata = data.frame(NULL),
                        metrics = data.frame(NULL))
                        #metrics = DT::datatable(NULL))
+  
+  observeEvent(input$getstartedbutton, {
+    updateTabsetPanel(session, "navTabset",
+                      selected = "Network Visualizer")
+  })
   
   output$inputtree <- renderUI({
     if (is.null(input$tree_input_type))
