@@ -1,7 +1,8 @@
 <p align="center">
   <img src="https://github.com/abschneider/StrainHub/raw/master/img/mainlogo.png" alt="StrainHub logo" width="400"/>
-</p><details>
-	
+</p>
+
+<details>	
 <summary><strong><em>Table of Contents</em></strong></summary>
 
 * [About StrainHub](#about-strainhub)
@@ -14,6 +15,7 @@
 
 </details>
 
+-------------------
 
 ## About StrainHub
 
