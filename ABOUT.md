@@ -14,8 +14,8 @@
 
 </details>
 
-About StrainHub
------------------
+
+## About StrainHub
 
 StrainHub is designed as a web-based software to generate pathogen transmission networks and associated metrics from a combination of a phylogenetic tree and a metadata associated. The software enables the construction of the network by either  mapping the metadata onto the tree and performing a parsimony ancestry reconstruction step to create links between the associated metadata or parsing a BEAST phylogeography maximum clade credibility tree.
 
@@ -23,8 +23,7 @@ StrainHub is designed as a web-based software to generate pathogen transmission 
   <img src="https://github.com/abschneider/StrainHub/raw/master/host_network_example.png" alt="Sample Host Transmission Network" width="350"/>
 </p>
 
-Getting Started
------------------
+## Getting Started
 
 In order to construct the disease transmission network the user is presented with two options, run the entire pipeline or skip straight to the visualization part. 
 
@@ -61,8 +60,7 @@ _The threshold set by the user is utilized to filter out any pair of nodes withi
 
 Note: To download example files, right click on the link and save file.
 
-Metrics
------------------
+## Metrics
 
 The nodes within the network are scaled based on the user selected metric. The current metrics available on StrainHub are:
 
@@ -100,13 +98,11 @@ The nodes within the network are scaled based on the user selected metric. The c
 
 _Although only one metric can be selected for scaling the nodes within the network, all the metrics are calculated and can be visualized as well as downloaded on the tab "Metrics"._
 
-Network Quality
-------------------------
+## Network Quality
 
 The overall quality of the transmission network generated on StrainHub rests on the quality of the user input data.
 
-How To Cite
-------------------------
+## How To Cite
 
 Please cite the reference below if you are using StrainHub.
 
@@ -156,17 +152,14 @@ BibTex Citation:
 }
 ```
 
-Authors
-------------------------
+## Authors
 
 <h5 align = "left">Adriano de Bernardi Schneider, Ph.D.<br>Colby T. Ford, Ph.D.<br>Reilly Hostager<br>John Williams<br> Michael Cioce<br>Ümit V. Çatalyürek, Ph.D.<br>Joel O. Wertheim, Ph.D.<br>Daniel Janies, Ph.D.</h5>
 
-References
-------------------------
+## References
 
 [Adriano de Bernardi Schneider, _Arboviruses: The Hidden Path of an Imminent Threat_, University of North Carolina at Charlotte, 2018, ProQuest (10979260). ISBN: 9780438668379](https://pqdtopen.proquest.com/pubnum/10979260.html)
 
-Contact
-------------------------
+## Contact
 
 Questions? Comments? Contact us [here](mailto:adebernardischneider@ucsd.edu).
