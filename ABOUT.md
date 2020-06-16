@@ -44,9 +44,9 @@ _A phylogenetic tree in Newick format is required to perform the Parsimony Ances
 A template for building the metadata file can be downloaded [here](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv). Do not change the header of the Accession column as it is necessary to identify and reorder the metadata according to the tree file.
 
 ### Example files:
-- [Phylogenetic Tree](https://github.com/abschneider/StrainHub/blob/master/data/example_tree.phy)
-- [Metadata File](https://github.com/abschneider/StrainHub/blob/master/data/example_metadata.csv) 
-- [Geodata File](https://github.com/abschneider/StrainHub/blob/beta/data/neighbor_joining/hepc/2k1b_country_coordinates.txt)
+- [Phylogenetic Tree](https://github.com/abschneider/StrainHub/raw/master/data/etc/example_tree.phy)
+- [Metadata File](https://github.com/abschneider/StrainHub/raw/master/data/etc/example_metadata.csv) 
+- [Geodata File](https://github.com/abschneider/StrainHub/raw/master/data/parsimonious/hepc/2k1b_country_coordinates.txt)
 
 To skip the ancestry reconstruction step, the user will have to run BEAST phylogeography, and then one file will need to be generated.
 
