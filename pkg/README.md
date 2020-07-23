@@ -10,3 +10,10 @@ StrainHub works to generate a pathogen transmission network graph utilizing geno
 ```r
 devtools::install_github("colbyford/strainhub", subdir="pkg")
 ```
+
+## Examples
+```r
+```
+
+## Customizing your Tranmission Networks
+StrainHub highly depends on the [vizNetwork](https://github.com/datastorm-open/visNetwork) package. For a full list of customizations options, see the vizNetwork documentation here: https://datastorm-open.github.io/visNetwork/
