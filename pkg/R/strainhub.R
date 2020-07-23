@@ -1,7 +1,7 @@
 #'############################
 #' @title StrainHub
 #'
-#' @description StrainHub works to generate a pathogen transmission network graph utilizing genomic data and calculate importance of network based on centrality metrics.
+#' @description StrainHub works to generate a pathogen transmission network graph utilizing genomic data and calculates importance of network based on centrality metrics.
 #' @keywords genomics phylogenetics infectious-diseases bioinformatics
 #'
 #' @docType package
