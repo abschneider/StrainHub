@@ -13,6 +13,36 @@ devtools::install_github("colbyford/strainhub", subdir="pkg")
 
 ## Examples
 ```r
+## Load in StrainHub
+library(strainhub)
+
+## Read in tree, metadata, and geodata
+treedata <- ape::read.tree("../../data/parsimonious/chikv/chikv_westernafrica.phy")
+metadata <- readr::read_csv("../../data/parsimonious/chikv/chikv_westernafrica_metadata.csv", col_names = TRUE)
+geodata <- readr::read_csv("../../data/parsimonious/chikv/chikv_geo.csv", col_names = TRUE)
+
+
+## Check to See Which States are available by which to generate the network
+listStates(treedata,
+           metadata,
+           treeType = "parsimonious")
+
+
+## Make the Transmission Network
+graph <- makeTransNet(treedata,
+                      metadata,
+                      columnSelection = "Country",
+                      centralityMetric = 6,
+                      treeType = "parsimonious")
+
+print(graph)
+
+
+## Make Leaflet/Swoopy map
+make_map(graph,
+         geodata = geodata,
+         columnSelection = "Country")
+
 ```
 
 ## Customizing your Tranmission Networks
