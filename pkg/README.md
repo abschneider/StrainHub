@@ -48,6 +48,8 @@ make_map(graph,
 ## Customizing your Tranmission Networks
 StrainHub highly depends on the [vizNetwork](https://github.com/datastorm-open/visNetwork) package. For a full list of customizations options, see the vizNetwork documentation here: https://datastorm-open.github.io/visNetwork/
 
+<img src="https://raw.githubusercontent.com/colbyford/StrainHub/master/img/chikv_example.png" alt="Example custom Chikungunya virus network">
+
 ```r
 ## Using the graph object from before...
 library(visNetwork)
