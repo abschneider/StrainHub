@@ -54,7 +54,10 @@ lnodes <- data.frame(label = c("Size:\nSource Hub Ratio"),
                      color = c("grey"))
 
 ledges <- data.frame(color = c("grey", "green", "blue", "purple"),
-                     label = c("Size:\nTransitions", "Senegal to\nCote de Ivoire", "Cote de Ivoire to\nSenegal", "Senegal to\nNigeria"),
+                     label = c("Size:\nTransitions",
+                               "Senegal to\nCote de Ivoire",
+                               "Cote de Ivoire to\nSenegal",
+                               "Senegal to\nNigeria"),
                      arrows = c("to", "to", "to", "to"))
 
 visNetwork(nodes, edges) %>%
