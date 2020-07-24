@@ -1263,7 +1263,7 @@ make_nj_map <- function(geodata, transmissionpath, linecolor = "red", circlecolo
 #' @name make_map
 #' @title make_map
 #' @description Creates a Leaflet map of the transmission network
-#' @param graph Teh VizNetwork graph object from the `makeTransNet` function.
+#' @param graph The VizNetwork graph object from the `makeTransNet` function.
 #' @param geodata Input geo data. (First column must match the column selection in the network object, then Latitude and Longitude columns.)
 #' @param columnSelection The column selected previously from the `makeTransNet` function. (For example, "Country".)
 #' @param basemapLayer The base map layer style. Any of the following styles from: https://esri.github.io/esri-leaflet/api-reference/layers/basemap-layer.html
@@ -1291,30 +1291,31 @@ make_map <- function(graph, geodata, columnSelection, basemapLayer = "Imagery", 
            color = randomcoloR::distinctColorPalette(k = nrow(graph$x$edges)))
 
   ## Setup for Swoopy.js
-  # esriPlugin <- htmlDependency("leaflet.esri", "1.0.3",
-  #                              src = c(href = "https://cdn.jsdelivr.net/leaflet.esri/1.0.3/"),
-  #                              script = "esri-leaflet.js"
-  # )
-
-  esriPlugin <- htmlDependency("leaflet.esri", "1.0.3",
-                               src = normalizePath("www"),
+  esriPlugin <- htmltools::htmlDependency("leaflet.esri", "1.0.3",
+                               src = c(href = "https://cdn.jsdelivr.net/leaflet.esri/1.0.3/"),
                                script = "esri-leaflet.js"
   )
+
+  # esriPlugin <- htmltools::htmlDependency("leaflet.esri", "1.0.3",
+  #                              src = normalizePath("www"),
+  #                              script = "esri-leaflet.js"
+  # )
 
   # swoopyPlugin <- htmlDependency("leaflet-swoopy", "3.4.1",
   #                                src = c(href = "https://unpkg.com/leaflet-swoopy@3.4.1/build/"),
   #                                script = "Leaflet.SwoopyArrow.js"
   # )
+  # https://unpkg.com/leaflet-swoopy/build/Leaflet.SwoopyArrow.min.js
 
-  # swoopyPlugin <- htmlDependency("leaflet-swoopy", "3.4.1",
-  #                                src = c(href = "https://unpkg.com/leaflet-swoopy@3.4.1/build/"),
-  #                                script = "Leaflet.SwoopyArrow.min.js"
-  # )
-
-  swoopyPlugin <- htmlDependency("leaflet-swoopy", "3.4.1",
-                                 src = normalizePath("www"),
+  swoopyPlugin <- htmltools::htmlDependency("leaflet-swoopy", "3.4.1",
+                                 src = c(href = "https://unpkg.com/leaflet-swoopy@3.4.1/build/"),
                                  script = "Leaflet.SwoopyArrow.min.js"
   )
+
+  # swoopyPlugin <- htmltools::htmlDependency("leaflet-swoopy", "3.4.1",
+  #                                src = normalizePath("www"),
+  #                                script = "Leaflet.SwoopyArrow.min.js"
+  # )
 
   registerleafletPlugin <- function(map, plugin) {
     map$dependencies <- c(map$dependencies, list(plugin))

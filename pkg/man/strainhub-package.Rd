@@ -6,7 +6,7 @@
 \alias{strainhub}
 \title{StrainHub}
 \description{
-StrainHub works to generate a pathogen transmission network graph utilizing genomic data and calculate importance of network based on centrality metrics.
+StrainHub works to generate a pathogen transmission network graph utilizing genomic data and calculates importance of network based on centrality metrics.
 }
 \details{
 ############################

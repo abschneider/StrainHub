@@ -32,12 +32,14 @@
 #' @import rhandsontable
 #' @import magrittr
 #' @import htmlwidgets
+#' @import htmltools
 # @import globe4r
 #' @import randomcoloR
 #' @import colourpicker
 #' @import rbokeh
 #' @import markdown
 #' @import rmarkdown
+#' @import leaflet
 #' @import ggtree
 #' @import plotly
 #'
