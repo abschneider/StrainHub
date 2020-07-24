@@ -47,3 +47,38 @@ make_map(graph,
 
 ## Customizing your Tranmission Networks
 StrainHub highly depends on the [vizNetwork](https://github.com/datastorm-open/visNetwork) package. For a full list of customizations options, see the vizNetwork documentation here: https://datastorm-open.github.io/visNetwork/
+
+```r
+## Using the graph object from before...
+library(visNetwork)
+
+nodes <- graph$x$nodes %>%
+  mutate(shape = "dot",
+         color = "grey",
+         font.size = 20)
+
+## Define new edge colors
+colors <- c("blue", "green", "purple")
+
+edges <- graph$x$edges %>%
+  mutate(arrows = "to",
+         smooth = TRUE,
+         color = colors,
+         width = ifelse(value == 1, 1, 4),
+         value = NULL)
+
+## Add a legend
+lnodes <- data.frame(label = c("Size:\nSource Hub Ratio"),
+                     shape = c("dot"),
+                     color = c("grey"))
+
+ledges <- data.frame(color = c("grey", "green", "blue", "purple"),
+                     label = c("Size:\nTransitions", "Senegal to\nCote de Ivoire", "Cote de Ivoire to\nSenegal", "Senegal to\nNigeria"),
+                     arrows = c("to", "to", "to", "to"))
+
+visNetwork(nodes, edges) %>%
+  visOptions(nodesIdSelection = list(enabled = TRUE)) %>%
+  visLegend(addEdges = ledges,
+            addNodes = lnodes,
+            useGroups = FALSE)
+```
