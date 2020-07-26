@@ -81,6 +81,7 @@ ledges <- data.frame(color = c("grey", "green", "blue", "purple"),
                                "Senegal to\nNigeria"),
                      arrows = c("to", "to", "to", "to"))
 
+## Generate the custom network using `visNetwork`
 visNetwork(nodes, edges) %>%
   visOptions(nodesIdSelection = list(enabled = TRUE)) %>%
   visLegend(addEdges = ledges,
