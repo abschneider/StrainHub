@@ -48,6 +48,8 @@ make_map(graph,
 ## Customizing your Tranmission Networks
 StrainHub highly depends on the [vizNetwork](https://github.com/datastorm-open/visNetwork) package. For a full list of customizations options, see the vizNetwork documentation here: https://datastorm-open.github.io/visNetwork/
 
+<img src="https://raw.githubusercontent.com/colbyford/StrainHub/master/img/chikv_example.png" alt="Example custom Chikungunya virus network">
+
 ```r
 ## Using the graph object from before...
 library(visNetwork)
@@ -71,11 +73,15 @@ edges <- graph$x$edges %>%
 lnodes <- data.frame(label = c("Size:\nSource Hub Ratio"),
                      shape = c("dot"),
                      color = c("grey"))
-
+                     
 ledges <- data.frame(color = c("grey", "green", "blue", "purple"),
-                     label = c("Size:\nTransitions", "Senegal to\nCote de Ivoire", "Cote de Ivoire to\nSenegal", "Senegal to\nNigeria"),
+                     label = c("Size:\nTransitions",
+                               "Senegal to\nCote de Ivoire",
+                               "Cote de Ivoire to\nSenegal",
+                               "Senegal to\nNigeria"),
                      arrows = c("to", "to", "to", "to"))
 
+## Generate the custom network using `visNetwork`
 visNetwork(nodes, edges) %>%
   visOptions(nodesIdSelection = list(enabled = TRUE)) %>%
   visLegend(addEdges = ledges,
