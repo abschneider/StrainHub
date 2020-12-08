@@ -19,7 +19,7 @@ make_map(
 )
 }
 \arguments{
-\item{graph}{Teh VizNetwork graph object from the `makeTransNet` function.}
+\item{graph}{The VizNetwork graph object from the `makeTransNet` function.}
 
 \item{geodata}{Input geo data. (First column must match the column selection in the network object, then Latitude and Longitude columns.)}
 
