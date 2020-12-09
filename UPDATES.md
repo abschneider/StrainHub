@@ -2,6 +2,10 @@
 
 ## Release Updates
 
+### v1.1.0
+- Replaced underlying StrainHub functionality to reference R package version of StrainHub. (Thanks, Adesolji Ademiluyi!)
+
+
 ### v1.0.11
 _Second public release!_
 - Added Logo to Homepage
