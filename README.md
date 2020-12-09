@@ -72,9 +72,6 @@ If you need to install all the required packages to run StrainHub, you can do so
 
 ## How To Cite
 
-Text Citation:
-
-=======
 
 Text Citation:
 
@@ -98,7 +95,7 @@ BibTex Citation:
     eprint = {http://oup.prod.sis.lan/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btz646/29171171/btz646.pdf},
 }
 ```
-=======
+------------------------
 
 Additionally, if you use the Map feature of StrainHub please also cite the reference below:
 
