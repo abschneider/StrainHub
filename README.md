@@ -12,7 +12,7 @@ StrainHub is designed as a web-based software to generate disease transmission n
   <img src="https://github.com/abschneider/StrainHub/blob/master/host_network_example.png" alt="Sample Host Transmission Network" width="350"/>
 </p>
 
-## Use StrainHub Online
+## StrainHub Features
 
 StrainHub currently offers four methods to enable the visualization of transmission networks, each with different file format requirements:
 
@@ -50,12 +50,36 @@ Additionally, if you want to plot your transmission network on a map you will ne
 
 1) Geographic coordinates for each character of interest in a CSV formatted file.
 
-
 For more information, click [here](ABOUT.md).
+
+## Use StrainHub Online
 
 [![StrainHub.io](https://img.shields.io/badge/Try%20Out%20StrainHub%20Online-StrainHub.io-blue.svg?logo=r&style=for-the-badge&labelColor=2C3E50&color=3498DB)](https://strainhub.io)
 
 ## Run StrainHub Locally
+
+StrainHub can be run on your local machine. This is the better option for scenarios where the input data is large or if security is a concern.
+
+### Run StrainHub in Docker
+
+The StrainHub Docker image is hosted on DockerHub: hub.docker.com/r/cford38/strainhub. Simply run the following from your command prompt:
+
+```bash
+docker pull cford38/strainhub
+docker run --name strainhub --rm -p 3838:3838 cford38/strainhub
+```
+
+Then, In your browser, navigate to `localhost:3838`.
+
+
+To build StrainHub's Docker image locally (which is unnecessary unless you want to make edits to the Docker image), run the following:
+```bash
+docker build -t strainhub .
+docker run --name strainhub --rm -p 3838:3838 strainhub
+```
+
+
+### Run StrainHub Locally from RStudio and Shiny
 
 To run, download the repository and open the `strainhub/app.R` file and run the following script.
 
