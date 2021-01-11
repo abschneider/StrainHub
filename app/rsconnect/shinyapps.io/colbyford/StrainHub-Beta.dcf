@@ -1,0 +1,10 @@
+name: StrainHub-Beta
+title:
+username:
+account: colbyford
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3459604
+bundleId: 4080396
+url: https://colbyford.shinyapps.io/StrainHub-Beta/
+when: 1610333982.8379
