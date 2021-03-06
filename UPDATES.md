@@ -2,6 +2,9 @@
 
 ## Release Updates
 
+### v1.1.1
+- Updated/removed some figure export abilities and prepared app for Docker containerization.
+
 ### v1.1.0
 - Replaced underlying StrainHub functionality to reference R package version of StrainHub. (Thanks, Adesolji Ademiluyi!)
 

@@ -1,4 +1,5 @@
-FROM rocker/shiny-verse:latest
+# FROM rocker/shiny-verse:latest
+FROM rocker/shiny-verse:4.0.0
 
 RUN apt-get update && apt-get install -y \
     sudo \
@@ -34,7 +35,8 @@ RUN R -e "remotes::install_github('YuLab-SMU/treeio')"
 RUN R -e "remotes::install_github('YuLab-SMU/ggtree')"
 RUN R -e "remotes::install_github('nathan-russell/hashmap')"
 
-RUN R -e "remotes::install_github('colbyford/strainhub', subdir='pkg', dependencies=TRUE)"
+# RUN R -e "remotes::install_github('colbyford/strainhub', subdir='pkg', dependencies=TRUE)"
+RUN R -e "remotes::install_github('colbyford/strainhub', subdir='pkg', dependencies=FALSE)"
 
 # COPY /app/strainhub.Rproj /srv/shiny-server/
 # COPY /app/app.R /srv/shiny-server/
@@ -44,6 +46,9 @@ COPY /data /srv/shiny-server/data
 EXPOSE 3838
 
 RUN sudo chown -R shiny:shiny /srv/shiny-server
+# RUN sudo chown -R shiny:shiny /root/
+
+RUN R -e "webshot::install_phantomjs()"
 
 # CMD ["/usr/bin/shiny-server.sh"]
 # CMD ["R", "-e", "shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]
