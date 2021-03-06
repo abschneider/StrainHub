@@ -65,8 +65,8 @@ StrainHub can be run on your local machine. This is the better option for scenar
 The StrainHub Docker image is hosted on DockerHub: hub.docker.com/r/cford38/strainhub. Simply run the following from your command prompt:
 
 ```bash
-docker pull cford38/strainhub
-docker run --name strainhub --rm -p 3838:3838 cford38/strainhub
+docker pull cford38/strainhub:latest
+docker run --name strainhub --rm -p 3838:3838 cford38/strainhub:latest
 ```
 
 Then, In your browser, navigate to `localhost:3838`.
