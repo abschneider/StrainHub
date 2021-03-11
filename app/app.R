@@ -113,7 +113,7 @@ ui <- tagList(
                width = 3,
                selectInput("tree_input_type",
                            label = "1. Transmission Network Method",
-                           choices = c("Parsimony", "BEAST Phylogeography", "Create Neighbor-Joining Tree")),
+                           choices = c("Parsimony", "BEAST Phylogeography", "Create Neighbor-Joining Tree", "Upload StrainHub RDS file")),
                uiOutput("inputtree"),
                uiOutput("bootstrapval"),
                div(uiOutput("metadatabuilderparams"), style="float:right"),
@@ -123,21 +123,24 @@ ui <- tagList(
                div(uiOutput("geodatabuilderparams"), style="float:right"),
                br(),
                uiOutput("geodataswitch"),
+               uiOutput('getlistswitch'),
 
-               actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
+               # actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
                br(),
                br(),
                uiOutput("columnselection"),
                br(),
-               selectInput("metricradio",
-                            label ="5. Pick your Centrality Metric",
-                            choices = list("Indegree" = 1,
-                                           "Outdegree" = 2,
-                                           "Betweenness" = 3,
-                                           "Closeness" = 4,
-                                           "Degree" = 5,
-                                           "Source Hub Ratio" = 6),
-                            selected = 1),
+               
+               uiOutput("metricradioswitch"),
+               # selectInput("metricradio",
+               #              label ="5. Pick your Centrality Metric",
+               #              choices = list("Indegree" = 1,
+               #                             "Outdegree" = 2,
+               #                             "Betweenness" = 3,
+               #                             "Closeness" = 4,
+               #                             "Degree" = 5,
+               #                             "Source Hub Ratio" = 6),
+               #              selected = 1),
                # radioButtons("metricradio",
                #              label ="5. Pick your Centrality Metric",
                #              choices = list("Indegree" = 1,
@@ -148,11 +151,12 @@ ui <- tagList(
                #                             "Source Hub Ratio" = 6),
                #              selected = 1),
                br(),
-               actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
+               uiOutput("plotbuttonswitch"),
+               # actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
 
                br(),
                includeHTML("footer.html"),
-               p("v1.1.1", align = "right") ## Version
+               p("v1.1.2", align = "right") ## Version
              ),
              mainPanel(
                width = 9,
@@ -180,7 +184,11 @@ ui <- tagList(
                             downloadButton("exportplotpng",
                                            "Export as PNG",
                                            style="color: white;"),
-                            p("Note: For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."),
+                            p("For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."),
+                            downloadButton("exportgraphrds",
+                                           "Export as RDS",
+                                           style="color: white;"),
+                            p("Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."),
                             circle = FALSE,
                             status = "primary",
                             icon = icon("download"),
@@ -281,7 +289,7 @@ ui <- tagList(
                             downloadButton("exportmappng",
                                            "Export as PNG",
                                            style="color: white;"),
-                            p("Note: For larger screen resolutions, taking a screenshot of the map may provide a higher quality image than this exporter."),
+                            p("For larger screen resolutions, taking a screenshot of the map may provide a higher quality image than this exporter."),
                             circle = FALSE,
                             status = "primary",
                             icon = icon("download"),
@@ -351,8 +359,11 @@ server <- function(input, output, session) {
                                               label = '2. Choose your Tree File',
                                               accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
            "Create Neighbor-Joining Tree" = fileInput('treefile',
-                          label = '2a. Choose your Sequence File',
-                          accept = c('text/fasta', 'text/plain', '.fasta', '.afa', '.fna', '.ffn'))
+                                                      label = '2a. Choose your Sequence File',
+                                                      accept = c('text/fasta', 'text/plain', '.fasta', '.afa', '.fna', '.ffn')),
+           "Upload StrainHub RDS file" = fileInput('graphfile',
+                                                   label = "2. Choose your StrainHub RDS File",
+                                                   accept = c(".RDS"))
     )
   })
   
@@ -575,6 +586,23 @@ server <- function(input, output, session) {
     )
   }) 
   
+  
+  ## Show/Hide List States button
+  output$getlistswitch <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Parsimony" = actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
+           
+           "BEAST Phylogeography" = actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
+           
+           "Create Neighbor-Joining Tree" = actionButton("getlistbutton", label = "4a. List States", class = "btn-primary")
+           
+    )
+  }) 
+  
+  
   options(shiny.usecairo = TRUE)
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
@@ -596,10 +624,77 @@ server <- function(input, output, session) {
   })
   
   output$columnselection <- renderUI({
-    selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`)
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Parsimony" = selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`),
+           
+           "BEAST Phylogeography" = selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`),
+           
+           "Create Neighbor-Joining Tree" = selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`)
+    )
   })
   
 
+  ## Show/Hide Central Metric Selector button
+  output$metricradioswitch <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+         "Parsimony" = selectInput("metricradio",
+                                   label ="5. Pick your Centrality Metric",
+                                   choices = list("Indegree" = 1,
+                                                  "Outdegree" = 2,
+                                                  "Betweenness" = 3,
+                                                  "Closeness" = 4,
+                                                  "Degree" = 5,
+                                                  "Source Hub Ratio" = 6),
+                                   selected = 1),
+                                                  
+           
+           "BEAST Phylogeography" = selectInput("metricradio",
+                                                label ="5. Pick your Centrality Metric",
+                                                choices = list("Indegree" = 1,
+                                                               "Outdegree" = 2,
+                                                               "Betweenness" = 3,
+                                                               "Closeness" = 4,
+                                                               "Degree" = 5,
+                                                               "Source Hub Ratio" = 6),
+                                                selected = 1),
+           
+           "Create Neighbor-Joining Tree" = selectInput("metricradio",
+                                                        label ="5. Pick your Centrality Metric",
+                                                        choices = list("Indegree" = 1,
+                                                                       "Outdegree" = 2,
+                                                                       "Betweenness" = 3,
+                                                                       "Closeness" = 4,
+                                                                       "Degree" = 5,
+                                                                       "Source Hub Ratio" = 6),
+                                                        selected = 1)
+           
+    )
+  })
+  
+  
+  ## Customize Plot Buttom Text
+  output$plotbuttonswitch <- renderUI({
+    if (is.null(input$tree_input_type))
+      return()
+    
+    switch(input$tree_input_type,
+           "Parsimony" = actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
+           
+           "BEAST Phylogeography" = actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
+           
+           "Create Neighbor-Joining Tree" = actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
+           
+           "Upload StrainHub RDS file" = actionButton("plotbutton", label = "3. Render Network", class = "btn-primary")
+           
+    )
+  })
+  
   ## Viz Settings
   output$settings <- renderUI({
     actionButton("settings",
@@ -718,7 +813,7 @@ server <- function(input, output, session) {
         #      "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
       )
       
-      graph <-  makeTransNet(treedata = treedata(),
+      graph <- makeTransNet(treedata = treedata(),
                              metadata = rv$metadata,
                              columnSelection = input$columnselection,
                              # columnSelection = input$columnselection_row_last_clicked,
@@ -728,6 +823,18 @@ server <- function(input, output, session) {
                              bootstrapValue = input$bootstrapvalue,
                              treeType = "nj")
       # height = paste0(0.75*session$clientData$output_graph_width,"px")
+      
+    } else if(input$tree_input_type == "Upload StrainHub RDS file"){
+      validate(
+        need(input$treefile != "", "\n2. Please upload a StrainHub-generated RDS file.")
+      )
+
+      graphinput <- readRDS(input$graphfile$datapath)
+      
+      validate(
+        need("visNetwork" %in% class(graphinput), "\n2. This RDS file was not generated by StrainHub or vizNetwork.")
+      )
+      graph <- graphinput
       
     }
     
@@ -821,6 +928,18 @@ server <- function(input, output, session) {
       #webshot::webshot("tempplot.html", file = "tempplot.png", vwidth = 3840, vheight = 2160, zoom = 2)
       
       file.copy("tempplot.png", file)
+    }
+  )
+  
+  
+  output$exportgraphrds <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_network.RDS")
+    },
+    content = function(file) {
+      
+      saveRDS(graph(), "tempplot.RDS")
+      file.copy("tempplot.RDS", file)
     }
   )
   

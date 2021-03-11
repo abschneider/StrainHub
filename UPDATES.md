@@ -2,6 +2,9 @@
 
 ## Release Updates
 
+### v1.1.2
+- Added the ability to export and import StrainHub networks as RDS files.
+
 ### v1.1.1
 - Updated/removed some figure export abilities and prepared app for Docker containerization.
 
