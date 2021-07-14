@@ -2,6 +2,16 @@
 
 ## Release Updates
 
+### v1.1.2
+- Added the ability to export and import StrainHub networks as RDS files.
+
+### v1.1.1
+- Updated/removed some figure export abilities and prepared app for Docker containerization.
+
+### v1.1.0
+- Replaced underlying StrainHub functionality to reference R package version of StrainHub. (Thanks, Adesolji Ademiluyi!)
+
+
 ### v1.0.11
 _Second public release!_
 - Added Logo to Homepage

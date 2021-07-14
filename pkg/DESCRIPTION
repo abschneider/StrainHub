@@ -1,0 +1,12 @@
+Package: strainhub
+Type: Package
+Title: StrainHub - Phylogenetic Network Visualization
+Version: 0.2.0
+Author: Colby Ford
+Maintainer: Colby Ford <colby.ford@uncc.edu>
+Description: StrainHub works to generate a pathogen transmission network graph utilizing genomic data and calculates importance of network based on centrality metrics.
+URL: https://github.com/colbyford/StrainHub (site)
+License: Apache 2.0
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1

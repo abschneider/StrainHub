@@ -2,8 +2,8 @@
   <img src="https://github.com/abschneider/StrainHub/blob/beta/img/sidelogo.png" alt="StrainHub logo" width="350"/>
 </p>
 
-[![Version: 1.0.11](https://img.shields.io/badge/version-1.0.11-green.svg)](UPDATES.md)
-[![Version: 1.0.11](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
+[![Version: 1.1.2](https://img.shields.io/badge/version-1.1.2-green.svg)](UPDATES.md)
+[![Version: 1.1.2](https://img.shields.io/github/issues/abschneider/StrainHub.svg)](https://github.com/abschneider/StrainHub/issues)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 StrainHub is designed as a web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. The software maps the metadata onto the tree and performs a parsimony ancestry reconstruction step to create links between the associated metadata and enable the construction of the network. Users have the option to build a tree utilizing their method of preference outside StrainHub or build a tree utilizing a FASTA file within StrainHub with the Neighbor-Joining algorithm. Alternatively, the user can skip the StrainHub ancestry reconstruction step by generating a maximum clade credibility tree (MCC) through BEAST phylogeography or input a previously generated list of edges in order to build the transmission network. Additionally, the user can input a file with geographic cooordinates associated with the character of interest and have the network plotted into a map.
@@ -12,7 +12,7 @@ StrainHub is designed as a web-based software to generate disease transmission n
   <img src="https://github.com/abschneider/StrainHub/blob/master/host_network_example.png" alt="Sample Host Transmission Network" width="350"/>
 </p>
 
-## Use StrainHub Online
+## StrainHub Features
 
 StrainHub currently offers four methods to enable the visualization of transmission networks, each with different file format requirements:
 
@@ -50,12 +50,36 @@ Additionally, if you want to plot your transmission network on a map you will ne
 
 1) Geographic coordinates for each character of interest in a CSV formatted file.
 
-
 For more information, click [here](ABOUT.md).
+
+## Use StrainHub Online
 
 [![StrainHub.io](https://img.shields.io/badge/Try%20Out%20StrainHub%20Online-StrainHub.io-blue.svg?logo=r&style=for-the-badge&labelColor=2C3E50&color=3498DB)](https://strainhub.io)
 
 ## Run StrainHub Locally
+
+StrainHub can be run on your local machine. This is the better option for scenarios where the input data is large or if security is a concern.
+
+### Run StrainHub in Docker
+
+The StrainHub Docker image is hosted on DockerHub: hub.docker.com/r/cford38/strainhub. Simply run the following from your command prompt:
+
+```bash
+docker pull cford38/strainhub:latest
+docker run --name strainhub --rm -p 3838:3838 cford38/strainhub:latest
+```
+
+Then, In your browser, navigate to `localhost:3838`.
+
+
+To build StrainHub's Docker image locally (which is unnecessary unless you want to make edits to the Docker image), run the following:
+```bash
+docker build -t strainhub .
+docker run --name strainhub --rm -p 3838:3838 strainhub
+```
+
+
+### Run StrainHub Locally from RStudio and Shiny
 
 To run, download the repository and open the `strainhub/app.R` file and run the following script.
 
@@ -72,9 +96,6 @@ If you need to install all the required packages to run StrainHub, you can do so
 
 ## How To Cite
 
-Text Citation:
-
-=======
 
 Text Citation:
 
@@ -98,7 +119,7 @@ BibTex Citation:
     eprint = {http://oup.prod.sis.lan/bioinformatics/advance-article-pdf/doi/10.1093/bioinformatics/btz646/29171171/btz646.pdf},
 }
 ```
-=======
+------------------------
 
 Additionally, if you use the Map feature of StrainHub please also cite the reference below:
 
