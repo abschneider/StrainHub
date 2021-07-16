@@ -78,15 +78,8 @@ ui <- tagList(
     id = "navTabset",
     windowTitle = "StrainHub",
     theme = shinytheme("flatly"),
-    # theme = "uncc.css",
     title = "StrainHub",
-    # footer = includeHTML("footer.html"),
     tabPanel("Home",
-             # setBackgroundColor(
-             #   color = "#2C3E50"
-             # ),
-             # h2("Welcome to", align = "center"),
-             # h1("StrainHub", align = "center", style="font-size: 550%;"),
              h1(img(src="mainlogo.png", width="500px", align="center"), align = "center"),
              sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "left"),
              mainPanel(
@@ -94,7 +87,6 @@ ui <- tagList(
                width = 6,
                br(),
                p("Welcome to StrainHub, an open access web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata.",
-                 # "StrainHub was initially designed as an open access web-based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata. We are currently integrating Ybyrá, a project of software solutions for data analysis in phylogenetics in the StrainHub framework to transform it into a suite of tools for both phylogenetic and pathogen transmission network analyses.",
                  align ="center",
                  style="font-size: 120%;"),
                p("StrainHub is being developed as a collaborative project between researchers from the University of California at San Diego and the University of North Carolina at Charlotte as an effort to create new the tools that will enable an in-depth analysis and data visualization of the spread of pathogens.",
@@ -111,9 +103,66 @@ ui <- tagList(
     tabPanel("Network Visualizer",
              sidebarPanel(
                width = 3,
+               selectInput("network_input_type",
+                           label = "1. Select your network method",
+                           choices = c("Apomorphy list", "StrainHub RDS files")),
+               uiOutput("inputnetwork"),
+               uiOutput("geodataswitch2"),
+               uiOutput("plotbuttonswitch2"),
+               includeHTML("footer.html"),
+               p("v1.1.2",align ="right") ## Version
+               ),
+             mainPanel(
+               width = 9,
+               tabsetPanel(id = "paneltabs",
+                           # tabPanel("Network Plot",
+                           #          dropdownButton(
+                           #            tags$h3("Network Settings"),
+                           #            radioButtons("arrowedges",
+                           #                         label = "Edge Style",
+                           #                         choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
+                           #                         selected = "TRUE"),
+                           #            circle = FALSE,
+                           #            status = "success",
+                           #            icon = icon("gear"),
+                           #            width = "300px",
+                           #            tooltip = tooltipOptions(title = "Network Settings")
+                           #          ) %>% div(style="float:left"),
+                           #          p(" "),
+                           #          dropdownButton(
+                           #            tags$h3("Download Network"),
+                           #            downloadButton("exportplothtml",
+                           #                           "Export as HTML",
+                           #                           style="color: white;"),
+                           #            br(),
+                           #            downloadButton("exportplotpng",
+                           #                           "Export as PNG",
+                           #                           style="color: white;"),
+                           #            p("For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."),
+                           #            downloadButton("exportgraphrds",
+                           #                           "Export as RDS",
+                           #                           style="color: white;"),
+                           #            p("Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."),
+                           #            circle = FALSE,
+                           #            status = "primary",
+                           #            icon = icon("download"),
+                           #            width = "300px",
+                           #            tooltip = tooltipOptions(title = "Download Network As...")
+                           #          ) %>% div(style="float:left; margin-left:5px;"),
+                           #          br(),
+                           #          
+                           #          jqui_resizable(visNetworkOutput("graphplot2", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                           # ),
+                           tabPanel("Map"))
+             ),
+             icon = icon("chevron-right", lib = "glyphicon")
+             ),
+    tabPanel("Network Generator",
+             sidebarPanel(
+               width = 3,
                selectInput("tree_input_type",
                            label = "1. Transmission Network Method",
-                           choices = c("Parsimony", "BEAST Phylogeography", "Create Neighbor-Joining Tree", "Upload StrainHub RDS file")),
+                           choices = c("Parsimony Ancestral Reconstruction", "BEAST Phylogeography", "Create Neighbor-Joining Tree")),# "Upload StrainHub RDS file")),
                uiOutput("inputtree"),
                uiOutput("bootstrapval"),
                div(uiOutput("metadatabuilderparams"), style="float:right"),
@@ -125,34 +174,14 @@ ui <- tagList(
                uiOutput("geodataswitch"),
                uiOutput('getlistswitch'),
 
-               # actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
                br(),
                br(),
                uiOutput("columnselection"),
                br(),
                
                uiOutput("metricradioswitch"),
-               # selectInput("metricradio",
-               #              label ="5. Pick your Centrality Metric",
-               #              choices = list("Indegree" = 1,
-               #                             "Outdegree" = 2,
-               #                             "Betweenness" = 3,
-               #                             "Closeness" = 4,
-               #                             "Degree" = 5,
-               #                             "Source Hub Ratio" = 6),
-               #              selected = 1),
-               # radioButtons("metricradio",
-               #              label ="5. Pick your Centrality Metric",
-               #              choices = list("Indegree" = 1,
-               #                             "Outdegree" = 2,
-               #                             "Betweenness" = 3,
-               #                             "Closeness" = 4,
-               #                             "Degree" = 5,
-               #                             "Source Hub Ratio" = 6),
-               #              selected = 1),
                br(),
                uiOutput("plotbuttonswitch"),
-               # actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
 
                br(),
                includeHTML("footer.html"),
@@ -201,29 +230,19 @@ ui <- tagList(
                  ),
                  tabPanel("Tree Preview",
                           h4("Phylogeny Contents"),
-                          #plotlyOutput("treepreview")
                           jqui_resizable(plotlyOutput("treepreview", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Map",
                           dropdownButton(
                             tags$h3("Map Settings"),
                             fluidRow(
-                              # column(6, radioButtons("maparrowedges",
-                              #                        label = "Line End Style",
-                              #                        choices = c("Arrows" = "FALSE", "Lines" = "TRUE"),
-                              #                        selected = "FALSE")),
                               column(6, switchInput("maparrowedges",
                                                     label = "Line End",
                                                     onLabel = "<i class=\"fas fa-minus\"></i>",
                                                     offLabel = "<i class=\"fas fa-arrows-alt-h\"></i>",
                                                     onStatus = "secondary", 
                                                     offStatus = "secondary")),
-                              
-                              # column(6, radioButtons("maparrowfill",
-                              #                       label = "Arrow Style",
-                              #                       choices = c("Filled" = "TRUE", "Unfilled" = "FALSE"),
-                              #                       selected = "TRUE"))),
-                              
+
                               column(6, switchInput("maparrowfill",
                                                     label = "Arrow Style",
                                                     onLabel = "<i class=\"fas fa-caret-left\"></i>",
@@ -233,10 +252,6 @@ ui <- tagList(
                                                     offStatus = "secondary"))),
                             
                             fluidRow(
-                              # column(6, radioButtons("mapshowlabels",
-                              #                        label = "Location Labels",
-                              #                        choices = c("Show" = "TRUE", "Hide" = "FALSE"),
-                              #                        selected = "TRUE")),
                               column(6, switchInput("mapshowlabels",
                                                     label = "Location Labels",
                                                     onLabel = "On",
@@ -245,10 +260,6 @@ ui <- tagList(
                                                     onStatus = "info", 
                                                     offStatus = "secondary")),
                               
-                              # column(6, radioButtons("mapshowpoints",
-                              #                        label = "Location Points",
-                              #                        choices = c("Show" = "TRUE", "Hide" = "FALSE"),
-                              #                        selected = "TRUE"))),
                               column(6, switchInput("mapshowpoints",
                                                     label = "Location Points",
                                                     onLabel = "On",
@@ -296,18 +307,8 @@ ui <- tagList(
                             width = "300px",
                             tooltip = tooltipOptions(title = "Download Map As...")
                           ) %>% div(style="float:left; margin-left:5px;"),
-                          # switchInput(
-                          #   inputId = "mapswitch",
-                          #   label = "<i class=\"fa fa-globe-americas\"></i>",
-                          #   onLabel = "Globe",
-                          #   onStatus = "success",
-                          #   offLabel = "Map",
-                          #   offStatus = "info"),
-                          #div(downloadButton("downloadmap", "Download Map", class = "btn-outline-primary"), style="float:right;padding-top:1px;padding-bottom:1px;margin-top:20px"),
                           br(),
                           jqui_resizable(leafletOutput("mapoutput", height = "750px")) %>% withSpinner(color = "#2C3E50", type = 4)
-                          #uiOutput("mapswitchoutput")
-                          #jqui_resizable(globe4r::globeOutput("globeoutput", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
                  ),
                  tabPanel("Metrics",
                           div(downloadButton("downloadmetrics", "Download Output Metrics", class = "btn-outline-primary"), style="float:right"),
@@ -324,13 +325,9 @@ ui <- tagList(
                        includeMarkdown("https://github.com/abschneider/StrainHub/raw/master/ABOUT.md")
                        ),
              sidebarPanel(style = "background-color: #FFFFFF", width = 2, position = "right"),
-             icon = icon("question"))#,
-    # tabPanel(title="Standalone",
-    #          icon = icon("github"))
-    # tabPanel(title=HTML("<br></a></li><li><a href='https://github.com/abschneider/StrainHub' target='_blank'>Standalone"),
-    #          icon = icon("github")),
-    # tabPanel(title=HTML("tab3</a></li><li><a href='mailto:adebernardischneider@ucsd.edu' target='_blank'>Contact"),
-    #          icon = icon("envelope"))
+             icon = icon("question")),
+   tabPanel(title=HTML("<li><a href='https://docs.strainhub.io'>Manual</a></li>"))
+   
   )
 )
 
@@ -347,12 +344,26 @@ server <- function(input, output, session) {
                       selected = "Network Visualizer")
   })
   
+  output$inputnetwork <- renderUI({
+    if(is.null(input$network_input_type))
+      return()
+    
+    switch(input$network_input_type,
+           "Apomorphy list" = fileInput('networkfile',
+                                        label = "2. Choose your Relationship Table",
+                                        accept = c('text/plain','.csv','.tsv')),
+           "StrainHub RDS files" = fileInput('graphfile',
+                                           label = "2. Choose your StrainHub RDS File",
+                                           accept = c(".RDS"))
+    )
+  })
+  
   output$inputtree <- renderUI({
     if (is.null(input$tree_input_type))
       return()
     
     switch(input$tree_input_type,
-           "Parsimony" = fileInput('treefile',
+           "Parsimony Ancestral Reconstruction" = fileInput('treefile',
                                    label = '2. Choose your Tree File',
                                    accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
            "BEAST Phylogeography" = fileInput('treefile',
@@ -360,10 +371,10 @@ server <- function(input, output, session) {
                                               accept = c('text/newick', 'text/plain', '.phy', '.tre', '.tree', '.newick', '.nwk')),
            "Create Neighbor-Joining Tree" = fileInput('treefile',
                                                       label = '2a. Choose your Sequence File',
-                                                      accept = c('text/fasta', 'text/plain', '.fasta', '.afa', '.fna', '.ffn')),
-           "Upload StrainHub RDS file" = fileInput('graphfile',
-                                                   label = "2. Choose your StrainHub RDS File",
-                                                   accept = c(".RDS"))
+                                                      accept = c('text/fasta', 'text/plain', '.fasta', '.afa', '.fna', '.ffn'))#,
+          # "Upload StrainHub RDS file" = fileInput('graphfile',
+          #                                         label = "2. Choose your StrainHub RDS File",
+          #                                         accept = c(".RDS"))
     )
   })
   
@@ -394,7 +405,7 @@ server <- function(input, output, session) {
       return()
 
     switch(input$tree_input_type,
-           "Parsimony" = fileInput('csvfile',
+           "Parsimony Ancestral Reconstruction" = fileInput('csvfile',
                                    label = '3a. Choose your Metadata File',
                                    accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            "BEAST Phylogeography" = sliderInput("threshold",
@@ -416,7 +427,7 @@ server <- function(input, output, session) {
       return()
     
     switch(input$tree_input_type,
-           "Parsimony" = actionButton("metadatabuilder",
+           "Parsimony Ancestral Reconstruction" = actionButton("metadatabuilder",
                                       label = "Edit Metadata",
                                       icon = icon("wrench", lib = "font-awesome"),
                                       class = "btn-secondary",
@@ -487,7 +498,7 @@ server <- function(input, output, session) {
       return()
     
     switch(input$tree_input_type,
-           "Parsimony" = actionButton("geodatabuilder",
+           "Parsimony Ancestral Reconstruction" = actionButton("geodatabuilder",
                                       label = "Edit Geodata",
                                       icon = icon("wrench", lib = "font-awesome"),
                                       class = "btn-secondary",
@@ -572,7 +583,7 @@ server <- function(input, output, session) {
       return()
     
     switch(input$tree_input_type,
-           "Parsimony" = fileInput('geodatafile',
+           "Parsimony Ancestral Reconstruction" = fileInput('geodatafile',
                                    label = '3b. Choose your Geodata File',
                                    accept = c('text/csv', 'text/plain', '.csv', '.txt')),
            
@@ -593,7 +604,7 @@ server <- function(input, output, session) {
       return()
     
     switch(input$tree_input_type,
-           "Parsimony" = actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
+           "Parsimony Ancestral Reconstruction" = actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
            
            "BEAST Phylogeography" = actionButton("getlistbutton", label = "4a. List States", class = "btn-primary"),
            
@@ -606,7 +617,7 @@ server <- function(input, output, session) {
   options(shiny.usecairo = TRUE)
   ## List State Column Choices
   availablecolumns <- eventReactive(input$getlistbutton, {
-    if(input$tree_input_type == "Parsimony"){
+    if(input$tree_input_type == "Parsimony Ancestral Reconstruction"){
       validate(need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."))
       availablecolumns <- listStates(metadata = rv$metadata,
                                      treeType = "parsimonious")
@@ -628,7 +639,7 @@ server <- function(input, output, session) {
       return()
     
     switch(input$tree_input_type,
-           "Parsimony" = selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`),
+           "Parsimony Ancestral Reconstruction" = selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`),
            
            "BEAST Phylogeography" = selectInput("columnselection", "4b. Choose your State", choices = availablecolumns()$`Column`),
            
@@ -643,7 +654,7 @@ server <- function(input, output, session) {
       return()
     
     switch(input$tree_input_type,
-         "Parsimony" = selectInput("metricradio",
+         "Parsimony Ancestral Reconstruction" = selectInput("metricradio",
                                    label ="5. Pick your Centrality Metric",
                                    choices = list("Indegree" = 1,
                                                   "Outdegree" = 2,
@@ -679,18 +690,30 @@ server <- function(input, output, session) {
   
   
   ## Customize Plot Buttom Text
+  
+  output$plotbuttonswitch2 <- renderUI({
+    if (is.null(input$network_input_type))
+      return()
+    
+    switch(input$network_input_type,
+           "Apomorphy list" = actionButton("plotbutton2", label = "3. Render Network", class = "btn-primary"),
+           "StrainHub RDS files" = actionButton("plotbutton2", label = "3. Render Network", class = "btn-primary")
+           
+    )
+  })
+  
   output$plotbuttonswitch <- renderUI({
     if (is.null(input$tree_input_type))
       return()
     
     switch(input$tree_input_type,
-           "Parsimony" = actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
+           "Parsimony Ancestral Reconstruction" = actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
            
            "BEAST Phylogeography" = actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
            
            "Create Neighbor-Joining Tree" = actionButton("plotbutton", label = "6. Generate Network", class = "btn-primary"),
            
-           "Upload StrainHub RDS file" = actionButton("plotbutton", label = "3. Render Network", class = "btn-primary")
+ #          "Upload StrainHub RDS file" = actionButton("plotbutton", label = "3. Render Network", class = "btn-primary")
            
     )
   })
@@ -725,7 +748,7 @@ server <- function(input, output, session) {
   
   ## Load in tree data
   treedata <- eventReactive(input$treefile, {
-    if(input$tree_input_type == "Parsimony"){
+    if(input$tree_input_type == "Parsimony Ancestral Reconstruction"){
       ape::read.tree(input$treefile$datapath)
     }
     else if(input$tree_input_type == "BEAST Phylogeography"){
@@ -755,7 +778,7 @@ server <- function(input, output, session) {
   
   ## Network Viz
   graph <- eventReactive(input$plotbutton, {
-    if(input$tree_input_type == "Parsimony"){
+    if(input$tree_input_type == "Parsimony Ancestral Reconstruction"){
       validate(
         need(input$treefile$datapath != "", "\n2. Please upload a tree file."),
         need(input$csvfile$datapath != "",  "\n3a. Please upload the accompanying metadata file."),
@@ -842,11 +865,52 @@ server <- function(input, output, session) {
     
   })
   
+  ## New for network visualization Adriano 7/15
+  
+  # graph <- eventReactive(input$plotbutton2, {
+  #   if(input$network_input_type == "Apomorphy list"){
+  #     validate(
+  #       need(input$treefile$datapath != "", "\n2. Please upload a tree file."),
+  #       need(input$csvfile$datapath != "",  "\n3a. Please upload the accompanying metadata file."),
+  #       need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?")#,
+  #     )
+  #     validate(
+  #       need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
+  #       need(input$columnselection %in% strainhub:::getUsableColumns(treedata = treedata(),
+  #                                                                    metadata = rv$metadata),
+  #            "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
+  #     )
+  #     
+  #     graph <- makeTransNet(treedata = treedata(),
+  #                           metadata = rv$metadata,
+  #                           columnSelection = input$columnselection,
+  #                           centralityMetric = input$metricradio,
+  #                           treeType = "parsimonious")
+  # 
+  #   } else if(input$network_input_type == "StrainHub RDS files"){
+  #     validate(
+  #       need(input$treefile != "", "\n2. Please upload a StrainHub-generated RDS file.")
+  #     )
+  #     
+  #     graphinput <- readRDS(input$graphfile$datapath)
+  #     
+  #     validate(
+  #       need("visNetwork" %in% class(graphinput), "\n2. This RDS file was not generated by StrainHub or vizNetwork.")
+  #     )
+  #     graph <- graphinput
+  #     
+  #   }
+    
+    
+    
+  # })
+  
   # output$graphplot <- renderPlot({print(graph())})
   output$graphplot <- renderVisNetwork({print(graph() %>%
                                                 visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
                                                                                  scaleFactor = 0.75)),
                                                          arrowStrikethrough = FALSE))})
+  
   # output$graphplot <- renderVisNetwork({print(graph() %>% 
   #                                               visExport(type = "png",
   #                                                         background = "#00FFFFFF",
@@ -1026,7 +1090,7 @@ server <- function(input, output, session) {
   output$treepreview <- eventReactive(input$plotbutton, {
     output$treepreview <- renderPlotly({
       # df <- read.csv(input$treefile$datapath)
-      if (input$tree_input_type == "Parsimony"){
+      if (input$tree_input_type == "Parsimony Ancestral Reconstruction"){
         # treepreview <- ape::read.tree(input$treefile$datapath)
         treepreview <- treedata()
         #return(treepreview)
@@ -1113,7 +1177,7 @@ server <- function(input, output, session) {
   
   ## Map Output
   output$mapoutput <- eventReactive(input$plotbutton, {
-    if (input$tree_input_type == "Parsimony"){
+    if (input$tree_input_type == "Parsimony Ancestral Reconstruction"){
       validate(
         need(input$treefile != "", "\n1. Please upload a tree file."),
         need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
@@ -1186,7 +1250,7 @@ server <- function(input, output, session) {
     
   ## Globe Output
 #  output$globeoutput <- eventReactive(input$plotbutton, {
-#    if (input$tree_input_type == "Parsimony"){
+#    if (input$tree_input_type == "Parsimony Ancestral Reconstruction"){
 #      validate(
 #        need(input$treefile != "", "\n1. Please upload a tree file."),
 #        need(input$csvfile != "",  "\n3a. Please upload the accompanying metadata file."),
@@ -1217,7 +1281,7 @@ server <- function(input, output, session) {
   
   ## Metrics File Output
   # metrics <- eventReactive(input$plotbutton, {
-  #   if (input$tree_input_type == "Parsimony"){
+  #   if (input$tree_input_type == "Parsimony Ancestral Reconstruction"){
   #     validate(
   #       need(input$treefile != "", "\n1. Please upload a tree file."),
   #       need(input$csvfile != "",  "\n2a. Please upload the accompanying metadata file."),
@@ -1254,7 +1318,7 @@ server <- function(input, output, session) {
   
   observeEvent(input$plotbutton, {
   # observe({
-    if (input$tree_input_type == "Parsimony"){
+    if (input$tree_input_type == "Parsimony Ancestral Reconstruction"){
       validate(
         need(input$treefile != "", "\n1. Please upload a tree phy file."),
         need(input$csvfile != "",  "\n2a. Please upload the accompanying csv metadata file."),
@@ -1330,6 +1394,21 @@ server <- function(input, output, session) {
       write.csv(read.csv("StrainHub_metrics.csv"), file, row.names = FALSE)
     }
   )
+  
+  #Testing link
+  
+  # output$Link <- renderUI({
+  #   
+  #   a("test", href="http://google.com", target="_blank")
+  #   
+  # })
+  
+  # output$navigate <- 
+  # observeEvent(input$navibar,{
+  #   if(input$navibar == "Link"){
+  #     browseURL("https://www.google.com")
+  #   }
+  # })
   
   
 }

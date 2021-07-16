@@ -1,0 +1,2169 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{lmodern}
+\usepackage{ifxetex,ifluatex}
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math}
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\hypersetup{
+  pdftitle={app.R},
+  pdfauthor={schneider},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+\urlstyle{same} % disable monospaced font for URLs
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifluatex
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+
+\title{app.R}
+\author{schneider}
+\date{2021-07-15}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\# StrainHub}
+\CommentTok{\# This is a Shiny web application.}
+\CommentTok{\# You can run the application by clicking the \textquotesingle{}Run App\textquotesingle{} button above.}
+\DocumentationTok{\#\#}
+
+\DocumentationTok{\#\# Shiny Web Application for Transmission Graphs {-} StrainHub}
+\FunctionTok{library}\NormalTok{(shiny)}
+
+\DocumentationTok{\#\# Load libraries for BEAST Parser}
+\FunctionTok{library}\NormalTok{(adegenet)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: ade4
+\end{verbatim}
+
+\begin{verbatim}
+## 
+##    /// adegenet 2.1.3 is loaded ////////////
+## 
+##    > overview: '?adegenet'
+##    > tutorials/doc/questions: 'adegenetWeb()' 
+##    > bug reports/feature requests: adegenetIssues()
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ade4)}
+\FunctionTok{library}\NormalTok{(knitr)}
+
+\DocumentationTok{\#\# Load in libraries for map generation}
+\CommentTok{\#library(leaflet)}
+\CommentTok{\#library(geosphere)}
+
+\DocumentationTok{\#\# Load other libraries}
+\FunctionTok{library}\NormalTok{(shinythemes)}
+\FunctionTok{library}\NormalTok{(shinyWidgets)}
+\FunctionTok{library}\NormalTok{(readr)}
+\CommentTok{\#library(ape)}
+\CommentTok{\#library(castor)}
+\CommentTok{\#library(hashmap)}
+\CommentTok{\#library(plyr)}
+\FunctionTok{library}\NormalTok{(network)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## 'network' 1.17.1 (2021-06-12), part of the Statnet Project
+## * 'news(package="network")' for changes since last version
+## * 'citation("network")' for citation information
+## * 'https://statnet.org' for help, support, and other information
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(visNetwork)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'visNetwork' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(igraph)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'igraph' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'igraph'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:network':
+## 
+##     %c%, %s%, add.edges, add.vertices, delete.edges, delete.vertices,
+##     get.edge.attribute, get.edges, get.vertex.attribute, is.bipartite,
+##     is.directed, list.edge.attributes, list.vertex.attributes,
+##     set.edge.attribute, set.vertex.attribute
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     decompose, spectrum
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:base':
+## 
+##     union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#library(data.table)}
+\FunctionTok{library}\NormalTok{(DT)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'DT'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:shiny':
+## 
+##     dataTableOutput, renderDataTable
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(rhandsontable)}
+\CommentTok{\#library(magrittr)}
+\FunctionTok{library}\NormalTok{(htmlwidgets)}
+\FunctionTok{library}\NormalTok{(htmltools)}
+\FunctionTok{library}\NormalTok{(rbokeh)}
+\FunctionTok{library}\NormalTok{(markdown)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'markdown' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(rmarkdown)}
+\CommentTok{\#library(treeio)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(plotly)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'plotly'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:ggplot2':
+## 
+##     last_plot
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:igraph':
+## 
+##     groups
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:stats':
+## 
+##     filter
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:graphics':
+## 
+##     layout
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(shinyjqui)}
+\FunctionTok{library}\NormalTok{(shinycssloaders)}
+\FunctionTok{library}\NormalTok{(webshot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'webshot' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#loads core strainhub functions from package}
+\FunctionTok{library}\NormalTok{(strainhub)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: replacing previous import 'data.table::last' by 'dplyr::last' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'data.table::first' by 'dplyr::first' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'data.table::between' by 'dplyr::between'
+## when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ape::rotate' by 'ggtree::rotate' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::union' by 'igraph::union' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ape::ring' by 'igraph::ring' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ape::mst' by 'igraph::mst' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::as_data_frame' by
+## 'igraph::as_data_frame' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ape::edges' by 'igraph::edges' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::groups' by 'igraph::groups' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ggtree::inset' by 'magrittr::inset' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::%s%' by 'network::%s%' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::add.edges' by 'network::add.edges'
+## when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::get.edge.attribute' by
+## 'network::get.edge.attribute' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::add.vertices' by
+## 'network::add.vertices' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::%c%' by 'network::%c%' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::list.vertex.attributes' by
+## 'network::list.vertex.attributes' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::set.edge.attribute' by
+## 'network::set.edge.attribute' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::is.directed' by
+## 'network::is.directed' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::set.vertex.attribute' by
+## 'network::set.vertex.attribute' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::get.vertex.attribute' by
+## 'network::get.vertex.attribute' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::delete.edges' by
+## 'network::delete.edges' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::is.bipartite' by
+## 'network::is.bipartite' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::get.edges' by 'network::get.edges'
+## when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::list.edge.attributes' by
+## 'network::list.edge.attributes' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::delete.vertices' by
+## 'network::delete.vertices' when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::groups' by 'plotly::groups' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ggplot2::last_plot' by 'plotly::last_plot'
+## when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::failwith' by 'plyr::failwith' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::id' by 'plyr::id' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::summarize' by 'plyr::summarize' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::count' by 'plyr::count' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'dplyr::desc' by 'plyr::desc' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'plotly::mutate' by 'plyr::mutate' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'plotly::arrange' by 'plyr::arrange' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'plotly::rename' by 'plyr::rename' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ggtree::.' by 'plyr::.' when loading
+## 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'network::is.discrete' by 'plyr::is.discrete'
+## when loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'plotly::summarise' by 'plyr::summarise' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'igraph::parent' by 'treeio::parent' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: replacing previous import 'ape::drop.tip' by 'treeio::drop.tip' when
+## loading 'strainhub'
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#source("strainhub\_functions.R")}
+
+\DocumentationTok{\#\# Load in last}
+\FunctionTok{library}\NormalTok{(castor)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Loading required package: Rcpp
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(hashmap)}
+\FunctionTok{library}\NormalTok{(plyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'plyr' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'plyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:plotly':
+## 
+##     arrange, mutate, rename, summarise
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:network':
+## 
+##     is.discrete
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(dplyr)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'dplyr'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:plyr':
+## 
+##     arrange, count, desc, failwith, id, mutate, rename, summarise,
+##     summarize
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:igraph':
+## 
+##     as_data_frame, groups, union
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(data.table)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'data.table'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:dplyr':
+## 
+##     between, first, last
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(magrittr)}
+\FunctionTok{library}\NormalTok{(leaflet)}
+\FunctionTok{library}\NormalTok{(geosphere)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'geosphere' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'geosphere'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:htmltools':
+## 
+##     span
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:shiny':
+## 
+##     span
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(randomcoloR)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'randomcoloR' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(colourpicker)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'colourpicker'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:shiny':
+## 
+##     runExample
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# library(globe4r)}
+\CommentTok{\#library(seqinr)}
+\FunctionTok{library}\NormalTok{(phangorn)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'phangorn' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: ape
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'ape' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'ape'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:igraph':
+## 
+##     edges, mst, ring
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'phangorn'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:igraph':
+## 
+##     diversity
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:adegenet':
+## 
+##     AICc
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(ape)}
+\CommentTok{\#library(ggtree) \# Test}
+\FunctionTok{library}\NormalTok{(}\StringTok{"ggtree"}\NormalTok{, }\AttributeTok{pos =}\NormalTok{ .Machine}\SpecialCharTok{$}\NormalTok{integer.max)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'ggtree' was built under R version 3.5.2
+\end{verbatim}
+
+\begin{verbatim}
+## ggtree v1.14.6  For help: https://guangchuangyu.github.io/software/ggtree
+## 
+## If you use ggtree in published research, please cite the most appropriate paper(s):
+## 
+## - Guangchuang Yu, David Smith, Huachen Zhu, Yi Guan, Tommy Tsan-Yuk Lam. ggtree: an R package for visualization and annotation of phylogenetic trees with their covariates and other associated data. Methods in Ecology and Evolution 2017, 8(1):28-36, doi:10.1111/2041-210X.12628
+## 
+## - Guangchuang Yu, Tommy Tsan-Yuk Lam, Huachen Zhu, Yi Guan. Two methods for mapping and visualizing associated data on phylogeny using ggtree. Molecular Biology and Evolution 2018, accepted. doi: 10.1093/molbev/msy194
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'ggtree'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked _by_ 'package:ape':
+## 
+##     rotate
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked _by_ 'package:magrittr':
+## 
+##     inset
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked _by_ 'package:plyr':
+## 
+##     .
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Define UI for application}
+\NormalTok{ui }\OtherTok{\textless{}{-}} \FunctionTok{tagList}\NormalTok{(}
+  \CommentTok{\#tags$head(includeScript("google{-}analytics.js")),}
+  \CommentTok{\# tags$head(tags$style(type="text/css", "html, body \{width: 100\%; height: 100\%; overflow: hidden\}")),}
+\NormalTok{  tags}\SpecialCharTok{$}\FunctionTok{head}\NormalTok{(}
+\NormalTok{    tags}\SpecialCharTok{$}\FunctionTok{style}\NormalTok{(}\FunctionTok{HTML}\NormalTok{(}\StringTok{"}
+\StringTok{      .shiny{-}output{-}error{-}validation \{}
+\StringTok{        color: \#E74C3C;}
+\StringTok{      \}}
+\StringTok{    "}\NormalTok{))}
+\NormalTok{  ),}
+  \FunctionTok{navbarPage}\NormalTok{(}
+    \AttributeTok{id =} \StringTok{"navTabset"}\NormalTok{,}
+    \AttributeTok{windowTitle =} \StringTok{"StrainHub"}\NormalTok{,}
+    \AttributeTok{theme =} \FunctionTok{shinytheme}\NormalTok{(}\StringTok{"flatly"}\NormalTok{),}
+    \AttributeTok{title =} \StringTok{"StrainHub"}\NormalTok{,}
+    \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Home"}\NormalTok{,}
+             \FunctionTok{h1}\NormalTok{(}\FunctionTok{img}\NormalTok{(}\AttributeTok{src=}\StringTok{"mainlogo.png"}\NormalTok{, }\AttributeTok{width=}\StringTok{"500px"}\NormalTok{, }\AttributeTok{align=}\StringTok{"center"}\NormalTok{), }\AttributeTok{align =} \StringTok{"center"}\NormalTok{),}
+             \FunctionTok{sidebarPanel}\NormalTok{(}\AttributeTok{style =} \StringTok{"background{-}color: \#FFFFFF"}\NormalTok{, }\AttributeTok{width =} \DecValTok{3}\NormalTok{, }\AttributeTok{position =} \StringTok{"left"}\NormalTok{),}
+             \FunctionTok{mainPanel}\NormalTok{(}
+               \AttributeTok{style =} \StringTok{"background{-}color: \#FFFFFF"}\NormalTok{,}
+               \AttributeTok{width =} \DecValTok{6}\NormalTok{,}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{p}\NormalTok{(}\StringTok{"Welcome to StrainHub, an open access web{-}based software to generate disease transmission networks and associated metrics from a combination of a phylogenetic tree and associated metadata."}\NormalTok{,}
+                 \AttributeTok{align =}\StringTok{"center"}\NormalTok{,}
+                 \AttributeTok{style=}\StringTok{"font{-}size: 120\%;"}\NormalTok{),}
+               \FunctionTok{p}\NormalTok{(}\StringTok{"StrainHub is being developed as a collaborative project between researchers from the University of California at San Diego and the University of North Carolina at Charlotte as an effort to create new the tools that will enable an in{-}depth analysis and data visualization of the spread of pathogens."}\NormalTok{,}
+                 \AttributeTok{align =}\StringTok{"center"}\NormalTok{,}
+                 \AttributeTok{style=}\StringTok{"font{-}size: 120\%;"}\NormalTok{),}
+               \FunctionTok{fluidRow}\NormalTok{(}\FunctionTok{column}\NormalTok{(}\AttributeTok{width =} \DecValTok{5}\NormalTok{, }\FunctionTok{img}\NormalTok{(}\AttributeTok{src=}\StringTok{"ucsd{-}sm.jpg"}\NormalTok{, }\AttributeTok{width=}\StringTok{"200px"}\NormalTok{, }\AttributeTok{align=}\StringTok{"left"}\NormalTok{)),}
+                        \FunctionTok{column}\NormalTok{(}\AttributeTok{width =} \DecValTok{2}\NormalTok{, }\FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"display:inline{-}block"}\NormalTok{,}
+                                              \FunctionTok{actionButton}\NormalTok{(}\StringTok{"getstartedbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"Get Started ►"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary btn{-}lg"}\NormalTok{),}
+                                              \AttributeTok{style=}\StringTok{"float:middle"}\NormalTok{)),}
+                        \FunctionTok{column}\NormalTok{(}\AttributeTok{width =} \DecValTok{5}\NormalTok{, }\FunctionTok{img}\NormalTok{(}\AttributeTok{src=}\StringTok{"uncc{-}cci.png"}\NormalTok{, }\AttributeTok{width=}\StringTok{"200px"}\NormalTok{, }\AttributeTok{align=}\StringTok{"right"}\NormalTok{)))}
+\NormalTok{               ),}
+             \FunctionTok{sidebarPanel}\NormalTok{(}\AttributeTok{style =} \StringTok{"background{-}color: \#FFFFFF"}\NormalTok{, }\AttributeTok{width =} \DecValTok{3}\NormalTok{, }\AttributeTok{position =} \StringTok{"right"}\NormalTok{),}
+\NormalTok{             ),}
+    \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Network Visualizer"}\NormalTok{,}
+             \FunctionTok{sidebarPanel}\NormalTok{(}
+               \AttributeTok{width =} \DecValTok{3}\NormalTok{,}
+               \FunctionTok{selectInput}\NormalTok{(}\StringTok{"tree\_input\_type"}\NormalTok{,}
+                           \AttributeTok{label =} \StringTok{"1. Transmission Network Method"}\NormalTok{,}
+                           \AttributeTok{choices =} \FunctionTok{c}\NormalTok{(}\StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{, }\StringTok{"BEAST Phylogeography"}\NormalTok{, }\StringTok{"Create Neighbor{-}Joining Tree"}\NormalTok{, }\StringTok{"Upload StrainHub RDS file"}\NormalTok{)),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"inputtree"}\NormalTok{),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"bootstrapval"}\NormalTok{),}
+               \FunctionTok{div}\NormalTok{(}\FunctionTok{uiOutput}\NormalTok{(}\StringTok{"metadatabuilderparams"}\NormalTok{), }\AttributeTok{style=}\StringTok{"float:right"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"treeuiparams"}\NormalTok{),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"treerootswitch"}\NormalTok{),}
+               \FunctionTok{div}\NormalTok{(}\FunctionTok{uiOutput}\NormalTok{(}\StringTok{"geodatabuilderparams"}\NormalTok{), }\AttributeTok{style=}\StringTok{"float:right"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"geodataswitch"}\NormalTok{),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{\textquotesingle{}getlistswitch\textquotesingle{}}\NormalTok{),}
+
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"columnselection"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+               
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"metricradioswitch"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"plotbuttonswitch"}\NormalTok{),}
+
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{includeHTML}\NormalTok{(}\StringTok{"footer.html"}\NormalTok{),}
+               \FunctionTok{p}\NormalTok{(}\StringTok{"v1.1.2"}\NormalTok{, }\AttributeTok{align =} \StringTok{"right"}\NormalTok{) }\DocumentationTok{\#\# Version}
+\NormalTok{             ),}
+             \FunctionTok{mainPanel}\NormalTok{(}
+               \AttributeTok{width =} \DecValTok{9}\NormalTok{,}
+               \FunctionTok{tabsetPanel}\NormalTok{(}\AttributeTok{id =} \StringTok{"toptabs"}\NormalTok{,}
+                 \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Network Plot"}\NormalTok{,}
+                          \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                            tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Network Settings"}\NormalTok{),}
+                            \FunctionTok{radioButtons}\NormalTok{(}\StringTok{"arrowedges"}\NormalTok{,}
+                                         \AttributeTok{label =} \StringTok{"Edge Style"}\NormalTok{,}
+                                         \AttributeTok{choices =} \FunctionTok{c}\NormalTok{(}\StringTok{"Arrows"} \OtherTok{=} \StringTok{"TRUE"}\NormalTok{, }\StringTok{"Lines"} \OtherTok{=} \StringTok{"FALSE"}\NormalTok{),}
+                                         \AttributeTok{selected =} \StringTok{"TRUE"}\NormalTok{),}
+                            \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                            \AttributeTok{status =} \StringTok{"success"}\NormalTok{,}
+                            \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"gear"}\NormalTok{),}
+                            \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                            \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Network Settings"}\NormalTok{)}
+\NormalTok{                          ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left"}\NormalTok{),}
+                          \FunctionTok{p}\NormalTok{(}\StringTok{" "}\NormalTok{),}
+                          \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                            tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Download Network"}\NormalTok{),}
+                            \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportplothtml"}\NormalTok{,}
+                                           \StringTok{"Export as HTML"}\NormalTok{,}
+                                           \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                            \FunctionTok{br}\NormalTok{(),}
+                            \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportplotpng"}\NormalTok{,}
+                                           \StringTok{"Export as PNG"}\NormalTok{,}
+                                           \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                            \FunctionTok{p}\NormalTok{(}\StringTok{"For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."}\NormalTok{),}
+                            \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportgraphrds"}\NormalTok{,}
+                                           \StringTok{"Export as RDS"}\NormalTok{,}
+                                           \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                            \FunctionTok{p}\NormalTok{(}\StringTok{"Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."}\NormalTok{),}
+                            \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                            \AttributeTok{status =} \StringTok{"primary"}\NormalTok{,}
+                            \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"download"}\NormalTok{),}
+                            \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                            \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Download Network As..."}\NormalTok{)}
+\NormalTok{                          ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left; margin{-}left:5px;"}\NormalTok{),}
+                          \FunctionTok{br}\NormalTok{(),}
+
+                          \FunctionTok{jqui\_resizable}\NormalTok{(}\FunctionTok{visNetworkOutput}\NormalTok{(}\StringTok{"graphplot"}\NormalTok{, }\AttributeTok{height =} \StringTok{"768px"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{withSpinner}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C3E50"}\NormalTok{, }\AttributeTok{type =} \DecValTok{4}\NormalTok{)}
+\NormalTok{                 ),}
+                 \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Tree Preview"}\NormalTok{,}
+                          \FunctionTok{h4}\NormalTok{(}\StringTok{"Phylogeny Contents"}\NormalTok{),}
+                          \FunctionTok{jqui\_resizable}\NormalTok{(}\FunctionTok{plotlyOutput}\NormalTok{(}\StringTok{"treepreview"}\NormalTok{, }\AttributeTok{height =} \StringTok{"768px"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{withSpinner}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C3E50"}\NormalTok{, }\AttributeTok{type =} \DecValTok{4}\NormalTok{)}
+\NormalTok{                 ),}
+                 \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Map"}\NormalTok{,}
+                          \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                            tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Map Settings"}\NormalTok{),}
+                            \FunctionTok{fluidRow}\NormalTok{(}
+                              \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"maparrowedges"}\NormalTok{,}
+                                                    \AttributeTok{label =} \StringTok{"Line End"}\NormalTok{,}
+                                                    \AttributeTok{onLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}minus}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                    \AttributeTok{offLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}arrows{-}alt{-}h}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                    \AttributeTok{onStatus =} \StringTok{"secondary"}\NormalTok{, }
+                                                    \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{)),}
+
+                              \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"maparrowfill"}\NormalTok{,}
+                                                    \AttributeTok{label =} \StringTok{"Arrow Style"}\NormalTok{,}
+                                                    \AttributeTok{onLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}caret{-}left}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                    \AttributeTok{offLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}angle{-}right}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                    \AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{,}
+                                                    \AttributeTok{onStatus =} \StringTok{"secondary"}\NormalTok{, }
+                                                    \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{))),}
+                            
+                            \FunctionTok{fluidRow}\NormalTok{(}
+                              \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"mapshowlabels"}\NormalTok{,}
+                                                    \AttributeTok{label =} \StringTok{"Location Labels"}\NormalTok{,}
+                                                    \AttributeTok{onLabel =} \StringTok{"On"}\NormalTok{,}
+                                                    \AttributeTok{offLabel =} \StringTok{"Off"}\NormalTok{,}
+                                                    \AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{,}
+                                                    \AttributeTok{onStatus =} \StringTok{"info"}\NormalTok{, }
+                                                    \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{)),}
+                              
+                              \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"mapshowpoints"}\NormalTok{,}
+                                                    \AttributeTok{label =} \StringTok{"Location Points"}\NormalTok{,}
+                                                    \AttributeTok{onLabel =} \StringTok{"On"}\NormalTok{,}
+                                                    \AttributeTok{offLabel =} \StringTok{"Off"}\NormalTok{,}
+                                                    \AttributeTok{onStatus =} \StringTok{"info"}\NormalTok{, }
+                                                    \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{))),}
+
+                            \FunctionTok{colourInput}\NormalTok{(}\StringTok{"pointColorPicker"}\NormalTok{, }\StringTok{"Point Color"}\NormalTok{, }\StringTok{"\#000000"}\NormalTok{),}
+                            \FunctionTok{sliderInput}\NormalTok{(}\StringTok{"pointOpacityPicker"}\NormalTok{,}
+                                        \AttributeTok{label =} \StringTok{"Point Opacity"}\NormalTok{,}
+                                        \AttributeTok{min =} \DecValTok{0}\NormalTok{, }\AttributeTok{max =} \DecValTok{1}\NormalTok{, }\AttributeTok{value =} \FloatTok{0.5}\NormalTok{),}
+                            \FunctionTok{colourInput}\NormalTok{(}\StringTok{"labelColorPicker"}\NormalTok{, }\StringTok{"Label Color"}\NormalTok{, }\StringTok{"\#000000"}\NormalTok{),}
+                            \FunctionTok{selectInput}\NormalTok{(}\StringTok{"basemapselection"}\NormalTok{,}
+                                         \AttributeTok{label =} \StringTok{"Map Style"}\NormalTok{,}
+                                         \AttributeTok{choices =} \FunctionTok{list}\NormalTok{(}\StringTok{"Streets"} \OtherTok{=} \StringTok{"Streets"}\NormalTok{,}
+                                                        \StringTok{"Topographic"} \OtherTok{=} \StringTok{"Topographic"}\NormalTok{,}
+                                                        \StringTok{"NationalGeographic"} \OtherTok{=} \StringTok{"NationalGeographic"}\NormalTok{,}
+                                                        \StringTok{"Oceans"} \OtherTok{=} \StringTok{"Oceans"}\NormalTok{,}
+                                                        \StringTok{"Gray"} \OtherTok{=} \StringTok{"Gray"}\NormalTok{,}
+                                                        \StringTok{"DarkGray"} \OtherTok{=} \StringTok{"DarkGray"}\NormalTok{,}
+                                                        \StringTok{"Imagery"} \OtherTok{=} \StringTok{"Imagery"}\NormalTok{,}
+                                                        \StringTok{"ShadedRelief"} \OtherTok{=} \StringTok{"ShadedRelief"}\NormalTok{,}
+                                                        \StringTok{"Terrain"} \OtherTok{=} \StringTok{"Terrain"}\NormalTok{),}
+                                         \AttributeTok{selected =} \StringTok{"Gray"}\NormalTok{),}
+                            \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                            \AttributeTok{status =} \StringTok{"success"}\NormalTok{,}
+                            \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"gear"}\NormalTok{),}
+                            \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                            \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Map Settings"}\NormalTok{)}
+\NormalTok{                          ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left"}\NormalTok{),}
+                          \FunctionTok{p}\NormalTok{(}\StringTok{" "}\NormalTok{),}
+                          \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                            tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Download Map"}\NormalTok{),}
+                            \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportmaphtml"}\NormalTok{,}
+                                           \StringTok{"Export as HTML"}\NormalTok{,}
+                                           \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                            \FunctionTok{br}\NormalTok{(),}
+                            \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportmappng"}\NormalTok{,}
+                                           \StringTok{"Export as PNG"}\NormalTok{,}
+                                           \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                            \FunctionTok{p}\NormalTok{(}\StringTok{"For larger screen resolutions, taking a screenshot of the map may provide a higher quality image than this exporter."}\NormalTok{),}
+                            \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                            \AttributeTok{status =} \StringTok{"primary"}\NormalTok{,}
+                            \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"download"}\NormalTok{),}
+                            \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                            \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Download Map As..."}\NormalTok{)}
+\NormalTok{                          ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left; margin{-}left:5px;"}\NormalTok{),}
+                          \FunctionTok{br}\NormalTok{(),}
+                          \FunctionTok{jqui\_resizable}\NormalTok{(}\FunctionTok{leafletOutput}\NormalTok{(}\StringTok{"mapoutput"}\NormalTok{, }\AttributeTok{height =} \StringTok{"750px"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{withSpinner}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C3E50"}\NormalTok{, }\AttributeTok{type =} \DecValTok{4}\NormalTok{)}
+\NormalTok{                 ),}
+                 \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Metrics"}\NormalTok{,}
+                          \FunctionTok{div}\NormalTok{(}\FunctionTok{downloadButton}\NormalTok{(}\StringTok{"downloadmetrics"}\NormalTok{, }\StringTok{"Download Output Metrics"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}outline{-}primary"}\NormalTok{), }\AttributeTok{style=}\StringTok{"float:right"}\NormalTok{),}
+                          \FunctionTok{br}\NormalTok{(),}
+\NormalTok{                          DT}\SpecialCharTok{::}\FunctionTok{dataTableOutput}\NormalTok{(}\StringTok{"metricstable"}\NormalTok{)}
+\NormalTok{                 )}
+\NormalTok{               )}
+\NormalTok{             ),}
+             \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"chevron{-}right"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"glyphicon"}\NormalTok{)}
+\NormalTok{             ),}
+    \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Network Generator"}\NormalTok{,}
+             \FunctionTok{sidebarPanel}\NormalTok{(}
+               \AttributeTok{width =} \DecValTok{3}\NormalTok{,}
+               \FunctionTok{selectInput}\NormalTok{(}\StringTok{"tree\_input\_type"}\NormalTok{,}
+                           \AttributeTok{label =} \StringTok{"1. Transmission Network Method"}\NormalTok{,}
+                           \AttributeTok{choices =} \FunctionTok{c}\NormalTok{(}\StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{, }\StringTok{"BEAST Phylogeography"}\NormalTok{, }\StringTok{"Create Neighbor{-}Joining Tree"}\NormalTok{, }\StringTok{"Upload StrainHub RDS file"}\NormalTok{)),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"inputtree"}\NormalTok{),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"bootstrapval"}\NormalTok{),}
+               \FunctionTok{div}\NormalTok{(}\FunctionTok{uiOutput}\NormalTok{(}\StringTok{"metadatabuilderparams"}\NormalTok{), }\AttributeTok{style=}\StringTok{"float:right"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"treeuiparams"}\NormalTok{),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"treerootswitch"}\NormalTok{),}
+               \FunctionTok{div}\NormalTok{(}\FunctionTok{uiOutput}\NormalTok{(}\StringTok{"geodatabuilderparams"}\NormalTok{), }\AttributeTok{style=}\StringTok{"float:right"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"geodataswitch"}\NormalTok{),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{\textquotesingle{}getlistswitch\textquotesingle{}}\NormalTok{),}
+
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"columnselection"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"metricradioswitch"}\NormalTok{),}
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{uiOutput}\NormalTok{(}\StringTok{"plotbuttonswitch"}\NormalTok{),}
+
+               \FunctionTok{br}\NormalTok{(),}
+               \FunctionTok{includeHTML}\NormalTok{(}\StringTok{"footer.html"}\NormalTok{),}
+               \FunctionTok{p}\NormalTok{(}\StringTok{"v1.1.2"}\NormalTok{, }\AttributeTok{align =} \StringTok{"right"}\NormalTok{) }\DocumentationTok{\#\# Version}
+\NormalTok{             ),}
+             \FunctionTok{mainPanel}\NormalTok{(}
+               \AttributeTok{width =} \DecValTok{9}\NormalTok{,}
+               \FunctionTok{tabsetPanel}\NormalTok{(}\AttributeTok{id =} \StringTok{"toptabs"}\NormalTok{,}
+                           \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Network Plot"}\NormalTok{,}
+                                    \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                                      tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Network Settings"}\NormalTok{),}
+                                      \FunctionTok{radioButtons}\NormalTok{(}\StringTok{"arrowedges"}\NormalTok{,}
+                                                   \AttributeTok{label =} \StringTok{"Edge Style"}\NormalTok{,}
+                                                   \AttributeTok{choices =} \FunctionTok{c}\NormalTok{(}\StringTok{"Arrows"} \OtherTok{=} \StringTok{"TRUE"}\NormalTok{, }\StringTok{"Lines"} \OtherTok{=} \StringTok{"FALSE"}\NormalTok{),}
+                                                   \AttributeTok{selected =} \StringTok{"TRUE"}\NormalTok{),}
+                                      \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                                      \AttributeTok{status =} \StringTok{"success"}\NormalTok{,}
+                                      \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"gear"}\NormalTok{),}
+                                      \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                                      \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Network Settings"}\NormalTok{)}
+\NormalTok{                                    ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left"}\NormalTok{),}
+                                    \FunctionTok{p}\NormalTok{(}\StringTok{" "}\NormalTok{),}
+                                    \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                                      tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Download Network"}\NormalTok{),}
+                                      \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportplothtml"}\NormalTok{,}
+                                                     \StringTok{"Export as HTML"}\NormalTok{,}
+                                                     \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                                      \FunctionTok{br}\NormalTok{(),}
+                                      \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportplotpng"}\NormalTok{,}
+                                                     \StringTok{"Export as PNG"}\NormalTok{,}
+                                                     \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                                      \FunctionTok{p}\NormalTok{(}\StringTok{"For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."}\NormalTok{),}
+                                      \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportgraphrds"}\NormalTok{,}
+                                                     \StringTok{"Export as RDS"}\NormalTok{,}
+                                                     \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                                      \FunctionTok{p}\NormalTok{(}\StringTok{"Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."}\NormalTok{),}
+                                      \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                                      \AttributeTok{status =} \StringTok{"primary"}\NormalTok{,}
+                                      \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"download"}\NormalTok{),}
+                                      \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                                      \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Download Network As..."}\NormalTok{)}
+\NormalTok{                                    ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left; margin{-}left:5px;"}\NormalTok{),}
+                                    \FunctionTok{br}\NormalTok{(),}
+
+                                    \FunctionTok{jqui\_resizable}\NormalTok{(}\FunctionTok{visNetworkOutput}\NormalTok{(}\StringTok{"graphplot"}\NormalTok{, }\AttributeTok{height =} \StringTok{"768px"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{withSpinner}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C3E50"}\NormalTok{, }\AttributeTok{type =} \DecValTok{4}\NormalTok{)}
+\NormalTok{                           ),}
+                           \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Tree Preview"}\NormalTok{,}
+                                    \FunctionTok{h4}\NormalTok{(}\StringTok{"Phylogeny Contents"}\NormalTok{),}
+                                    \FunctionTok{jqui\_resizable}\NormalTok{(}\FunctionTok{plotlyOutput}\NormalTok{(}\StringTok{"treepreview"}\NormalTok{, }\AttributeTok{height =} \StringTok{"768px"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{withSpinner}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C3E50"}\NormalTok{, }\AttributeTok{type =} \DecValTok{4}\NormalTok{)}
+\NormalTok{                           ),}
+                           \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Map"}\NormalTok{,}
+                                    \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                                      tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Map Settings"}\NormalTok{),}
+                                      \FunctionTok{fluidRow}\NormalTok{(}
+                                        \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"maparrowedges"}\NormalTok{,}
+                                                              \AttributeTok{label =} \StringTok{"Line End"}\NormalTok{,}
+                                                              \AttributeTok{onLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}minus}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                              \AttributeTok{offLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}arrows{-}alt{-}h}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                              \AttributeTok{onStatus =} \StringTok{"secondary"}\NormalTok{,}
+                                                              \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{)),}
+
+                                        \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"maparrowfill"}\NormalTok{,}
+                                                              \AttributeTok{label =} \StringTok{"Arrow Style"}\NormalTok{,}
+                                                              \AttributeTok{onLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}caret{-}left}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                              \AttributeTok{offLabel =} \StringTok{"\textless{}i class=}\SpecialCharTok{\textbackslash{}"}\StringTok{fas fa{-}angle{-}right}\SpecialCharTok{\textbackslash{}"}\StringTok{\textgreater{}\textless{}/i\textgreater{}"}\NormalTok{,}
+                                                              \AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{,}
+                                                              \AttributeTok{onStatus =} \StringTok{"secondary"}\NormalTok{,}
+                                                              \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{))),}
+
+                                      \FunctionTok{fluidRow}\NormalTok{(}
+                                        \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"mapshowlabels"}\NormalTok{,}
+                                                              \AttributeTok{label =} \StringTok{"Location Labels"}\NormalTok{,}
+                                                              \AttributeTok{onLabel =} \StringTok{"On"}\NormalTok{,}
+                                                              \AttributeTok{offLabel =} \StringTok{"Off"}\NormalTok{,}
+                                                              \AttributeTok{value =} \ConstantTok{TRUE}\NormalTok{,}
+                                                              \AttributeTok{onStatus =} \StringTok{"info"}\NormalTok{,}
+                                                              \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{)),}
+
+                                        \FunctionTok{column}\NormalTok{(}\DecValTok{6}\NormalTok{, }\FunctionTok{switchInput}\NormalTok{(}\StringTok{"mapshowpoints"}\NormalTok{,}
+                                                              \AttributeTok{label =} \StringTok{"Location Points"}\NormalTok{,}
+                                                              \AttributeTok{onLabel =} \StringTok{"On"}\NormalTok{,}
+                                                              \AttributeTok{offLabel =} \StringTok{"Off"}\NormalTok{,}
+                                                              \AttributeTok{onStatus =} \StringTok{"info"}\NormalTok{,}
+                                                              \AttributeTok{offStatus =} \StringTok{"secondary"}\NormalTok{))),}
+
+                                      \FunctionTok{colourInput}\NormalTok{(}\StringTok{"pointColorPicker"}\NormalTok{, }\StringTok{"Point Color"}\NormalTok{, }\StringTok{"\#000000"}\NormalTok{),}
+                                      \FunctionTok{sliderInput}\NormalTok{(}\StringTok{"pointOpacityPicker"}\NormalTok{,}
+                                                  \AttributeTok{label =} \StringTok{"Point Opacity"}\NormalTok{,}
+                                                  \AttributeTok{min =} \DecValTok{0}\NormalTok{, }\AttributeTok{max =} \DecValTok{1}\NormalTok{, }\AttributeTok{value =} \FloatTok{0.5}\NormalTok{),}
+                                      \FunctionTok{colourInput}\NormalTok{(}\StringTok{"labelColorPicker"}\NormalTok{, }\StringTok{"Label Color"}\NormalTok{, }\StringTok{"\#000000"}\NormalTok{),}
+                                      \FunctionTok{selectInput}\NormalTok{(}\StringTok{"basemapselection"}\NormalTok{,}
+                                                  \AttributeTok{label =} \StringTok{"Map Style"}\NormalTok{,}
+                                                  \AttributeTok{choices =} \FunctionTok{list}\NormalTok{(}\StringTok{"Streets"} \OtherTok{=} \StringTok{"Streets"}\NormalTok{,}
+                                                                 \StringTok{"Topographic"} \OtherTok{=} \StringTok{"Topographic"}\NormalTok{,}
+                                                                 \StringTok{"NationalGeographic"} \OtherTok{=} \StringTok{"NationalGeographic"}\NormalTok{,}
+                                                                 \StringTok{"Oceans"} \OtherTok{=} \StringTok{"Oceans"}\NormalTok{,}
+                                                                 \StringTok{"Gray"} \OtherTok{=} \StringTok{"Gray"}\NormalTok{,}
+                                                                 \StringTok{"DarkGray"} \OtherTok{=} \StringTok{"DarkGray"}\NormalTok{,}
+                                                                 \StringTok{"Imagery"} \OtherTok{=} \StringTok{"Imagery"}\NormalTok{,}
+                                                                 \StringTok{"ShadedRelief"} \OtherTok{=} \StringTok{"ShadedRelief"}\NormalTok{,}
+                                                                 \StringTok{"Terrain"} \OtherTok{=} \StringTok{"Terrain"}\NormalTok{),}
+                                                  \AttributeTok{selected =} \StringTok{"Gray"}\NormalTok{),}
+                                      \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                                      \AttributeTok{status =} \StringTok{"success"}\NormalTok{,}
+                                      \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"gear"}\NormalTok{),}
+                                      \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                                      \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Map Settings"}\NormalTok{)}
+\NormalTok{                                    ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left"}\NormalTok{),}
+                                    \FunctionTok{p}\NormalTok{(}\StringTok{" "}\NormalTok{),}
+                                    \FunctionTok{dropdownButton}\NormalTok{(}
+\NormalTok{                                      tags}\SpecialCharTok{$}\FunctionTok{h3}\NormalTok{(}\StringTok{"Download Map"}\NormalTok{),}
+                                      \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportmaphtml"}\NormalTok{,}
+                                                     \StringTok{"Export as HTML"}\NormalTok{,}
+                                                     \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                                      \FunctionTok{br}\NormalTok{(),}
+                                      \FunctionTok{downloadButton}\NormalTok{(}\StringTok{"exportmappng"}\NormalTok{,}
+                                                     \StringTok{"Export as PNG"}\NormalTok{,}
+                                                     \AttributeTok{style=}\StringTok{"color: white;"}\NormalTok{),}
+                                      \FunctionTok{p}\NormalTok{(}\StringTok{"For larger screen resolutions, taking a screenshot of the map may provide a higher quality image than this exporter."}\NormalTok{),}
+                                      \AttributeTok{circle =} \ConstantTok{FALSE}\NormalTok{,}
+                                      \AttributeTok{status =} \StringTok{"primary"}\NormalTok{,}
+                                      \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"download"}\NormalTok{),}
+                                      \AttributeTok{width =} \StringTok{"300px"}\NormalTok{,}
+                                      \AttributeTok{tooltip =} \FunctionTok{tooltipOptions}\NormalTok{(}\AttributeTok{title =} \StringTok{"Download Map As..."}\NormalTok{)}
+\NormalTok{                                    ) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{div}\NormalTok{(}\AttributeTok{style=}\StringTok{"float:left; margin{-}left:5px;"}\NormalTok{),}
+                                    \FunctionTok{br}\NormalTok{(),}
+                                    \FunctionTok{jqui\_resizable}\NormalTok{(}\FunctionTok{leafletOutput}\NormalTok{(}\StringTok{"mapoutput"}\NormalTok{, }\AttributeTok{height =} \StringTok{"750px"}\NormalTok{)) }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{withSpinner}\NormalTok{(}\AttributeTok{color =} \StringTok{"\#2C3E50"}\NormalTok{, }\AttributeTok{type =} \DecValTok{4}\NormalTok{)}
+\NormalTok{                           ),}
+                           \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"Metrics"}\NormalTok{,}
+                                    \FunctionTok{div}\NormalTok{(}\FunctionTok{downloadButton}\NormalTok{(}\StringTok{"downloadmetrics"}\NormalTok{, }\StringTok{"Download Output Metrics"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}outline{-}primary"}\NormalTok{), }\AttributeTok{style=}\StringTok{"float:right"}\NormalTok{),}
+                                    \FunctionTok{br}\NormalTok{(),}
+\NormalTok{                                    DT}\SpecialCharTok{::}\FunctionTok{dataTableOutput}\NormalTok{(}\StringTok{"metricstable"}\NormalTok{)}
+\NormalTok{                           )}
+\NormalTok{               )}
+\NormalTok{             ),}
+             \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"chevron{-}right"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"glyphicon"}\NormalTok{)}
+\NormalTok{    ),}
+    \FunctionTok{tabPanel}\NormalTok{(}\StringTok{"About"}\NormalTok{,}
+             \FunctionTok{sidebarPanel}\NormalTok{(}\AttributeTok{style =} \StringTok{"background{-}color: \#FFFFFF"}\NormalTok{, }\AttributeTok{width =} \DecValTok{2}\NormalTok{, }\AttributeTok{position =} \StringTok{"left"}\NormalTok{),}
+             \FunctionTok{mainPanel}\NormalTok{(}\AttributeTok{width =} \DecValTok{8}\NormalTok{,}
+                       \FunctionTok{includeMarkdown}\NormalTok{(}\StringTok{"https://github.com/abschneider/StrainHub/raw/master/ABOUT.md"}\NormalTok{)}
+\NormalTok{                       ),}
+             \FunctionTok{sidebarPanel}\NormalTok{(}\AttributeTok{style =} \StringTok{"background{-}color: \#FFFFFF"}\NormalTok{, }\AttributeTok{width =} \DecValTok{2}\NormalTok{, }\AttributeTok{position =} \StringTok{"right"}\NormalTok{),}
+             \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"question"}\NormalTok{)),}
+   \CommentTok{\# tabPanel("Link","Link",uiOutput("Link"))}
+   \CommentTok{\#tabPanel(a("Link", href="http://google.com", target="\_blank"))}
+   \CommentTok{\#tabPanel(title=HTML("\textless{}/a\textgreater{}\textless{}/li\textgreater{}\textless{}li\textgreater{}\textless{}a href=\textquotesingle{}http://google.com\textquotesingle{} target=\textquotesingle{}\_blank\textquotesingle{}\textgreater{}Link"), icon = icon("question")),}
+   \CommentTok{\#tabPanel(title=HTML("\textless{}li\textgreater{}\textless{}a href=\textquotesingle{}http://google.com\textquotesingle{}\textgreater{}Link\textless{}/a\textgreater{}\textless{}/li\textgreater{}")),}
+   \FunctionTok{tabPanel}\NormalTok{(}\AttributeTok{title=}\FunctionTok{HTML}\NormalTok{(}\StringTok{"\textless{}li\textgreater{}\textless{}a href=\textquotesingle{}https://docs.strainhub.io\textquotesingle{}\textgreater{}Manual\textless{}/a\textgreater{}\textless{}/li\textgreater{}"}\NormalTok{))}
+   
+\NormalTok{  )}
+\NormalTok{)}
+
+\CommentTok{\# Define server logic required to draw a histogram}
+\NormalTok{server }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(input, output, session) \{}
+  
+  \DocumentationTok{\#\# Initialize metadata reactive object}
+\NormalTok{  rv }\OtherTok{\textless{}{-}} \FunctionTok{reactiveValues}\NormalTok{(}\AttributeTok{metadata =} \FunctionTok{data.frame}\NormalTok{(}\ConstantTok{NULL}\NormalTok{),}
+                       \AttributeTok{metrics =} \FunctionTok{data.frame}\NormalTok{(}\ConstantTok{NULL}\NormalTok{))}
+                       \CommentTok{\#metrics = DT::datatable(NULL))}
+  
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{getstartedbutton, \{}
+    \FunctionTok{updateTabsetPanel}\NormalTok{(session, }\StringTok{"navTabset"}\NormalTok{,}
+                      \AttributeTok{selected =} \StringTok{"Network Visualizer"}\NormalTok{)}
+\NormalTok{  \})}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{inputtree }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}treefile\textquotesingle{}}\NormalTok{,}
+                                   \AttributeTok{label =} \StringTok{\textquotesingle{}2. Choose your Tree File\textquotesingle{}}\NormalTok{,}
+                                   \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/newick\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.phy\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.tre\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.tree\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.newick\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.nwk\textquotesingle{}}\NormalTok{)),}
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}treefile\textquotesingle{}}\NormalTok{,}
+                                              \AttributeTok{label =} \StringTok{\textquotesingle{}2. Choose your Tree File\textquotesingle{}}\NormalTok{,}
+                                              \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/newick\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.phy\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.tre\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.tree\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.newick\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.nwk\textquotesingle{}}\NormalTok{)),}
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}treefile\textquotesingle{}}\NormalTok{,}
+                                                      \AttributeTok{label =} \StringTok{\textquotesingle{}2a. Choose your Sequence File\textquotesingle{}}\NormalTok{,}
+                                                      \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/fasta\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.fasta\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.afa\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.fna\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.ffn\textquotesingle{}}\NormalTok{)),}
+           \StringTok{"Upload StrainHub RDS file"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}graphfile\textquotesingle{}}\NormalTok{,}
+                                                   \AttributeTok{label =} \StringTok{"2. Choose your StrainHub RDS File"}\NormalTok{,}
+                                                   \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{".RDS"}\NormalTok{))}
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{bootstrapval }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{sliderInput}\NormalTok{(}\StringTok{"bootstrapvalue"}\NormalTok{,}
+                                                        \AttributeTok{label =} \StringTok{"2b. Bootstrap Value"}\NormalTok{,}
+                                                        \AttributeTok{min =} \DecValTok{1}\NormalTok{, }\AttributeTok{max =} \DecValTok{100}\NormalTok{, }\AttributeTok{value =} \DecValTok{25}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+  
+  \DocumentationTok{\#\# Show/Hide Maps based on Tree Type Input}
+  \CommentTok{\# observe(\{}
+  \CommentTok{\#   req(input$tree\_input\_type)}
+  \CommentTok{\#   if (input$tree\_input\_type != "BEAST Phylogeography") \{}
+  \CommentTok{\#     hideTab(inputId = "toptabs", target = "Map")}
+  \CommentTok{\#   \}}
+  \CommentTok{\#   else showTab(inputId = "toptabs", target = "Map")}
+  \CommentTok{\# \})}
+  
+  \DocumentationTok{\#\# Change UI Requirements based on Tree Type Input}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{treeuiparams }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}csvfile\textquotesingle{}}\NormalTok{,}
+                                   \AttributeTok{label =} \StringTok{\textquotesingle{}3a. Choose your Metadata File\textquotesingle{}}\NormalTok{,}
+                                   \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{)),}
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{sliderInput}\NormalTok{(}\StringTok{"threshold"}\NormalTok{,}
+                                                \AttributeTok{label =} \StringTok{"3a. State Probability Threshold"}\NormalTok{,}
+                                                \AttributeTok{min =} \DecValTok{0}\NormalTok{, }\AttributeTok{max =} \DecValTok{1}\NormalTok{, }\AttributeTok{value =} \FloatTok{0.9}\NormalTok{),}
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}csvfile\textquotesingle{}}\NormalTok{,}
+                                                      \AttributeTok{label =} \StringTok{\textquotesingle{}3a. Choose your Metadata File\textquotesingle{}}\NormalTok{,}
+                                                      \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{))}
+\NormalTok{           )}
+\NormalTok{  \})}
+  
+  
+  \DocumentationTok{\#\# Metadata Editor}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{metadatabuilderparams }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile}\SpecialCharTok{$}\NormalTok{datapath))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"metadatabuilder"}\NormalTok{,}
+                                      \AttributeTok{label =} \StringTok{"Edit Metadata"}\NormalTok{,}
+                                      \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"wrench"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                                      \AttributeTok{class =} \StringTok{"btn{-}secondary"}\NormalTok{,}
+                                      \AttributeTok{style =} \StringTok{\textquotesingle{}padding{-}top:1px;padding{-}bottom:1px;margin{-}top:20px\textquotesingle{}}\NormalTok{),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"metadatabuilder"}\NormalTok{,}
+                                                         \AttributeTok{label =} \StringTok{"Edit Metadata"}\NormalTok{,}
+                                                         \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"wrench"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                                                         \AttributeTok{class =} \StringTok{"btn{-}secondary"}\NormalTok{,}
+                                                         \AttributeTok{style =} \StringTok{\textquotesingle{}padding{-}top:1px;padding{-}bottom:1px;margin{-}top:20px\textquotesingle{}}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{editmeta }\OtherTok{\textless{}{-}} \FunctionTok{renderRHandsontable}\NormalTok{(\{}
+    \FunctionTok{rhandsontable}\NormalTok{(rv}\SpecialCharTok{$}\NormalTok{metadata, }\AttributeTok{stretchH =} \StringTok{"all"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{hot\_table}\NormalTok{(}\AttributeTok{highlightCol =} \ConstantTok{TRUE}\NormalTok{,}
+                \AttributeTok{highlightRow =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{hot\_context\_menu}\NormalTok{(}\AttributeTok{allowRowEdit =} \ConstantTok{TRUE}\NormalTok{,}
+                       \AttributeTok{allowColEdit =} \ConstantTok{TRUE}\NormalTok{,}
+                       \AttributeTok{customOpts =} \FunctionTok{list}\NormalTok{(}
+                         \AttributeTok{csv =} \FunctionTok{list}\NormalTok{(}\AttributeTok{name =} \StringTok{"Download to CSV"}\NormalTok{,}
+                                    \DocumentationTok{\#\# from: http://jrowen.github.io/rhandsontable/\#customizing}
+                                    \AttributeTok{callback =}\NormalTok{ htmlwidgets}\SpecialCharTok{::}\FunctionTok{JS}\NormalTok{(}
+                                      \StringTok{"function (key, options) \{}
+\StringTok{                                      var csv = csvString(this, sep=\textquotesingle{},\textquotesingle{}, dec=\textquotesingle{}.\textquotesingle{});}
+
+\StringTok{                                      var link = document.createElement(\textquotesingle{}a\textquotesingle{});}
+\StringTok{                                      link.setAttribute(\textquotesingle{}href\textquotesingle{}, \textquotesingle{}data:text/plain;charset=utf{-}8,\textquotesingle{} +}
+\StringTok{                                        encodeURIComponent(csv));}
+\StringTok{                                      link.setAttribute(\textquotesingle{}download\textquotesingle{}, \textquotesingle{}data.csv\textquotesingle{});}
+
+\StringTok{                                      document.body.appendChild(link);}
+\StringTok{                                      link.click();}
+\StringTok{                                      document.body.removeChild(link);\}"}\NormalTok{))))}
+    
+\NormalTok{  \})}
+
+  \CommentTok{\# output$editmetaDT \textless{}{-} DT::renderDataTable(DT::datatable(metadata(), editable = TRUE))}
+  
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{metadatabuilder, \{}
+    \FunctionTok{showModal}\NormalTok{(}\FunctionTok{modalDialog}\NormalTok{(}
+      \AttributeTok{title =} \StringTok{"Metadata Builder"}\NormalTok{,}
+      \AttributeTok{size =} \StringTok{"l"}\NormalTok{,}
+      \AttributeTok{easyClose =} \ConstantTok{TRUE}\NormalTok{,}
+      \AttributeTok{footer =} \FunctionTok{tagList}\NormalTok{(}\FunctionTok{actionButton}\NormalTok{(}\StringTok{"metasave"}\NormalTok{,}
+                              \AttributeTok{label =} \StringTok{"Save Changes"}\NormalTok{,}
+                              \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"save"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                              \AttributeTok{class =} \StringTok{"btn{-}success"}\NormalTok{),}
+                 \FunctionTok{modalButton}\NormalTok{(}\StringTok{"Close"}\NormalTok{)),}
+      \FunctionTok{rHandsontableOutput}\NormalTok{(}\StringTok{"editmeta"}\NormalTok{)}\CommentTok{\#,}
+      \CommentTok{\# dataTableOutput("editmetaDT")}
+      
+\NormalTok{    ))}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Save Metadata Changes}
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{metasave, \{}
+\NormalTok{    rv}\SpecialCharTok{$}\NormalTok{metadata }\OtherTok{\textless{}{-}} \FunctionTok{isolate}\NormalTok{(}\FunctionTok{as\_tibble}\NormalTok{(}\FunctionTok{hot\_to\_r}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{editmeta)))}
+\NormalTok{  \})}
+  
+
+  \DocumentationTok{\#\# Geodata Editor}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{geodatabuilderparams }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geodatafile}\SpecialCharTok{$}\NormalTok{datapath))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"geodatabuilder"}\NormalTok{,}
+                                      \AttributeTok{label =} \StringTok{"Edit Geodata"}\NormalTok{,}
+                                      \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"wrench"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                                      \AttributeTok{class =} \StringTok{"btn{-}secondary"}\NormalTok{,}
+                                      \AttributeTok{style =} \StringTok{\textquotesingle{}padding{-}top:1px;padding{-}bottom:1px;margin{-}top:20px\textquotesingle{}}\NormalTok{),}
+           
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"geodatabuilder"}\NormalTok{,}
+                                      \AttributeTok{label =} \StringTok{"Edit Geodata"}\NormalTok{,}
+                                      \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"wrench"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                                      \AttributeTok{class =} \StringTok{"btn{-}secondary"}\NormalTok{,}
+                                      \AttributeTok{style =} \StringTok{\textquotesingle{}padding{-}top:1px;padding{-}bottom:1px;margin{-}top:20px\textquotesingle{}}\NormalTok{),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"geodatabuilder"}\NormalTok{,}
+                                                         \AttributeTok{label =} \StringTok{"Edit Geodata"}\NormalTok{,}
+                                                         \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"wrench"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                                                         \AttributeTok{class =} \StringTok{"btn{-}secondary"}\NormalTok{,}
+                                                         \AttributeTok{style =} \StringTok{\textquotesingle{}padding{-}top:1px;padding{-}bottom:1px;margin{-}top:20px\textquotesingle{}}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{editgeo }\OtherTok{\textless{}{-}} \FunctionTok{renderRHandsontable}\NormalTok{(\{}
+    \FunctionTok{rhandsontable}\NormalTok{(rv}\SpecialCharTok{$}\NormalTok{geodata, }\AttributeTok{stretchH =} \StringTok{"all"}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{hot\_table}\NormalTok{(}\AttributeTok{highlightCol =} \ConstantTok{TRUE}\NormalTok{,}
+                \AttributeTok{highlightRow =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%} 
+      \FunctionTok{hot\_context\_menu}\NormalTok{(}\AttributeTok{allowRowEdit =} \ConstantTok{TRUE}\NormalTok{,}
+                       \AttributeTok{allowColEdit =} \ConstantTok{TRUE}\NormalTok{,}
+                       \AttributeTok{customOpts =} \FunctionTok{list}\NormalTok{(}
+                         \AttributeTok{csv =} \FunctionTok{list}\NormalTok{(}\AttributeTok{name =} \StringTok{"Download to CSV"}\NormalTok{,}
+                                    \DocumentationTok{\#\# from: http://jrowen.github.io/rhandsontable/\#customizing}
+                                    \AttributeTok{callback =}\NormalTok{ htmlwidgets}\SpecialCharTok{::}\FunctionTok{JS}\NormalTok{(}
+                                      \StringTok{"function (key, options) \{}
+\StringTok{                                      var csv = csvString(this, sep=\textquotesingle{},\textquotesingle{}, dec=\textquotesingle{}.\textquotesingle{});}
+
+\StringTok{                                      var link = document.createElement(\textquotesingle{}a\textquotesingle{});}
+\StringTok{                                      link.setAttribute(\textquotesingle{}href\textquotesingle{}, \textquotesingle{}data:text/plain;charset=utf{-}8,\textquotesingle{} +}
+\StringTok{                                        encodeURIComponent(csv));}
+\StringTok{                                      link.setAttribute(\textquotesingle{}download\textquotesingle{}, \textquotesingle{}data.csv\textquotesingle{});}
+
+\StringTok{                                      document.body.appendChild(link);}
+\StringTok{                                      link.click();}
+\StringTok{                                      document.body.removeChild(link);\}"}\NormalTok{))))}
+    
+\NormalTok{  \})}
+  
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geodatabuilder, \{}
+    \FunctionTok{showModal}\NormalTok{(}\FunctionTok{modalDialog}\NormalTok{(}
+      \AttributeTok{title =} \StringTok{"Geodata Builder"}\NormalTok{,}
+      \AttributeTok{size =} \StringTok{"l"}\NormalTok{,}
+      \AttributeTok{easyClose =} \ConstantTok{TRUE}\NormalTok{,}
+      \AttributeTok{footer =} \FunctionTok{tagList}\NormalTok{(}\FunctionTok{actionButton}\NormalTok{(}\StringTok{"geosave"}\NormalTok{,}
+                                    \AttributeTok{label =} \StringTok{"Save Changes"}\NormalTok{,}
+                                    \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"save"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                                    \AttributeTok{class =} \StringTok{"btn{-}success"}\NormalTok{),}
+                       \FunctionTok{modalButton}\NormalTok{(}\StringTok{"Close"}\NormalTok{)),}
+      \FunctionTok{rHandsontableOutput}\NormalTok{(}\StringTok{"editgeo"}\NormalTok{)}
+\NormalTok{    ))}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Save Geodata Changes}
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geosave, \{}
+\NormalTok{    rv}\SpecialCharTok{$}\NormalTok{geodata }\OtherTok{\textless{}{-}} \FunctionTok{isolate}\NormalTok{(}\FunctionTok{as\_tibble}\NormalTok{(}\FunctionTok{hot\_to\_r}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{editgeo)))}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Show/Hide Tree Root Selection or Posterior Probability Threshold}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{treerootswitch }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{sliderInput}\NormalTok{(}\StringTok{"posterior"}\NormalTok{,}
+                                                \AttributeTok{label =} \StringTok{"3b. Posterior Probability Threshold"}\NormalTok{,}
+                                                \AttributeTok{min =} \DecValTok{0}\NormalTok{, }\AttributeTok{max =} \DecValTok{1}\NormalTok{, }\AttributeTok{value =} \FloatTok{0.9}\NormalTok{),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{textInput}\NormalTok{(}\StringTok{"rootselect"}\NormalTok{,}
+                                                      \AttributeTok{label =} \StringTok{"3b. Taxa ID for Rooting Tree"}\NormalTok{,}
+                                                      \AttributeTok{value =} \StringTok{"e.g. HM045815.1"}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Show/Hide Geodata File Input}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{geodataswitch }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}geodatafile\textquotesingle{}}\NormalTok{,}
+                                   \AttributeTok{label =} \StringTok{\textquotesingle{}3b. Choose your Geodata File\textquotesingle{}}\NormalTok{,}
+                                   \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{)),}
+           
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}geodatafile\textquotesingle{}}\NormalTok{,}
+                                              \AttributeTok{label =} \StringTok{\textquotesingle{}3c. Choose your Geodata File\textquotesingle{}}\NormalTok{,}
+                                              \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{)),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{fileInput}\NormalTok{(}\StringTok{\textquotesingle{}geodatafile\textquotesingle{}}\NormalTok{,}
+                                                      \AttributeTok{label =} \StringTok{\textquotesingle{}3c. Choose your Geodata File\textquotesingle{}}\NormalTok{,}
+                                                      \AttributeTok{accept =} \FunctionTok{c}\NormalTok{(}\StringTok{\textquotesingle{}text/csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}text/plain\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.csv\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}.txt\textquotesingle{}}\NormalTok{))}
+\NormalTok{    )}
+\NormalTok{  \}) }
+  
+  
+  \DocumentationTok{\#\# Show/Hide List States button}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{getlistswitch }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"getlistbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"4a. List States"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary"}\NormalTok{),}
+           
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"getlistbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"4a. List States"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary"}\NormalTok{),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"getlistbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"4a. List States"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary"}\NormalTok{)}
+           
+\NormalTok{    )}
+\NormalTok{  \}) }
+  
+  
+  \FunctionTok{options}\NormalTok{(}\AttributeTok{shiny.usecairo =} \ConstantTok{TRUE}\NormalTok{)}
+  \DocumentationTok{\#\# List State Column Choices}
+\NormalTok{  availablecolumns }\OtherTok{\textless{}{-}} \FunctionTok{eventReactive}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{getlistbutton, \{}
+    \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}\FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3a. Please upload the accompanying metadata file."}\NormalTok{))}
+\NormalTok{      availablecolumns }\OtherTok{\textless{}{-}} \FunctionTok{listStates}\NormalTok{(}\AttributeTok{metadata =}\NormalTok{ rv}\SpecialCharTok{$}\NormalTok{metadata,}
+                                     \AttributeTok{treeType =} \StringTok{"parsimonious"}\NormalTok{)}
+      
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"BEAST Phylogeography"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}\FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2. Please upload a tree file."}\NormalTok{))}
+\NormalTok{      availablecolumns }\OtherTok{\textless{}{-}} \FunctionTok{listStates}\NormalTok{(}\AttributeTok{treedata =} \FunctionTok{treedata}\NormalTok{(),}
+                                     \AttributeTok{treeType =} \StringTok{"bayesian"}\NormalTok{)}
+      
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Create Neighbor{-}Joining Tree"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}\FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3a. Please upload the accompanying metadata file."}\NormalTok{))}
+\NormalTok{      availablecolumns }\OtherTok{\textless{}{-}} \FunctionTok{listStates}\NormalTok{(}\AttributeTok{metadata =}\NormalTok{ rv}\SpecialCharTok{$}\NormalTok{metadata,}
+                                     \AttributeTok{treeType =} \StringTok{"nj"}\NormalTok{)}
+\NormalTok{    \}}
+\NormalTok{  \})}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{columnselection }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{selectInput}\NormalTok{(}\StringTok{"columnselection"}\NormalTok{, }\StringTok{"4b. Choose your State"}\NormalTok{, }\AttributeTok{choices =} \FunctionTok{availablecolumns}\NormalTok{()}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Column}\StringTok{\textasciigrave{}}\NormalTok{),}
+           
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{selectInput}\NormalTok{(}\StringTok{"columnselection"}\NormalTok{, }\StringTok{"4b. Choose your State"}\NormalTok{, }\AttributeTok{choices =} \FunctionTok{availablecolumns}\NormalTok{()}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Column}\StringTok{\textasciigrave{}}\NormalTok{),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{selectInput}\NormalTok{(}\StringTok{"columnselection"}\NormalTok{, }\StringTok{"4b. Choose your State"}\NormalTok{, }\AttributeTok{choices =} \FunctionTok{availablecolumns}\NormalTok{()}\SpecialCharTok{$}\StringTok{\textasciigrave{}}\AttributeTok{Column}\StringTok{\textasciigrave{}}\NormalTok{)}
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+
+  \DocumentationTok{\#\# Show/Hide Central Metric Selector button}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{metricradioswitch }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+         \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{selectInput}\NormalTok{(}\StringTok{"metricradio"}\NormalTok{,}
+                                   \AttributeTok{label =}\StringTok{"5. Pick your Centrality Metric"}\NormalTok{,}
+                                   \AttributeTok{choices =} \FunctionTok{list}\NormalTok{(}\StringTok{"Indegree"} \OtherTok{=} \DecValTok{1}\NormalTok{,}
+                                                  \StringTok{"Outdegree"} \OtherTok{=} \DecValTok{2}\NormalTok{,}
+                                                  \StringTok{"Betweenness"} \OtherTok{=} \DecValTok{3}\NormalTok{,}
+                                                  \StringTok{"Closeness"} \OtherTok{=} \DecValTok{4}\NormalTok{,}
+                                                  \StringTok{"Degree"} \OtherTok{=} \DecValTok{5}\NormalTok{,}
+                                                  \StringTok{"Source Hub Ratio"} \OtherTok{=} \DecValTok{6}\NormalTok{),}
+                                   \AttributeTok{selected =} \DecValTok{1}\NormalTok{),}
+                                                  
+           
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{selectInput}\NormalTok{(}\StringTok{"metricradio"}\NormalTok{,}
+                                                \AttributeTok{label =}\StringTok{"5. Pick your Centrality Metric"}\NormalTok{,}
+                                                \AttributeTok{choices =} \FunctionTok{list}\NormalTok{(}\StringTok{"Indegree"} \OtherTok{=} \DecValTok{1}\NormalTok{,}
+                                                               \StringTok{"Outdegree"} \OtherTok{=} \DecValTok{2}\NormalTok{,}
+                                                               \StringTok{"Betweenness"} \OtherTok{=} \DecValTok{3}\NormalTok{,}
+                                                               \StringTok{"Closeness"} \OtherTok{=} \DecValTok{4}\NormalTok{,}
+                                                               \StringTok{"Degree"} \OtherTok{=} \DecValTok{5}\NormalTok{,}
+                                                               \StringTok{"Source Hub Ratio"} \OtherTok{=} \DecValTok{6}\NormalTok{),}
+                                                \AttributeTok{selected =} \DecValTok{1}\NormalTok{),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{selectInput}\NormalTok{(}\StringTok{"metricradio"}\NormalTok{,}
+                                                        \AttributeTok{label =}\StringTok{"5. Pick your Centrality Metric"}\NormalTok{,}
+                                                        \AttributeTok{choices =} \FunctionTok{list}\NormalTok{(}\StringTok{"Indegree"} \OtherTok{=} \DecValTok{1}\NormalTok{,}
+                                                                       \StringTok{"Outdegree"} \OtherTok{=} \DecValTok{2}\NormalTok{,}
+                                                                       \StringTok{"Betweenness"} \OtherTok{=} \DecValTok{3}\NormalTok{,}
+                                                                       \StringTok{"Closeness"} \OtherTok{=} \DecValTok{4}\NormalTok{,}
+                                                                       \StringTok{"Degree"} \OtherTok{=} \DecValTok{5}\NormalTok{,}
+                                                                       \StringTok{"Source Hub Ratio"} \OtherTok{=} \DecValTok{6}\NormalTok{),}
+                                                        \AttributeTok{selected =} \DecValTok{1}\NormalTok{)}
+           
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+  
+  \DocumentationTok{\#\# Customize Plot Buttom Text}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{plotbuttonswitch }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{is.null}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type))}
+      \FunctionTok{return}\NormalTok{()}
+    
+    \ControlFlowTok{switch}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type,}
+           \StringTok{"Parsimony Ancestral Reconstruction"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"plotbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"6. Generate Network"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary"}\NormalTok{),}
+           
+           \StringTok{"BEAST Phylogeography"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"plotbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"6. Generate Network"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary"}\NormalTok{),}
+           
+           \StringTok{"Create Neighbor{-}Joining Tree"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"plotbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"6. Generate Network"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary"}\NormalTok{),}
+           
+           \StringTok{"Upload StrainHub RDS file"} \OtherTok{=} \FunctionTok{actionButton}\NormalTok{(}\StringTok{"plotbutton"}\NormalTok{, }\AttributeTok{label =} \StringTok{"3. Render Network"}\NormalTok{, }\AttributeTok{class =} \StringTok{"btn{-}primary"}\NormalTok{)}
+           
+\NormalTok{    )}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Viz Settings}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{settings }\OtherTok{\textless{}{-}} \FunctionTok{renderUI}\NormalTok{(\{}
+    \FunctionTok{actionButton}\NormalTok{(}\StringTok{"settings"}\NormalTok{,}
+                 \AttributeTok{label =} \StringTok{""}\NormalTok{,}
+                 \AttributeTok{icon =} \FunctionTok{icon}\NormalTok{(}\StringTok{"cog"}\NormalTok{, }\AttributeTok{lib =} \StringTok{"font{-}awesome"}\NormalTok{),}
+                 \AttributeTok{class =} \StringTok{"btn{-}secondary"}\NormalTok{)}
+\NormalTok{  \})}
+
+  \CommentTok{\# observeEvent(input$settings, \{}
+  \CommentTok{\#   showModal(modalDialog(}
+  \CommentTok{\#     title = "Settings",}
+  \CommentTok{\#     size = "s",}
+  \CommentTok{\#     easyClose = TRUE,}
+  \CommentTok{\#     radioButtons("arrowedges",}
+  \CommentTok{\#                  label = "Edge Style", }
+  \CommentTok{\#                  choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),}
+  \CommentTok{\#                  selected = "TRUE")}
+  \CommentTok{\#   ))}
+  \CommentTok{\# \})}
+  
+  \DocumentationTok{\#\# Show Map or Globe}
+  \CommentTok{\# output$mapswitchoutput \textless{}{-} renderUI(\{}
+  \CommentTok{\#   switch(input$mapswitch,}
+  \CommentTok{\#          "Map" = jqui\_resizable(leafletOutput("mapoutput", height = "768px")) \%\textgreater{}\% withSpinner(color = "\#2C3E50", type = 4),}
+  \CommentTok{\#          "Globe" = jqui\_resizable(globe4r::globeOutput("globeoutput", height = "768px")) \%\textgreater{}\% withSpinner(color = "\#2C3E50", type = 4)}
+  \CommentTok{\#   )}
+  \CommentTok{\# \})}
+  
+  \DocumentationTok{\#\# Load in tree data}
+\NormalTok{  treedata }\OtherTok{\textless{}{-}} \FunctionTok{eventReactive}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile, \{}
+    \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{)\{}
+\NormalTok{      ape}\SpecialCharTok{::}\FunctionTok{read.tree}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile}\SpecialCharTok{$}\NormalTok{datapath)}
+\NormalTok{    \}}
+    \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"BEAST Phylogeography"}\NormalTok{)\{}
+\NormalTok{      treeio}\SpecialCharTok{::}\FunctionTok{read.beast}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile}\SpecialCharTok{$}\NormalTok{datapath)}
+\NormalTok{    \}}
+    \ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Create Neighbor{-}Joining Tree"}\NormalTok{)\{}
+      \FunctionTok{read.dna}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile}\SpecialCharTok{$}\NormalTok{datapath, }\AttributeTok{format=}\StringTok{"fasta"}\NormalTok{)}
+\NormalTok{    \}}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Load in metadata}
+  \CommentTok{\# metadata \textless{}{-} eventReactive(input$csvfile, \{}
+  \CommentTok{\#   readr::read\_csv(input$csvfile$datapath, col\_names = TRUE)}
+  \CommentTok{\# \})}
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile, \{}
+\NormalTok{    rv}\SpecialCharTok{$}\NormalTok{metadata }\OtherTok{\textless{}{-}}\NormalTok{ readr}\SpecialCharTok{::}\FunctionTok{read\_csv}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile}\SpecialCharTok{$}\NormalTok{datapath, }\AttributeTok{col\_names =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{    \})}
+  
+  \DocumentationTok{\#\# Load in geodata}
+  \CommentTok{\# geodata \textless{}{-} eventReactive(input$geodatafile, \{}
+  \CommentTok{\#   readr::read\_csv(input$geodatafile$datapath, col\_names = TRUE)}
+  \CommentTok{\# \})}
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geodatafile, \{}
+\NormalTok{    rv}\SpecialCharTok{$}\NormalTok{geodata }\OtherTok{\textless{}{-}}\NormalTok{ readr}\SpecialCharTok{::}\FunctionTok{read\_csv}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geodatafile}\SpecialCharTok{$}\NormalTok{datapath, }\AttributeTok{col\_names =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  \})}
+  
+  
+  \DocumentationTok{\#\# Network Viz}
+\NormalTok{  graph }\OtherTok{\textless{}{-}} \FunctionTok{eventReactive}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{plotbutton, \{}
+    \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile}\SpecialCharTok{$}\NormalTok{datapath }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2. Please upload a tree file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile}\SpecialCharTok{$}\NormalTok{datapath }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3a. Please upload the accompanying metadata file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(}\StringTok{"Accession"} \SpecialCharTok{\%in\%} \FunctionTok{colnames}\NormalTok{(rv}\SpecialCharTok{$}\NormalTok{metadata),  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Warning: \textasciigrave{}Accession\textasciigrave{} column not found in the metadata file. Maybe you need to rename your existing ID column?"}\NormalTok{)}\CommentTok{\#,}
+        \CommentTok{\# need(test\_treetips\_vs\_accessions(treedata(), rv$metadata), "\textbackslash{}nError: Your metadata Accessions do not match the tip labels in your tree.")}
+\NormalTok{      )}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{columnselection }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{4a. List the states from your metadata and pick one to use."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{columnselection }\SpecialCharTok{\%in\%}\NormalTok{ strainhub}\SpecialCharTok{:::}\FunctionTok{getUsableColumns}\NormalTok{(}\AttributeTok{treedata =} \FunctionTok{treedata}\NormalTok{(),}
+                                                         \AttributeTok{metadata =}\NormalTok{ rv}\SpecialCharTok{$}\NormalTok{metadata),}
+             \StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{4b. Make sure to select a state column. (Must not contain all identical values.)"}\NormalTok{)}
+\NormalTok{      )}
+      
+\NormalTok{      graph }\OtherTok{\textless{}{-}} \FunctionTok{makeTransNet}\NormalTok{(}\AttributeTok{treedata =} \FunctionTok{treedata}\NormalTok{(),}
+                            \AttributeTok{metadata =}\NormalTok{ rv}\SpecialCharTok{$}\NormalTok{metadata,}
+                            \AttributeTok{columnSelection =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                            \CommentTok{\# columnSelection = input$columnselection\_row\_last\_clicked,}
+                            \AttributeTok{centralityMetric =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{metricradio,}
+                            \AttributeTok{treeType =} \StringTok{"parsimonious"}\NormalTok{)}
+      \CommentTok{\# height = paste0(0.75*session$clientData$output\_graph\_width,"px")}
+      
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"BEAST Phylogeography"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2. Please upload a tree file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{columnselection }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{4a. List the states from your phylogeography metadata and pick one to use."}\NormalTok{)}
+\NormalTok{      )}
+      \CommentTok{\# validate(}
+      \CommentTok{\#   need(input$columnselection \%in\% getUsableColumns(treedata = treedata(),}
+      \CommentTok{\#                                                    metadata = rv$metadata),}
+      \CommentTok{\#        "\textbackslash{}n4b. Make sure to select a state column. (Must not contain all identical values.)")}
+      \CommentTok{\# )}
+      
+
+\NormalTok{      graph }\OtherTok{\textless{}{-}}  \FunctionTok{makeTransNet}\NormalTok{(}\AttributeTok{treedata =} \FunctionTok{treedata}\NormalTok{(),}
+                             \AttributeTok{columnSelection =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                             \CommentTok{\# columnSelection = input$columnselection\_row\_last\_clicked,}
+                             \AttributeTok{centralityMetric =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{metricradio,}
+                             \AttributeTok{threshold =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{threshold,}
+                             \AttributeTok{threshold2 =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{posterior,}
+                             \AttributeTok{treeType =} \StringTok{"bayesian"}\NormalTok{)}
+      \CommentTok{\# height = paste0(0.75*session$clientData$output\_graph\_width,"px")}
+      
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Create Neighbor{-}Joining Tree"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2. Please upload a fasta file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3a. Please upload the accompanying metadata file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(}\StringTok{"Accession"} \SpecialCharTok{\%in\%} \FunctionTok{colnames}\NormalTok{(rv}\SpecialCharTok{$}\NormalTok{metadata),  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Warning: \textasciigrave{}Accession\textasciigrave{} column not found in the metadata file. Maybe you need to rename your existing ID column?"}\NormalTok{)}\CommentTok{\#,}
+        \CommentTok{\# need(test\_treetips\_vs\_accessions(treedata(), rv$metadata), "\textbackslash{}nError: Your metadata Accessions do not match the tip labels in your tree.")}
+\NormalTok{      )}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{columnselection }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{4a. List the states from your metadata and pick one to use."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{rootselect }\SpecialCharTok{!=} \StringTok{"e.g. HM045815.1"}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3b. Make sure you enter the Taxa ID of the desired tree root."}\NormalTok{)}
+        \CommentTok{\# need(input$columnselection \%in\% getUsableColumns(treedata = treedata(),}
+        \CommentTok{\#                                                  metadata = rv$metadata),}
+        \CommentTok{\#      "\textbackslash{}n4b. Make sure to select a state column. (Must not contain all identical values.)")}
+\NormalTok{      )}
+      
+\NormalTok{      graph }\OtherTok{\textless{}{-}} \FunctionTok{makeTransNet}\NormalTok{(}\AttributeTok{treedata =} \FunctionTok{treedata}\NormalTok{(),}
+                             \AttributeTok{metadata =}\NormalTok{ rv}\SpecialCharTok{$}\NormalTok{metadata,}
+                             \AttributeTok{columnSelection =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                             \CommentTok{\# columnSelection = input$columnselection\_row\_last\_clicked,}
+                             \AttributeTok{centralityMetric =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{metricradio,}
+                             \AttributeTok{threshold =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{threshold,}
+                             \AttributeTok{rootSelection =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{rootselect,}
+                             \AttributeTok{bootstrapValue =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{bootstrapvalue,}
+                             \AttributeTok{treeType =} \StringTok{"nj"}\NormalTok{)}
+      \CommentTok{\# height = paste0(0.75*session$clientData$output\_graph\_width,"px")}
+      
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Upload StrainHub RDS file"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2. Please upload a StrainHub{-}generated RDS file."}\NormalTok{)}
+\NormalTok{      )}
+
+\NormalTok{      graphinput }\OtherTok{\textless{}{-}} \FunctionTok{readRDS}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{graphfile}\SpecialCharTok{$}\NormalTok{datapath)}
+      
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(}\StringTok{"visNetwork"} \SpecialCharTok{\%in\%} \FunctionTok{class}\NormalTok{(graphinput), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2. This RDS file was not generated by StrainHub or vizNetwork."}\NormalTok{)}
+\NormalTok{      )}
+\NormalTok{      graph }\OtherTok{\textless{}{-}}\NormalTok{ graphinput}
+      
+\NormalTok{    \}}
+    
+    
+    
+\NormalTok{  \})}
+  
+  \CommentTok{\# output$graphplot \textless{}{-} renderPlot(\{print(graph())\})}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{graphplot }\OtherTok{\textless{}{-}} \FunctionTok{renderVisNetwork}\NormalTok{(\{}\FunctionTok{print}\NormalTok{(}\FunctionTok{graph}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+                                                \FunctionTok{visEdges}\NormalTok{(}\AttributeTok{arrows =} \FunctionTok{list}\NormalTok{(}\AttributeTok{to =} \FunctionTok{list}\NormalTok{(}\AttributeTok{enabled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{arrowedges),}
+                                                                                 \AttributeTok{scaleFactor =} \FloatTok{0.75}\NormalTok{)),}
+                                                         \AttributeTok{arrowStrikethrough =} \ConstantTok{FALSE}\NormalTok{))\})}
+  \CommentTok{\# output$graphplot \textless{}{-} renderVisNetwork(\{print(graph() \%\textgreater{}\% }
+  \CommentTok{\#                                               visExport(type = "png",}
+  \CommentTok{\#                                                         background = "\#00FFFFFF",}
+  \CommentTok{\#                                                         style = \textquotesingle{}class = "btn{-}outline{-}primary"\textquotesingle{}))\})}
+  
+  
+  \DocumentationTok{\#\# Export Plot}
+  \CommentTok{\# output$exportplothtml \textless{}{-} downloadHandler(}
+  \CommentTok{\#   filename = function() \{}
+  \CommentTok{\#     paste0(input$treefile, "\_StrainHub\_network.html")}
+  \CommentTok{\#   \},}
+  \CommentTok{\#   content = function(file) \{}
+  \CommentTok{\#     htmlwidgets::saveWidget(graph() \%\textgreater{}\%}
+  \CommentTok{\#                               visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),}
+  \CommentTok{\#                                                                scaleFactor = 0.75))) \%\textgreater{}\% }
+  \CommentTok{\#                               visInteraction(navigationButtons = FALSE) \%\textgreater{}\%}
+  \CommentTok{\#                               visOptions(width = 1920,}
+  \CommentTok{\#                                          height = 1080,}
+  \CommentTok{\#                                          autoResize = TRUE),}
+  \CommentTok{\#                             \# title = paste0(input$treefile, "{-} Network Generated by StrainHub"),}
+  \CommentTok{\#                             file = file)}
+  \CommentTok{\#   \}}
+  \CommentTok{\# )}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{exportplothtml }\OtherTok{\textless{}{-}} \FunctionTok{downloadHandler}\NormalTok{(}
+    \AttributeTok{filename =} \ControlFlowTok{function}\NormalTok{() \{}
+      \FunctionTok{paste0}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile, }\StringTok{"\_StrainHub\_network.html"}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{content =} \ControlFlowTok{function}\NormalTok{(file) \{}
+\NormalTok{      m }\OtherTok{\textless{}{-}} \FunctionTok{graph}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{visEdges}\NormalTok{(}\AttributeTok{arrows =} \FunctionTok{list}\NormalTok{(}\AttributeTok{to =} \FunctionTok{list}\NormalTok{(}\AttributeTok{enabled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{arrowedges),}
+                                         \AttributeTok{scaleFactor =} \FloatTok{0.75}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%} 
+        \FunctionTok{visInteraction}\NormalTok{(}\AttributeTok{navigationButtons =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{visOptions}\NormalTok{(}\AttributeTok{width =} \DecValTok{1920}\NormalTok{,}
+                   \AttributeTok{height =} \DecValTok{1080}\NormalTok{,}
+                   \AttributeTok{autoResize =} \ConstantTok{TRUE}\NormalTok{)}
+      
+\NormalTok{      htmlwidgets}\SpecialCharTok{::}\FunctionTok{saveWidget}\NormalTok{(m, }\StringTok{"tempplot.html"}\NormalTok{, }\AttributeTok{selfcontained =} \ConstantTok{TRUE}\NormalTok{)}
+      \FunctionTok{file.copy}\NormalTok{(}\StringTok{"tempplot.html"}\NormalTok{, file)}
+\NormalTok{    \}}
+\NormalTok{  )}
+  
+  \CommentTok{\# output$exportplotpng \textless{}{-} downloadHandler(}
+  \CommentTok{\#   filename = function() \{}
+  \CommentTok{\#     paste0(input$treefile, "\_StrainHub\_network.png")}
+  \CommentTok{\#   \},}
+  \CommentTok{\#   content = function(file) \{}
+  \CommentTok{\#     }
+  \CommentTok{\#     rbokeh::widget2png(graph() \%\textgreater{}\%}
+  \CommentTok{\#                         visInteraction(navigationButtons = FALSE) \%\textgreater{}\%}
+  \CommentTok{\#                          visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),}
+  \CommentTok{\#                                                           scaleFactor = 0.75))) \%\textgreater{}\% }
+  \CommentTok{\#                               visOptions(width = 2000,}
+  \CommentTok{\#                                          height = 2000,}
+  \CommentTok{\#                                          autoResize = TRUE),}
+  \CommentTok{\#                             \# title = paste0(input$treefile, "{-} Network Generated by StrainHub"),}
+  \CommentTok{\#                             file = file)}
+  \CommentTok{\#   \}}
+  \CommentTok{\# )}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{exportplotpng }\OtherTok{\textless{}{-}} \FunctionTok{downloadHandler}\NormalTok{(}
+    \AttributeTok{filename =} \ControlFlowTok{function}\NormalTok{() \{}
+      \FunctionTok{paste0}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile, }\StringTok{"\_StrainHub\_network.png"}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{content =} \ControlFlowTok{function}\NormalTok{(file) \{}
+\NormalTok{      m }\OtherTok{\textless{}{-}} \FunctionTok{graph}\NormalTok{() }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{visEdges}\NormalTok{(}\AttributeTok{arrows =} \FunctionTok{list}\NormalTok{(}\AttributeTok{to =} \FunctionTok{list}\NormalTok{(}\AttributeTok{enabled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{arrowedges),}
+                                         \AttributeTok{scaleFactor =} \FloatTok{0.75}\NormalTok{))) }\SpecialCharTok{\%\textgreater{}\%} 
+        \FunctionTok{visInteraction}\NormalTok{(}\AttributeTok{navigationButtons =} \ConstantTok{FALSE}\NormalTok{) }\SpecialCharTok{\%\textgreater{}\%}
+        \FunctionTok{visOptions}\NormalTok{(}\AttributeTok{width =} \DecValTok{1920}\NormalTok{,}
+                   \AttributeTok{height =} \DecValTok{1080}\NormalTok{,}
+                   \AttributeTok{autoResize =} \ConstantTok{TRUE}\NormalTok{)}
+      
+\NormalTok{      htmlwidgets}\SpecialCharTok{::}\FunctionTok{saveWidget}\NormalTok{(m, }\StringTok{"tempplot.html"}\NormalTok{, }\AttributeTok{selfcontained =} \ConstantTok{TRUE}\NormalTok{)}
+      
+      \DocumentationTok{\#\# HD: }
+\NormalTok{      webshot}\SpecialCharTok{::}\FunctionTok{webshot}\NormalTok{(}\StringTok{"tempplot.html"}\NormalTok{, }\AttributeTok{file =} \StringTok{"tempplot.png"}\NormalTok{, }\AttributeTok{vwidth =} \DecValTok{1920}\NormalTok{, }\AttributeTok{vheight =} \DecValTok{1080}\NormalTok{)}
+      
+      \DocumentationTok{\#\# 4K:}
+      \CommentTok{\#webshot::webshot("tempplot.html", file = "tempplot.png", vwidth = 3840, vheight = 2160, zoom = 2)}
+      
+      \FunctionTok{file.copy}\NormalTok{(}\StringTok{"tempplot.png"}\NormalTok{, file)}
+\NormalTok{    \}}
+\NormalTok{  )}
+  
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{exportgraphrds }\OtherTok{\textless{}{-}} \FunctionTok{downloadHandler}\NormalTok{(}
+    \AttributeTok{filename =} \ControlFlowTok{function}\NormalTok{() \{}
+      \FunctionTok{paste0}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile, }\StringTok{"\_StrainHub\_network.RDS"}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{content =} \ControlFlowTok{function}\NormalTok{(file) \{}
+      
+      \FunctionTok{saveRDS}\NormalTok{(}\FunctionTok{graph}\NormalTok{(), }\StringTok{"tempplot.RDS"}\NormalTok{)}
+      \FunctionTok{file.copy}\NormalTok{(}\StringTok{"tempplot.RDS"}\NormalTok{, file)}
+\NormalTok{    \}}
+\NormalTok{  )}
+  
+  \DocumentationTok{\#\# Export Map}
+  
+  \CommentTok{\# output$exportmappng \textless{}{-} downloadHandler(}
+  \CommentTok{\#   filename = function() \{}
+  \CommentTok{\#     paste0(input$treefile, "\_StrainHub\_map.png")}
+  \CommentTok{\#   \},}
+  \CommentTok{\#   content = function(file) \{}
+  \CommentTok{\#     }
+  \CommentTok{\#     mapview::mapshot(make\_map(graph(),}
+  \CommentTok{\#                               rv$geodata,}
+  \CommentTok{\#                               input$columnselection,}
+  \CommentTok{\#                               basemapLayer = input$basemapselection,}
+  \CommentTok{\#                               hideArrowHead = as.logical(input$maparrowedges),}
+  \CommentTok{\#                               arrowFilled = as.logical(input$maparrowfill),}
+  \CommentTok{\#                               showLabels = as.logical(input$mapshowlabels),}
+  \CommentTok{\#                               labelColor = input$labelColorPicker,}
+  \CommentTok{\#                               showPoints = as.logical(input$mapshowpoints),}
+  \CommentTok{\#                               pointColor = input$pointColorPicker,}
+  \CommentTok{\#                               pointOpacity = input$pointOpacityPicker),}
+  \CommentTok{\#                      file = file)}
+  \CommentTok{\#   \}}
+  \CommentTok{\# )}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{exportmappng }\OtherTok{\textless{}{-}} \FunctionTok{downloadHandler}\NormalTok{(}
+    \AttributeTok{filename =} \ControlFlowTok{function}\NormalTok{() \{}
+      \FunctionTok{paste0}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile, }\StringTok{"\_StrainHub\_map.png"}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{content =} \ControlFlowTok{function}\NormalTok{(file) \{}
+      
+      \CommentTok{\#m \textless{}{-} leafletProxy("mapoutput")}
+\NormalTok{      m }\OtherTok{\textless{}{-}} \FunctionTok{make\_map}\NormalTok{(}\FunctionTok{graph}\NormalTok{(),}
+\NormalTok{                    rv}\SpecialCharTok{$}\NormalTok{geodata,}
+\NormalTok{                    input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                    \AttributeTok{basemapLayer =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{basemapselection,}
+                    \AttributeTok{hideArrowHead =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowedges),}
+                    \AttributeTok{arrowFilled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowfill),}
+                    \AttributeTok{showLabels =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowlabels),}
+                    \AttributeTok{labelColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{labelColorPicker,}
+                    \AttributeTok{showPoints =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowpoints),}
+                    \AttributeTok{pointColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointColorPicker,}
+                    \AttributeTok{pointOpacity =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointOpacityPicker)}
+      
+\NormalTok{      htmlwidgets}\SpecialCharTok{::}\FunctionTok{saveWidget}\NormalTok{(m, }\StringTok{"tempmap.html"}\NormalTok{, }\AttributeTok{selfcontained =} \ConstantTok{TRUE}\NormalTok{)}
+      \DocumentationTok{\#\# HD:}
+\NormalTok{      webshot}\SpecialCharTok{::}\FunctionTok{webshot}\NormalTok{(}\StringTok{"tempmap.html"}\NormalTok{, }\AttributeTok{file =} \StringTok{"tempmap.png"}\NormalTok{, }\AttributeTok{vwidth =} \DecValTok{1920}\NormalTok{, }\AttributeTok{vheight =} \DecValTok{1080}\NormalTok{)}
+      
+      \DocumentationTok{\#\# 4K:}
+      \CommentTok{\# webshot::webshot("tempmap.html", file = "tempmap.png", vwidth = 3840, vheight = 2160, zoom = 2)}
+
+      \FunctionTok{file.copy}\NormalTok{(}\StringTok{"tempmap.png"}\NormalTok{, file)}
+\NormalTok{    \}}
+\NormalTok{  )}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{exportmaphtml }\OtherTok{\textless{}{-}} \FunctionTok{downloadHandler}\NormalTok{(}
+    \AttributeTok{filename =} \ControlFlowTok{function}\NormalTok{() \{}
+      \FunctionTok{paste0}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile, }\StringTok{"\_StrainHub\_map.html"}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{content =} \ControlFlowTok{function}\NormalTok{(file) \{}
+      
+      \CommentTok{\#m \textless{}{-} leafletProxy("mapoutput")}
+\NormalTok{      m }\OtherTok{\textless{}{-}} \FunctionTok{make\_map}\NormalTok{(}\FunctionTok{graph}\NormalTok{(),}
+\NormalTok{                    rv}\SpecialCharTok{$}\NormalTok{geodata,}
+\NormalTok{                    input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                    \AttributeTok{basemapLayer =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{basemapselection,}
+                    \AttributeTok{hideArrowHead =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowedges),}
+                    \AttributeTok{arrowFilled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowfill),}
+                    \AttributeTok{showLabels =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowlabels),}
+                    \AttributeTok{labelColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{labelColorPicker,}
+                    \AttributeTok{showPoints =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowpoints),}
+                    \AttributeTok{pointColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointColorPicker,}
+                    \AttributeTok{pointOpacity =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointOpacityPicker)}
+      
+\NormalTok{      htmlwidgets}\SpecialCharTok{::}\FunctionTok{saveWidget}\NormalTok{(m, }\StringTok{"tempmap.html"}\NormalTok{, }\AttributeTok{selfcontained =} \ConstantTok{TRUE}\NormalTok{)}
+      
+      \FunctionTok{file.copy}\NormalTok{(}\StringTok{"tempmap.html"}\NormalTok{, file)}
+\NormalTok{    \}}
+\NormalTok{  )}
+  
+  \DocumentationTok{\#\# Tree File Preview}
+  
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{treepreview }\OtherTok{\textless{}{-}} \FunctionTok{eventReactive}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{plotbutton, \{}
+\NormalTok{    output}\SpecialCharTok{$}\NormalTok{treepreview }\OtherTok{\textless{}{-}} \FunctionTok{renderPlotly}\NormalTok{(\{}
+      \CommentTok{\# df \textless{}{-} read.csv(input$treefile$datapath)}
+      \ControlFlowTok{if}\NormalTok{ (input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{)\{}
+        \CommentTok{\# treepreview \textless{}{-} ape::read.tree(input$treefile$datapath)}
+\NormalTok{        treepreview }\OtherTok{\textless{}{-}} \FunctionTok{treedata}\NormalTok{()}
+        \CommentTok{\#return(treepreview)}
+        \CommentTok{\#plot(treepreview)}
+        \CommentTok{\#ggtree(treepreview) + geom\_tiplab()}
+        
+        \CommentTok{\# md \textless{}{-} read\_csv(input$csvfile$datapath)}
+        \CommentTok{\#input$columnselection\_row\_last\_clicked}
+        \CommentTok{\#colorby \textless{}{-} availablecolumns \%\textgreater{}\%}
+\NormalTok{        colorby }\OtherTok{\textless{}{-}}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{columnselection}
+        
+\NormalTok{        import}\SpecialCharTok{::}\FunctionTok{from}\NormalTok{(ggtree, }\StringTok{\textasciigrave{}}\AttributeTok{\%\textless{}+\%}\StringTok{\textasciigrave{}}\NormalTok{, ggtree)}
+        
+\NormalTok{        t1 }\OtherTok{\textless{}{-}} \FunctionTok{ggtree}\NormalTok{(treepreview, }\AttributeTok{ladderize =}\NormalTok{ T) }\SpecialCharTok{\%\textless{}+\%}\NormalTok{ rv}\SpecialCharTok{$}\NormalTok{metadata }\SpecialCharTok{+}
+          \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes\_string}\NormalTok{(}\AttributeTok{color =}\NormalTok{ colorby, }\AttributeTok{size =} \DecValTok{3}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ label),}
+                    \AttributeTok{hjust =} \DecValTok{0}\NormalTok{,}
+                    \CommentTok{\#angle = {-}90,}
+                    \AttributeTok{position =} \FunctionTok{position\_nudge}\NormalTok{(}\AttributeTok{x =} \FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{ggtitle}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Phylogeny of \textasciigrave{}"}\NormalTok{, input}\SpecialCharTok{$}\NormalTok{treefile}\SpecialCharTok{$}\NormalTok{name, }\StringTok{"\textasciigrave{}"}\NormalTok{),}
+                  \AttributeTok{subtitle =} \StringTok{"Generated by StrainHub"}\NormalTok{) }\SpecialCharTok{+}
+          \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette=}\StringTok{"Spectral"}\NormalTok{) }\SpecialCharTok{+}
+          \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{expand =} \FunctionTok{c}\NormalTok{(.}\DecValTok{1}\NormalTok{, .}\DecValTok{1}\NormalTok{)) }\CommentTok{\# + scale\_x\_reverse() + coord\_flip()}
+        
+\NormalTok{        plotly}\SpecialCharTok{::}\FunctionTok{ggplotly}\NormalTok{(t1, }\AttributeTok{tooltip =} \FunctionTok{c}\NormalTok{(}\StringTok{"label"}\NormalTok{, }\StringTok{"colour"}\NormalTok{))}
+        
+\NormalTok{      \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"BEAST Phylogeography"}\NormalTok{)\{}
+        
+
+        \CommentTok{\# treepreview \textless{}{-} treeio::read.beast(input$treefile$datapath)}
+\NormalTok{        treepreview }\OtherTok{\textless{}{-}} \FunctionTok{treedata}\NormalTok{()}
+\NormalTok{        colorby }\OtherTok{\textless{}{-}}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{columnselection}
+        
+        \CommentTok{\# annotationdf \textless{}{-} lapply(treepreview$annotations, data.frame, stringsAsFactors = FALSE) \%\textgreater{}\% }
+        \CommentTok{\#   dplyr::bind\_rows() \%\textgreater{}\% }
+        \CommentTok{\#   dplyr::select\_(colorby) \%\textgreater{}\% }
+        \CommentTok{\#   slice(1:length(treepreview$tip.label)) \%\textgreater{}\% }
+        \CommentTok{\#   as\_tibble()}
+        
+        \CommentTok{\# annotationdf \textless{}{-} cbind(taxa = treepreview$tip.label, annotationdf)}
+        
+\NormalTok{        import}\SpecialCharTok{::}\FunctionTok{from}\NormalTok{(ggtree, }\StringTok{\textasciigrave{}}\AttributeTok{\%\textless{}+\%}\StringTok{\textasciigrave{}}\NormalTok{, ggtree)}
+        
+\NormalTok{        t1 }\OtherTok{\textless{}{-}} \FunctionTok{ggtree}\NormalTok{(treepreview, }\AttributeTok{ladderize =}\NormalTok{ T) }\SpecialCharTok{\%\textless{}+\%}\NormalTok{ treepreview}\SpecialCharTok{@}\NormalTok{data }\SpecialCharTok{+}
+          \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes\_string}\NormalTok{(}\AttributeTok{color =}\NormalTok{ colorby, }\AttributeTok{size =} \DecValTok{3}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ label),}
+                    \AttributeTok{hjust =} \DecValTok{0}\NormalTok{,}
+                    \AttributeTok{position =} \FunctionTok{position\_nudge}\NormalTok{(}\AttributeTok{x =} \FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{ggtitle}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Phylogeny of \textasciigrave{}"}\NormalTok{, input}\SpecialCharTok{$}\NormalTok{treefile}\SpecialCharTok{$}\NormalTok{name, }\StringTok{"\textasciigrave{}"}\NormalTok{),}
+                  \AttributeTok{subtitle =} \StringTok{"Generated by StrainHub"}\NormalTok{) }\SpecialCharTok{+}
+          \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette=}\StringTok{"Spectral"}\NormalTok{) }\SpecialCharTok{+}
+          \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{expand =} \FunctionTok{c}\NormalTok{(.}\DecValTok{1}\NormalTok{, .}\DecValTok{1}\NormalTok{))}
+        
+\NormalTok{        plotly}\SpecialCharTok{::}\FunctionTok{ggplotly}\NormalTok{(t1, }\AttributeTok{tooltip =} \FunctionTok{c}\NormalTok{(}\StringTok{"label"}\NormalTok{, }\StringTok{"colour"}\NormalTok{))}
+        
+\NormalTok{      \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Create Neighbor{-}Joining Tree"}\NormalTok{)\{}
+        
+        \CommentTok{\# treepreview \textless{}{-} make\_nj\_tree(filePath = input$treefile$datapath, accession = input$rootselect)}
+\NormalTok{        treepreview }\OtherTok{\textless{}{-}}\NormalTok{ strainhub}\SpecialCharTok{:::}\FunctionTok{NJ\_build\_collapse}\NormalTok{(}\AttributeTok{dna =} \FunctionTok{treedata}\NormalTok{(),}
+                                         \AttributeTok{accession =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{rootselect,}
+                                         \AttributeTok{bootstrapValue =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{bootstrapvalue)}
+        
+        \CommentTok{\# md \textless{}{-} read\_csv(input$csvfile$datapath)}
+
+\NormalTok{        colorby }\OtherTok{\textless{}{-}}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{columnselection}
+        
+\NormalTok{        import}\SpecialCharTok{::}\FunctionTok{from}\NormalTok{(ggtree, }\StringTok{\textasciigrave{}}\AttributeTok{\%\textless{}+\%}\StringTok{\textasciigrave{}}\NormalTok{, ggtree)}
+        
+\NormalTok{        t1 }\OtherTok{\textless{}{-}} \FunctionTok{ggtree}\NormalTok{(treepreview, }\AttributeTok{ladderize =}\NormalTok{ F) }\SpecialCharTok{\%\textless{}+\%}\NormalTok{ rv}\SpecialCharTok{$}\NormalTok{metadata }\SpecialCharTok{+}
+          \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes\_string}\NormalTok{(}\AttributeTok{color =}\NormalTok{ colorby, }\AttributeTok{size =} \DecValTok{3}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ label),}
+                    \AttributeTok{hjust =} \DecValTok{0}\NormalTok{,}
+                    \AttributeTok{position =} \FunctionTok{position\_nudge}\NormalTok{(}\AttributeTok{x =} \FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{+}
+          \FunctionTok{ggtitle}\NormalTok{(}\FunctionTok{paste0}\NormalTok{(}\StringTok{"Phylogeny of \textasciigrave{}"}\NormalTok{, input}\SpecialCharTok{$}\NormalTok{treefile}\SpecialCharTok{$}\NormalTok{name, }\StringTok{"\textasciigrave{}"}\NormalTok{),}
+                  \AttributeTok{subtitle =} \StringTok{"Generated by StrainHub"}\NormalTok{) }\SpecialCharTok{+}
+          \FunctionTok{scale\_fill\_brewer}\NormalTok{(}\AttributeTok{palette=}\StringTok{"Spectral"}\NormalTok{) }\SpecialCharTok{+}
+          \FunctionTok{scale\_x\_continuous}\NormalTok{(}\AttributeTok{expand =} \FunctionTok{c}\NormalTok{(.}\DecValTok{1}\NormalTok{, .}\DecValTok{1}\NormalTok{))}
+        
+\NormalTok{        plotly}\SpecialCharTok{::}\FunctionTok{ggplotly}\NormalTok{(t1, }\AttributeTok{tooltip =} \FunctionTok{c}\NormalTok{(}\StringTok{"label"}\NormalTok{, }\StringTok{"colour"}\NormalTok{))}
+        
+\NormalTok{      \}}
+\NormalTok{    \})}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Map Output}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{mapoutput }\OtherTok{\textless{}{-}} \FunctionTok{eventReactive}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{plotbutton, \{}
+    \ControlFlowTok{if}\NormalTok{ (input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{1. Please upload a tree file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3a. Please upload the accompanying metadata file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(}\StringTok{"Accession"} \SpecialCharTok{\%in\%} \FunctionTok{colnames}\NormalTok{(rv}\SpecialCharTok{$}\NormalTok{metadata),  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{Warning: \textasciigrave{}Accession\textasciigrave{} column not found in the metadata file. Maybe you need to rename your existing ID column?"}\NormalTok{), }
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geodatafile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3b. Please upload the accompanying geodata file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{columnselection }\SpecialCharTok{\%in\%} \FunctionTok{colnames}\NormalTok{(rv}\SpecialCharTok{$}\NormalTok{geodata),}
+             \StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{4b. The current selected state doesn\textquotesingle{}t match any columns in the geodata file. Please select a different column."}\NormalTok{)}
+\NormalTok{      )}
+\NormalTok{      output}\SpecialCharTok{$}\NormalTok{mapoutput }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{renderLeaflet}\NormalTok{(\{}
+        \FunctionTok{make\_map}\NormalTok{(}\FunctionTok{graph}\NormalTok{(),}
+\NormalTok{                 rv}\SpecialCharTok{$}\NormalTok{geodata,}
+\NormalTok{                 input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                 \AttributeTok{basemapLayer =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{basemapselection,}
+                 \AttributeTok{hideArrowHead =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowedges),}
+                 \AttributeTok{arrowFilled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowfill),}
+                 \AttributeTok{showLabels =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowlabels),}
+                 \AttributeTok{labelColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{labelColorPicker,}
+                 \AttributeTok{showPoints =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowpoints),}
+                 \AttributeTok{pointColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointColorPicker,}
+                 \AttributeTok{pointOpacity =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointOpacityPicker)}
+\NormalTok{        \})}
+      
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"BEAST Phylogeography"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{1. Please upload a tree file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geodatafile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3b. Please upload the accompanying geodata file."}\NormalTok{)}
+\NormalTok{      )}
+\NormalTok{      output}\SpecialCharTok{$}\NormalTok{mapoutput }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{renderLeaflet}\NormalTok{(\{}
+        \FunctionTok{make\_map}\NormalTok{(}\FunctionTok{graph}\NormalTok{(),}
+\NormalTok{                 rv}\SpecialCharTok{$}\NormalTok{geodata,}
+\NormalTok{                 input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                 \AttributeTok{basemapLayer =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{basemapselection,}
+                 \AttributeTok{hideArrowHead =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowedges),}
+                 \AttributeTok{arrowFilled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowfill),}
+                 \AttributeTok{showLabels =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowlabels),}
+                 \AttributeTok{labelColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{labelColorPicker,}
+                 \AttributeTok{showPoints =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowpoints),}
+                 \AttributeTok{pointColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointColorPicker,}
+                 \AttributeTok{pointOpacity =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointOpacityPicker)}
+\NormalTok{        \})}
+      
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Create Neighbor{-}Joining Tree"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{1. Please upload a tree phy file ."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{geodatafile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{3b. Please upload the accompanying csv geodata file."}\NormalTok{)}
+\NormalTok{      )}
+\NormalTok{      output}\SpecialCharTok{$}\NormalTok{mapoutput }\OtherTok{\textless{}{-}}\NormalTok{ leaflet}\SpecialCharTok{::}\FunctionTok{renderLeaflet}\NormalTok{(\{}
+        \FunctionTok{make\_map}\NormalTok{(}\FunctionTok{graph}\NormalTok{(),}
+\NormalTok{                 rv}\SpecialCharTok{$}\NormalTok{geodata,}
+\NormalTok{                 input}\SpecialCharTok{$}\NormalTok{columnselection,}
+                 \AttributeTok{basemapLayer =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{basemapselection,}
+                 \AttributeTok{hideArrowHead =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowedges),}
+                 \AttributeTok{arrowFilled =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{maparrowfill),}
+                 \AttributeTok{showLabels =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowlabels),}
+                 \AttributeTok{labelColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{labelColorPicker,}
+                 \AttributeTok{showPoints =} \FunctionTok{as.logical}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{mapshowpoints),}
+                 \AttributeTok{pointColor =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointColorPicker,}
+                 \AttributeTok{pointOpacity =}\NormalTok{ input}\SpecialCharTok{$}\NormalTok{pointOpacityPicker)}
+\NormalTok{        \})}
+\NormalTok{    \}}
+\NormalTok{  \})}
+  
+  \DocumentationTok{\#\# Map Settings}
+  \CommentTok{\# output$mapsettings \textless{}{-} renderUI(\{}
+  \CommentTok{\#   actionButton("mapsettings",}
+  \CommentTok{\#                label = "",}
+  \CommentTok{\#                icon = icon("cog", lib = "font{-}awesome"),}
+  \CommentTok{\#                class = "btn{-}secondary")}
+  \CommentTok{\# \})}
+    
+  \DocumentationTok{\#\# Globe Output}
+\CommentTok{\#  output$globeoutput \textless{}{-} eventReactive(input$plotbutton, \{}
+\CommentTok{\#    if (input$tree\_input\_type == "Parsimony Ancestral Reconstruction")\{}
+\CommentTok{\#      validate(}
+\CommentTok{\#        need(input$treefile != "", "\textbackslash{}n1. Please upload a tree file."),}
+\CommentTok{\#        need(input$csvfile != "",  "\textbackslash{}n3a. Please upload the accompanying metadata file."),}
+ \CommentTok{\#       need("Accession" \%in\% colnames(rv$metadata),  "\textbackslash{}nWarning: \textasciigrave{}Accession\textasciigrave{} column not found in the metadata file. Maybe you need to rename your existing ID column?"), }
+ \CommentTok{\#       need(input$geodatafile != "",  "\textbackslash{}n3b. Please upload the accompanying geodata file."),}
+\CommentTok{\#        need(input$columnselection \%in\% colnames(rv$geodata),}
+\CommentTok{\#            "\textbackslash{}n4b. The current selected state doesn\textquotesingle{}t match any columns in the geodata file. Please select a different column.")}
+ \CommentTok{\#     )}
+\CommentTok{\#      output$globeoutput \textless{}{-} render\_globe(\{make\_globe(graph(), rv$geodata, input$columnselection)\})}
+      
+ \CommentTok{\#   \} else if(input$tree\_input\_type == "BEAST Phylogeography")\{}
+\CommentTok{\#      validate(}
+ \CommentTok{\#       need(input$treefile != "", "\textbackslash{}n1. Please upload a tree file."),}
+\CommentTok{\#        need(input$geodatafile != "",  "\textbackslash{}n3b. Please upload the accompanying geodata file.")}
+ \CommentTok{\#     )}
+\CommentTok{\#      output$globeoutput \textless{}{-} render\_globe(\{make\_globe(graph(), rv$geodata, input$columnselection)\})}
+      
+ \CommentTok{\#   \} else if(input$tree\_input\_type == "Create Neighbor{-}Joining Tree")\{}
+  \CommentTok{\#    validate(}
+ \CommentTok{\#       need(input$treefile != "", "\textbackslash{}n1. Please upload a tree file."),}
+\CommentTok{\#        need(input$geodatafile != "",  "\textbackslash{}n3b. Please upload the accompanying geodata file.")}
+  \CommentTok{\#    )}
+  \CommentTok{\#    output$globeoutput \textless{}{-} render\_globe(\{make\_globe(graph(), rv$geodata, input$columnselection)\})}
+  \CommentTok{\#  \}}
+   \CommentTok{\# \})}
+  
+  
+  
+  \DocumentationTok{\#\# Metrics File Output}
+  \CommentTok{\# metrics \textless{}{-} eventReactive(input$plotbutton, \{}
+  \CommentTok{\#   if (input$tree\_input\_type == "Parsimony Ancestral Reconstruction")\{}
+  \CommentTok{\#     validate(}
+  \CommentTok{\#       need(input$treefile != "", "\textbackslash{}n1. Please upload a tree file."),}
+  \CommentTok{\#       need(input$csvfile != "",  "\textbackslash{}n2a. Please upload the accompanying metadata file."),}
+  \CommentTok{\#       \# need(input$columnSelection != "",  "\textbackslash{}n3. List the columns and pick one to use.")}
+  \CommentTok{\#       if (exists("input$treefile") \& exists("input$csvfile"))\{}
+  \CommentTok{\#         \# need(!input$input$columnselection \%in\% getUsableColumns(treeFileName = input$treefile$datapath,}
+  \CommentTok{\#         \#                                                         csvFileName = input$csvfile$datapath),}
+  \CommentTok{\#         \#      "\textbackslash{}n3. Please select a different column. This column has all identical values.")}
+  \CommentTok{\#       \}}
+  \CommentTok{\#     )}
+  \CommentTok{\#   \} else if(input$tree\_input\_type == "BEAST Phylogeography")\{}
+  \CommentTok{\#     validate(}
+  \CommentTok{\#       need(input$treefile != "", "\textbackslash{}n2. Please upload a tree file.")}
+  \CommentTok{\#     )}
+  \CommentTok{\#   \}}
+  \CommentTok{\#   }
+  \CommentTok{\#   metrics \textless{}{-} DT::datatable(read.csv("StrainHub\_metrics.csv"),}
+  \CommentTok{\#                            colnames = c("Metastates",}
+  \CommentTok{\#                                         "Degree",}
+  \CommentTok{\#                                         "Indegree",}
+  \CommentTok{\#                                         "Outdegree",}
+  \CommentTok{\#                                         "Betweeness",}
+  \CommentTok{\#                                         "Closeness",}
+  \CommentTok{\#                                         "Source Hub Ratio"),}
+  \CommentTok{\#                            options = list(autoWidth = TRUE,}
+  \CommentTok{\#                                           initComplete = JS(}
+  \CommentTok{\#                                             "function(settings, json) \{",}
+  \CommentTok{\#                                             "$(this.api().table().header()).css(\{\textquotesingle{}background{-}color\textquotesingle{}: \textquotesingle{}\#2d3e4f\textquotesingle{}, \textquotesingle{}color\textquotesingle{}: \textquotesingle{}\#fff\textquotesingle{}\});",}
+  \CommentTok{\#                                             "\}")))}
+  \CommentTok{\# \})}
+  \CommentTok{\# output$metricstable \textless{}{-} eventReactive(input$plotbutton, \{}
+  \CommentTok{\#   output$metricstable \textless{}{-} DT::renderDataTable(rv$metrics)}
+  \CommentTok{\# \})}
+  
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{plotbutton, \{}
+  \CommentTok{\# observe(\{}
+    \ControlFlowTok{if}\NormalTok{ (input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"Parsimony Ancestral Reconstruction"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{1. Please upload a tree phy file."}\NormalTok{),}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{csvfile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{,  }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2a. Please upload the accompanying csv metadata file."}\NormalTok{),}
+        \CommentTok{\# need(input$columnSelection != "",  "\textbackslash{}n3. List the columns and pick one to use.")}
+        \ControlFlowTok{if}\NormalTok{ (}\FunctionTok{exists}\NormalTok{(}\StringTok{"input$treefile"}\NormalTok{) }\SpecialCharTok{\&} \FunctionTok{exists}\NormalTok{(}\StringTok{"input$csvfile"}\NormalTok{))\{}
+          \CommentTok{\# need(!input$input$columnselection \%in\% getUsableColumns(treeFileName = input$treefile$datapath,}
+          \CommentTok{\#                                                         csvFileName = input$csvfile$datapath),}
+          \CommentTok{\#      "\textbackslash{}n3. Please select a different column. This column has all identical values.")}
+\NormalTok{        \}}
+\NormalTok{      )}
+\NormalTok{    \} }\ControlFlowTok{else} \ControlFlowTok{if}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{tree\_input\_type }\SpecialCharTok{==} \StringTok{"BEAST Phylogeography"}\NormalTok{)\{}
+      \FunctionTok{validate}\NormalTok{(}
+        \FunctionTok{need}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile }\SpecialCharTok{!=} \StringTok{""}\NormalTok{, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{2. Please upload a tree file."}\NormalTok{)}
+\NormalTok{      )}
+\NormalTok{    \}}
+    
+    \DocumentationTok{\#\# Clear out old metrics}
+    \CommentTok{\#rv$metrics \textless{}{-} DT::datatable(NULL)}
+    
+    \DocumentationTok{\#\# Read in new metrics}
+    \CommentTok{\# rv$metrics \textless{}{-} DT::datatable(read.csv("StrainHub\_metrics.csv"),}
+    \CommentTok{\#                          colnames = c("Metastates",}
+    \CommentTok{\#                                       "Degree",}
+    \CommentTok{\#                                       "Indegree",}
+    \CommentTok{\#                                       "Outdegree",}
+    \CommentTok{\#                                       "Betweeness",}
+    \CommentTok{\#                                       "Closeness",}
+    \CommentTok{\#                                       "Source Hub Ratio"),}
+    \CommentTok{\#                          options = list(autoWidth = TRUE,}
+    \CommentTok{\#                                         initComplete = JS(}
+    \CommentTok{\#                                           "function(settings, json) \{",}
+    \CommentTok{\#                                           "$(this.api().table().header()).css(\{\textquotesingle{}background{-}color\textquotesingle{}: \textquotesingle{}\#2d3e4f\textquotesingle{}, \textquotesingle{}color\textquotesingle{}: \textquotesingle{}\#fff\textquotesingle{}\});",}
+    \CommentTok{\#                                           "\}")))}
+    \CommentTok{\# }
+    \CommentTok{\# output$metricstable \textless{}{-} DT::renderDataTable(rv$metrics, options = list(processing = FALSE))}
+    
+\NormalTok{    rv}\SpecialCharTok{$}\NormalTok{metrics }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(}\StringTok{"StrainHub\_metrics.csv"}\NormalTok{)}
+    
+\NormalTok{    output}\SpecialCharTok{$}\NormalTok{metricstable }\OtherTok{\textless{}{-}}\NormalTok{ DT}\SpecialCharTok{::}\FunctionTok{renderDataTable}\NormalTok{(DT}\SpecialCharTok{::}\FunctionTok{datatable}\NormalTok{(rv}\SpecialCharTok{$}\NormalTok{metrics),}
+                                               \AttributeTok{options =} \FunctionTok{list}\NormalTok{(}\AttributeTok{processing =} \ConstantTok{FALSE}\NormalTok{,}
+                                                              \AttributeTok{autoWidth =} \ConstantTok{TRUE}\NormalTok{,}
+                                                              \AttributeTok{colnames =} \FunctionTok{c}\NormalTok{(}\StringTok{"Metastates"}\NormalTok{,}
+                                                                           \StringTok{"Degree"}\NormalTok{,}
+                                                                           \StringTok{"Indegree"}\NormalTok{,}
+                                                                           \StringTok{"Outdegree"}\NormalTok{,}
+                                                                           \StringTok{"Betweeness"}\NormalTok{,}
+                                                                           \StringTok{"Closeness"}\NormalTok{,}
+                                                                           \StringTok{"Source Hub Ratio"}\NormalTok{),}
+                                                              \AttributeTok{initComplete =} \FunctionTok{JS}\NormalTok{(}
+                                                                \StringTok{"function(settings, json) \{"}\NormalTok{,}
+                                                                \StringTok{"$(this.api().table().header()).css(\{\textquotesingle{}background{-}color\textquotesingle{}: \textquotesingle{}\#2d3e4f\textquotesingle{}, \textquotesingle{}color\textquotesingle{}: \textquotesingle{}\#fff\textquotesingle{}\});"}\NormalTok{,}
+                                                                \StringTok{"\}"}\NormalTok{)))}
+    
+\NormalTok{  \})}
+  
+\NormalTok{  proxy }\OtherTok{=} \FunctionTok{dataTableProxy}\NormalTok{(}\StringTok{\textquotesingle{}metricstable\textquotesingle{}}\NormalTok{)}
+  \FunctionTok{observeEvent}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{plotbutton, \{}
+    \CommentTok{\#replaceData(proxy, rv$metrics, rownames = FALSE)}
+    \FunctionTok{reloadData}\NormalTok{(proxy, rv}\SpecialCharTok{$}\NormalTok{metrics)}
+\NormalTok{  \})}
+  
+  \CommentTok{\# output$metricstable \textless{}{-} renderTable(\{}
+  \CommentTok{\#   metrics \textless{}{-} read.csv(paste0(input$treefile$datapath,"\_metrics.csv"))}
+  \CommentTok{\#   return(metrics)}
+  \CommentTok{\# \})}
+  
+  \CommentTok{\# Downloadable CSV of metrics}
+\NormalTok{  output}\SpecialCharTok{$}\NormalTok{downloadmetrics }\OtherTok{\textless{}{-}} \FunctionTok{downloadHandler}\NormalTok{(}
+    \AttributeTok{filename =} \ControlFlowTok{function}\NormalTok{() \{}
+      \FunctionTok{paste0}\NormalTok{(input}\SpecialCharTok{$}\NormalTok{treefile, }\StringTok{"\_StrainHub\_metrics.csv"}\NormalTok{)}
+\NormalTok{    \},}
+    \AttributeTok{content =} \ControlFlowTok{function}\NormalTok{(file) \{}
+      \FunctionTok{write.csv}\NormalTok{(}\FunctionTok{read.csv}\NormalTok{(}\StringTok{"StrainHub\_metrics.csv"}\NormalTok{), file, }\AttributeTok{row.names =} \ConstantTok{FALSE}\NormalTok{)}
+\NormalTok{    \}}
+\NormalTok{  )}
+  
+  \CommentTok{\#Testing link}
+  
+  \CommentTok{\# output$Link \textless{}{-} renderUI(\{}
+  \CommentTok{\#   }
+  \CommentTok{\#   a("test", href="http://google.com", target="\_blank")}
+  \CommentTok{\#   }
+  \CommentTok{\# \})}
+  
+  \CommentTok{\# output$navigate \textless{}{-} }
+  \CommentTok{\# observeEvent(input$navibar,\{}
+  \CommentTok{\#   if(input$navibar == "Link")\{}
+  \CommentTok{\#     browseURL("https://www.google.com")}
+  \CommentTok{\#   \}}
+  \CommentTok{\# \})}
+  
+  
+\NormalTok{\}}
+
+\CommentTok{\# Run the application }
+\FunctionTok{shinyApp}\NormalTok{(}\AttributeTok{ui =}\NormalTok{ ui, }\AttributeTok{server =}\NormalTok{ server)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## PhantomJS not found. You can install it with webshot::install_phantomjs(). If it is installed, please make sure the phantomjs executable can be found via the PATH variable.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#\#\#\#\#\#\#\#\#\#\#}
+\DocumentationTok{\#\# SETUP}
+\CommentTok{\#install.packages(\textquotesingle{}rsconnect\textquotesingle{})}
+\CommentTok{\#rsconnect::deployApp()}
+\DocumentationTok{\#\# Install required packages}
+\CommentTok{\# source("install\_packages.R")}
+\end{Highlighting}
+\end{Shaded}
+
+
+\end{document}
