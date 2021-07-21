@@ -100,63 +100,6 @@ ui <- tagList(
                ),
              sidebarPanel(style = "background-color: #FFFFFF", width = 3, position = "right"),
              ),
-    tabPanel("Network Visualizer",
-             sidebarPanel(
-               width = 3,
-               selectInput("network_input_type",
-                           label = "1. Select your network method",
-                           choices = c("Apomorphy list", "StrainHub RDS files")),
-               uiOutput("inputnetwork"),
-               uiOutput("geodataswitch2"),
-               uiOutput("plotbuttonswitch2"),
-               includeHTML("footer.html"),
-               p("v1.1.2",align ="right") ## Version
-               ),
-             mainPanel(
-               width = 9,
-               tabsetPanel(id = "paneltabs",
-                           tabPanel("Network Plot",
-                                     dropdownButton(
-                                       tags$h3("Network Settings"),
-                                       radioButtons("arrowedges",
-                                                    label = "Edge Style",
-                                                    choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
-                                                    selected = "TRUE"),
-                                       circle = FALSE,
-                                       status = "success",
-                                       icon = icon("gear"),
-                                       width = "300px",
-                                       tooltip = tooltipOptions(title = "Network Settings")
-                                     ) %>% div(style="float:left"),
-                                     p(" "),
-                                     dropdownButton(
-                                       tags$h3("Download Network"),
-                                       downloadButton("exportplothtml2",
-                                                      "Export as HTML",
-                                                      style="color: white;"),
-                                       br(),
-                                       downloadButton("exportplotpng2",
-                                                      "Export as PNG",
-                                                      style="color: white;"),
-                                       p("For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."),
-                                       downloadButton("exportgraphrds2",
-                                                      "Export as RDS",
-                                                      style="color: white;"),
-                                       p("Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."),
-                                       circle = FALSE,
-                                       status = "primary",
-                                       icon = icon("download"),
-                                       width = "300px",
-                                       tooltip = tooltipOptions(title = "Download Network As...")
-                                     ) %>% div(style="float:left; margin-left:5px;"),
-                                     br(),
-                                    
-                                     jqui_resizable(visNetworkOutput("graphplot2", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
-                            ),
-                           tabPanel("Map"))
-             ),
-             icon = icon("chevron-right", lib = "glyphicon")
-             ),
     tabPanel("Network Generator",
              sidebarPanel(
                width = 3,
@@ -319,6 +262,65 @@ ui <- tagList(
              ),
              icon = icon("chevron-right", lib = "glyphicon")
              ),
+    tabPanel("Network Visualizer",
+             sidebarPanel(
+               width = 3,
+               selectInput("network_input_type",
+                           label = "1. Select your network method",
+                           choices = c("Apomorphy list", "StrainHub RDS files")),
+               uiOutput("inputnetwork"),
+               uiOutput("geodataswitch2"),
+               uiOutput("plotbuttonswitch2"),
+               includeHTML("footer.html"),
+               p("v1.1.2",align ="right") ## Version
+             ),
+             mainPanel(
+               width = 9,
+               tabsetPanel(id = "paneltabs",
+                           tabPanel("Network Plot",
+                                    dropdownButton(
+                                      tags$h3("Network Settings"),
+                                      radioButtons("arrowedges",
+                                                   label = "Edge Style",
+                                                   choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
+                                                   selected = "TRUE"),
+                                      circle = FALSE,
+                                      status = "success",
+                                      icon = icon("gear"),
+                                      width = "300px",
+                                      tooltip = tooltipOptions(title = "Network Settings")
+                                    ) %>% div(style="float:left"),
+                                    p(" "),
+                                    dropdownButton(
+                                      tags$h3("Download Network"),
+                                      downloadButton("exportplothtml2",
+                                                     "Export as HTML",
+                                                     style="color: white;"),
+                                      br(),
+                                      downloadButton("exportplotpng2",
+                                                     "Export as PNG",
+                                                     style="color: white;"),
+                                      p("For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."),
+                                      downloadButton("exportgraphrds2",
+                                                     "Export as RDS",
+                                                     style="color: white;"),
+                                      p("Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."),
+                                      circle = FALSE,
+                                      status = "primary",
+                                      icon = icon("download"),
+                                      width = "300px",
+                                      tooltip = tooltipOptions(title = "Download Network As...")
+                                    ) %>% div(style="float:left; margin-left:5px;"),
+                                    br(),
+                                    
+                                    jqui_resizable(visNetworkOutput("graphplot2", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                           ),
+                           tabPanel("Map"))
+             ),
+             icon = icon("chevron-right", lib = "glyphicon")
+    ),
+    tabPanel("Network Comparison",
+             icon = icon("chevron-right", lib = "glyphicon")),
     tabPanel("About",
              sidebarPanel(style = "background-color: #FFFFFF", width = 2, position = "left"),
              mainPanel(width = 8,
@@ -327,7 +329,7 @@ ui <- tagList(
              sidebarPanel(style = "background-color: #FFFFFF", width = 2, position = "right"),
              icon = icon("question")),
    tabPanel(title=HTML("<li><a href='https://docs.strainhub.io'>Manual</a></li>"))
-   
+   #,title=HTML("<li><a href='https://docs.strainhub.io'>Manual</a></li>"))
   )
 )
 
