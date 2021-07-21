@@ -115,44 +115,44 @@ ui <- tagList(
              mainPanel(
                width = 9,
                tabsetPanel(id = "paneltabs",
-                           # tabPanel("Network Plot",
-                           #          dropdownButton(
-                           #            tags$h3("Network Settings"),
-                           #            radioButtons("arrowedges",
-                           #                         label = "Edge Style",
-                           #                         choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
-                           #                         selected = "TRUE"),
-                           #            circle = FALSE,
-                           #            status = "success",
-                           #            icon = icon("gear"),
-                           #            width = "300px",
-                           #            tooltip = tooltipOptions(title = "Network Settings")
-                           #          ) %>% div(style="float:left"),
-                           #          p(" "),
-                           #          dropdownButton(
-                           #            tags$h3("Download Network"),
-                           #            downloadButton("exportplothtml",
-                           #                           "Export as HTML",
-                           #                           style="color: white;"),
-                           #            br(),
-                           #            downloadButton("exportplotpng",
-                           #                           "Export as PNG",
-                           #                           style="color: white;"),
-                           #            p("For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."),
-                           #            downloadButton("exportgraphrds",
-                           #                           "Export as RDS",
-                           #                           style="color: white;"),
-                           #            p("Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."),
-                           #            circle = FALSE,
-                           #            status = "primary",
-                           #            icon = icon("download"),
-                           #            width = "300px",
-                           #            tooltip = tooltipOptions(title = "Download Network As...")
-                           #          ) %>% div(style="float:left; margin-left:5px;"),
-                           #          br(),
-                           #          
-                           #          jqui_resizable(visNetworkOutput("graphplot2", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
-                           # ),
+                           tabPanel("Network Plot",
+                                     dropdownButton(
+                                       tags$h3("Network Settings"),
+                                       radioButtons("arrowedges",
+                                                    label = "Edge Style",
+                                                    choices = c("Arrows" = "TRUE", "Lines" = "FALSE"),
+                                                    selected = "TRUE"),
+                                       circle = FALSE,
+                                       status = "success",
+                                       icon = icon("gear"),
+                                       width = "300px",
+                                       tooltip = tooltipOptions(title = "Network Settings")
+                                     ) %>% div(style="float:left"),
+                                     p(" "),
+                                     dropdownButton(
+                                       tags$h3("Download Network"),
+                                       downloadButton("exportplothtml2",
+                                                      "Export as HTML",
+                                                      style="color: white;"),
+                                       br(),
+                                       downloadButton("exportplotpng2",
+                                                      "Export as PNG",
+                                                      style="color: white;"),
+                                       p("For larger screen resolutions, taking a screenshot of the network may provide a higher quality image than this exporter."),
+                                       downloadButton("exportgraphrds2",
+                                                      "Export as RDS",
+                                                      style="color: white;"),
+                                       p("Exporting as RDS allows for further manipulation of the transmission network in the StrainHub R package or for use in future StrainHub web sessions."),
+                                       circle = FALSE,
+                                       status = "primary",
+                                       icon = icon("download"),
+                                       width = "300px",
+                                       tooltip = tooltipOptions(title = "Download Network As...")
+                                     ) %>% div(style="float:left; margin-left:5px;"),
+                                     br(),
+                                    
+                                     jqui_resizable(visNetworkOutput("graphplot2", height = "768px")) %>% withSpinner(color = "#2C3E50", type = 4)
+                            ),
                            tabPanel("Map"))
              ),
              icon = icon("chevron-right", lib = "glyphicon")
@@ -847,18 +847,18 @@ server <- function(input, output, session) {
                              treeType = "nj")
       # height = paste0(0.75*session$clientData$output_graph_width,"px")
       
-    } else if(input$tree_input_type == "Upload StrainHub RDS file"){
-      validate(
-        need(input$treefile != "", "\n2. Please upload a StrainHub-generated RDS file.")
-      )
-
-      graphinput <- readRDS(input$graphfile$datapath)
-      
-      validate(
-        need("visNetwork" %in% class(graphinput), "\n2. This RDS file was not generated by StrainHub or vizNetwork.")
-      )
-      graph <- graphinput
-      
+    # } else if(input$tree_input_type == "Upload StrainHub RDS file"){
+    #   validate(
+    #     need(input$treefile != "", "\n2. Please upload a StrainHub-generated RDS file.")
+    #   )
+    # 
+    #   graphinput <- readRDS(input$graphfile$datapath)
+    #   
+    #   validate(
+    #     need("visNetwork" %in% class(graphinput), "\n2. This RDS file was not generated by StrainHub or vizNetwork.")
+    #   )
+    #   graph <- graphinput
+    #   
     }
     
     
@@ -867,46 +867,52 @@ server <- function(input, output, session) {
   
   ## New for network visualization Adriano 7/15
   
-  # graph <- eventReactive(input$plotbutton2, {
-  #   if(input$network_input_type == "Apomorphy list"){
-  #     validate(
-  #       need(input$treefile$datapath != "", "\n2. Please upload a tree file."),
-  #       need(input$csvfile$datapath != "",  "\n3a. Please upload the accompanying metadata file."),
-  #       need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?")#,
-  #     )
-  #     validate(
-  #       need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
-  #       need(input$columnselection %in% strainhub:::getUsableColumns(treedata = treedata(),
-  #                                                                    metadata = rv$metadata),
-  #            "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
-  #     )
-  #     
-  #     graph <- makeTransNet(treedata = treedata(),
-  #                           metadata = rv$metadata,
-  #                           columnSelection = input$columnselection,
-  #                           centralityMetric = input$metricradio,
-  #                           treeType = "parsimonious")
-  # 
-  #   } else if(input$network_input_type == "StrainHub RDS files"){
-  #     validate(
-  #       need(input$treefile != "", "\n2. Please upload a StrainHub-generated RDS file.")
-  #     )
-  #     
-  #     graphinput <- readRDS(input$graphfile$datapath)
-  #     
-  #     validate(
-  #       need("visNetwork" %in% class(graphinput), "\n2. This RDS file was not generated by StrainHub or vizNetwork.")
-  #     )
-  #     graph <- graphinput
-  #     
-  #   }
-    
-    
-    
-  # })
+   graph2 <- eventReactive(input$plotbutton2, {
+     if(input$network_input_type == "Apomorphy list"){
+       return()
+       # validate(
+       #   need(input$treefile$datapath != "", "\n2. Please upload a tree file."),
+       #   need(input$csvfile$datapath != "",  "\n3a. Please upload the accompanying metadata file."),
+       #   need("Accession" %in% colnames(rv$metadata),  "\nWarning: `Accession` column not found in the metadata file. Maybe you need to rename your existing ID column?")#,
+       # )
+       # validate(
+       #   need(input$columnselection != "",  "\n4a. List the states from your metadata and pick one to use."),
+       #   need(input$columnselection %in% strainhub:::getUsableColumns(treedata = treedata(),
+       #                                                                metadata = rv$metadata),
+       #        "\n4b. Make sure to select a state column. (Must not contain all identical values.)")
+       # )
+       # 
+       # graph2 <- makeTransNet(treedata = treedata(),
+       #                       metadata = rv$metadata,
+       #                       columnSelection = input$columnselection,
+       #                       centralityMetric = input$metricradio,
+       #                       treeType = "parsimonious")
+  
+     } else if(input$network_input_type == "StrainHub RDS files"){
+    #   validate(
+    #     need(input$treefile != "", "\n2. Please upload a StrainHub-generated RDS file.")
+    #   )
+  
+       graphinput <- readRDS(input$graphfile$datapath)
+  
+       validate(
+         need("visNetwork" %in% class(graphinput), "\n2. This RDS file was not generated by StrainHub or vizNetwork, please upload a StrainHub-generated RDS file.")
+       )
+       graph2 <- graphinput
+  
+     }
+
+
+
+   })
   
   # output$graphplot <- renderPlot({print(graph())})
   output$graphplot <- renderVisNetwork({print(graph() %>%
+                                                visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+                                                                                 scaleFactor = 0.75)),
+                                                         arrowStrikethrough = FALSE))})
+  
+  output$graphplot2 <- renderVisNetwork({print(graph2() %>%
                                                 visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
                                                                                  scaleFactor = 0.75)),
                                                          arrowStrikethrough = FALSE))})
@@ -935,6 +941,24 @@ server <- function(input, output, session) {
   #   }
   # )
   output$exportplothtml <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_network.html")
+    },
+    content = function(file) {
+      m <- graph() %>%
+        visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+                                         scaleFactor = 0.75))) %>% 
+        visInteraction(navigationButtons = FALSE) %>%
+        visOptions(width = 1920,
+                   height = 1080,
+                   autoResize = TRUE)
+      
+      htmlwidgets::saveWidget(m, "tempplot.html", selfcontained = TRUE)
+      file.copy("tempplot.html", file)
+    }
+  )
+  
+  output$exportplothtml2 <- downloadHandler(
     filename = function() {
       paste0(input$treefile, "_StrainHub_network.html")
     },
@@ -995,6 +1019,30 @@ server <- function(input, output, session) {
     }
   )
   
+  output$exportplotpng2 <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_network.png")
+    },
+    content = function(file) {
+      m <- graph() %>%
+        visEdges(arrows = list(to = list(enabled = as.logical(input$arrowedges),
+                                         scaleFactor = 0.75))) %>% 
+        visInteraction(navigationButtons = FALSE) %>%
+        visOptions(width = 1920,
+                   height = 1080,
+                   autoResize = TRUE)
+      
+      htmlwidgets::saveWidget(m, "tempplot.html", selfcontained = TRUE)
+      
+      ## HD: 
+      webshot::webshot("tempplot.html", file = "tempplot.png", vwidth = 1920, vheight = 1080)
+      
+      ## 4K:
+      #webshot::webshot("tempplot.html", file = "tempplot.png", vwidth = 3840, vheight = 2160, zoom = 2)
+      
+      file.copy("tempplot.png", file)
+    }
+  )
   
   output$exportgraphrds <- downloadHandler(
     filename = function() {
@@ -1007,6 +1055,16 @@ server <- function(input, output, session) {
     }
   )
   
+  output$exportgraphrds2 <- downloadHandler(
+    filename = function() {
+      paste0(input$treefile, "_StrainHub_network.RDS")
+    },
+    content = function(file) {
+      
+      saveRDS(graph(), "tempplot.RDS")
+      file.copy("tempplot.RDS", file)
+    }
+  )
   ## Export Map
   
   # output$exportmappng <- downloadHandler(
