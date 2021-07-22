@@ -324,7 +324,7 @@ ui <- tagList(
     tabPanel("About",
              sidebarPanel(style = "background-color: #FFFFFF", width = 2, position = "left"),
              mainPanel(width = 8,
-                       includeMarkdown("https://github.com/abschneider/StrainHub/raw/master/ABOUT.md")
+                       includeMarkdown("https://github.com/abschneider/StrainHub/raw/experimental-changes/ABOUT.md")
                        ),
              sidebarPanel(style = "background-color: #FFFFFF", width = 2, position = "right"),
              icon = icon("question")),
