@@ -8,8 +8,10 @@ StrainHub works to generate a pathogen transmission network graph utilizing geno
 
 ## How to Install
 ```r
-devtools::install_github("colbyford/strainhub", subdir="pkg")
+remotes::install_github("colbyford/strainhub", subdir="pkg")
 ```
+
+Note: If you're running R 4.x, you may have to install some dependencies manually as they are not yet available via CRAN for the newest version of R. Simply find the troublesome package on GitHub and run `remotes::install_github("<ACCOUNT>/<REPO-NAME>")` in your R console.
 
 ## Examples
 ```r
