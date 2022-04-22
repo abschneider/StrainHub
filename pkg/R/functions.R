@@ -467,10 +467,14 @@ test_treetips_vs_accessions <- function(treedata, metadata, treeType = "parsimon
 #' @param treeType The type of tree being used. Choice from "parsimonious", "bayesian", or "nj" for neighbor-joining.
 #'     (Default: "parsimonious")
 #' @param rootSelection For neighbor-joining trees, the accession name of the terminal to use as the tree's root.
+#' @param metricsOutputFile The filename of the output metrics CSV file. If empty string, no file will be written.
+#'     (Default: "StrainHub_metrics.csv")
+#' @param as.json Boolean. If FALSE, the function outputs a VisNetwork object. If TRUE, the function outputs a JSON of the network.
+#'     (Default: FALSE)
 #'
 #############################
 
-makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityMetric, threshold = 0.9, threshold2 = 0.9, bootstrapValue = NULL, treeType = "parsimonious", rootSelection = NULL){
+makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityMetric, threshold = 0.9, threshold2 = 0.9, bootstrapValue = NULL, treeType = "parsimonious", rootSelection = NULL, metricsOutputFile = "StrainHub_metrics.csv", as.json = FALSE){
 
   if(treeType == "parsimonious"){
     # fileName <- readline(prompt = "Type in the full path to the nexus file you want to read in: ")
@@ -841,14 +845,18 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
 
   metrics <- as.data.frame(outputFileMatrix)
 
-  write.table(metrics,
-              append = FALSE,
-              file = "StrainHub_metrics.csv",
-              sep = ",",
-              fileEncoding = "UTF-8",
-              col.names = TRUE,
-              row.names = FALSE,
-              quote = FALSE)
+  if (metricsOutputFile != ""){
+    write.table(metrics,
+                append = FALSE,
+                file = metricsOutputFile,
+                sep = ",",
+                fileEncoding = "UTF-8",
+                col.names = TRUE,
+                row.names = FALSE,
+                quote = FALSE)
+  }
+
+
 
   if (ui > 0 & ui <= 6){
     if (ui == "1"){
@@ -971,7 +979,13 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     cat("ERROR: Please enter an integer between 1 and 6 to select a centrality metric.")
   }
 
-  return(graph)
+  ## Return graph as either JSON or VisNetwork object
+  if (as.json) {
+    return(jsonlite::toJSON(graph$x))
+  } else {
+    return(graph)
+  }
+
   ## For export functionality, use:   (Bad quality)
   # return(graph %>% visExport(type = "png", background = "#00FFFFFF", style = 'class = "btn-outline-primary"'))
 }
