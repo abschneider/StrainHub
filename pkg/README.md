@@ -14,6 +14,8 @@ remotes::install_github("colbyford/strainhub", subdir="pkg")
 Note: If you're running R 4.x, you may have to install some dependencies manually as they are not yet available via CRAN for the newest version of R. Simply find the troublesome package on GitHub and run `remotes::install_github("<ACCOUNT>/<REPO-NAME>")` in your R console.
 
 ## Examples
+
+### Using a Tree File
 ```r
 ## Load in StrainHub
 library(strainhub)
@@ -45,6 +47,28 @@ make_map(graph,
          geodata = geodata,
          columnSelection = "Country")
 
+```
+
+### Using a Data.Frame
+You'll need to prepare a tabular file (CSV, TSV, etc.) with "from" and "to" columns (and an optional "value" column to give weights to the edges).
+
+| **from** | **to** | **value** |
+|:--------:|:------:|:---------:|
+| thingA   | thingB | 5         |
+| thingB   | thingD | 10        |
+| thingB   | thingC | 1         |
+
+```r
+## Load in StrainHub
+library(strainhub)
+
+## Read in treedata (from CSV into a dataframe)
+treedata <- read.csv("../data/dataframe/dataframe.csv", stringsAsFactors = FALSE)
+
+## Make the Transmission Network
+graph <- makeTransNet(treedata,
+                      centralityMetric = 6,
+                      treeType = "dataframe")
 ```
 
 ## Customizing your Transmission Networks
