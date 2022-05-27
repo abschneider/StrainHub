@@ -464,7 +464,7 @@ test_treetips_vs_accessions <- function(treedata, metadata, treeType = "parsimon
 #'     (Default: 0.9)
 #' @param bootstrapValue For neighbor-joining trees, the number of iterations to perform in the bootstrap analysis.
 #'     (Default: Null)
-#' @param treeType The type of tree being used. Choice from "parsimonious", "bayesian", or "nj" for neighbor-joining.
+#' @param treeType The type of tree being used. Choice from "parsimonious", "bayesian", "nj" for neighbor-joining, or "dataframe" for a dataframe with "from" (character), "to" (character), and "value" (optional, integer) columns.
 #'     (Default: "parsimonious")
 #' @param rootSelection For neighbor-joining trees, the accession name of the terminal to use as the tree's root.
 #' @param metricsOutputFile The filename of the output metrics CSV file. If empty string, no file will be written.
@@ -585,6 +585,9 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     #in the phylogenetic tree;
     dat <- data.frame(from = sourceList,
                       to = targetList)
+
+    # saveRDS(dat, "dat.RDS")
+
     #counts the frequency of a specific state change occurring
     edges <- plyr::count(dat)
     names(edges)[names(edges) == "freq"] <- "value"
@@ -802,8 +805,40 @@ makeTransNet <- function(treedata, metadata = NULL, columnSelection, centralityM
     igraph.Object <- graph.data.frame(edges,
                                       directed = T,
                                       vertices = nodes)
-  }
+  } else if(treeType == "dataframe"){
+    nodes <- sort(unique(c(treedata$from, treedata$to)))
 
+    node_factors <- order(nodes)
+
+    sourceList <- as.integer(factor(treedata$from, nodes))
+    targetList <- as.integer(factor(treedata$to, nodes))
+
+
+    dat <- data.frame(from = sourceList,
+                      to = targetList)
+
+    # saveRDS(dat, "dat.RDS")
+
+    #counts the frequency of a specific state change occurring
+    edges <- plyr::count(dat)
+    names(edges)[names(edges) == "freq"] <- "value"
+
+    ## If there is a "value" column in the dataframe, use it for the edges
+    if ("value" %in% colnames(treedata)){
+      edges$value <- treedata$value
+    }
+
+    # Extract the selected metadata state label from the nexusData
+    # metastates <- nexusData$characterLabels[[characterIndex]]
+    metastates <- nodes
+
+    nodes <- data.frame(id = 1:length(metastates),
+                        label = metastates) #, fixed = list(x = T, y = T))
+
+    igraph.Object <- graph.data.frame(edges,
+                                      directed = T,
+                                      vertices = nodes)
+  }
 
 
   #ui <- readline(prompt = "Select a centrality metric. Enter 0 to simply calculate all metrics, 1 for indegree, 2 for outdegree, 3 betweenness, 4 closeness, 5 for degree or 6 for Source Hub Ratio: ")

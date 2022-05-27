@@ -1,0 +1,4 @@
+from,to,value
+thingA,thingB,5
+thingB,thingD,10
+thingB,thingC,1
