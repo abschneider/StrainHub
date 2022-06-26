@@ -13,7 +13,9 @@ makeTransNet(
   threshold2 = 0.9,
   bootstrapValue = NULL,
   treeType = "parsimonious",
-  rootSelection = NULL
+  rootSelection = NULL,
+  metricsOutputFile = "StrainHub_metrics.csv",
+  as.json = FALSE
 )
 }
 \arguments{
@@ -39,10 +41,16 @@ makeTransNet(
 \item{bootstrapValue}{For neighbor-joining trees, the number of iterations to perform in the bootstrap analysis.
 (Default: Null)}
 
-\item{treeType}{The type of tree being used. Choice from "parsimonious", "bayesian", or "nj" for neighbor-joining.
+\item{treeType}{The type of tree being used. Choice from "parsimonious", "bayesian", "nj" for neighbor-joining, or "dataframe" for a dataframe with "from" (character), "to" (character), and "value" (optional, integer) columns.
 (Default: "parsimonious")}
 
 \item{rootSelection}{For neighbor-joining trees, the accession name of the terminal to use as the tree's root.}
+
+\item{metricsOutputFile}{The filename of the output metrics CSV file. If empty string, no file will be written.
+(Default: "StrainHub_metrics.csv")}
+
+\item{as.json}{Boolean. If FALSE, the function outputs a VisNetwork object. If TRUE, the function outputs a JSON of the network.
+(Default: FALSE)}
 
 \item{columnselection}{Which of the metadata columns by which to summarize.}
 }
